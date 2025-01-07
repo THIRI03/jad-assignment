@@ -1,0 +1,104 @@
+/* 
+ * JAD-CA1
+ * Class-DIT/FT/2A/23
+ * Student Name: Moe Myat Thwe
+ * Admin No.: P2340362
+ */
+
+/* Service History Page Styling */
+.service-history-page {
+    background-color: #fff8e1; /* Match home page background */
+    font-family: Arial, sans-serif;
+}
+
+.service-history-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.service-history-title {
+    font-size: 2.5rem; /* Match heading style */
+    font-weight: bold;
+    color: #674636; /* Brown text for title */
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.no-service-history {
+    font-size: 1.2rem;
+    color: #555; /* Muted gray text */
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Styling for Cards */
+.service-history-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background-color: #fff; /* White background for cards */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.service-history-card:hover {
+    transform: scale(1.03); /* Hover zoom effect */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+}
+
+.service-card-body {
+    text-align: center;
+}
+
+.service-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #674636; /* Brown text for titles */
+    margin-bottom: 10px;
+}
+
+.service-details {
+    font-size: 1rem;
+    color: #555; /* Muted gray for details */
+    margin-bottom: 10px;
+}
+
+/* Button Styling */
+.service-feedback-btn {
+    background-color: #835945; /* Match button style from home.css */
+    color: white;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.service-feedback-btn:hover {
+    background-color: #b78c77; /* Lighter brown on hover */
+    transform: scale(1.05);
+}
+
+.service-feedback-btn:active {
+    background-color: #78523f; /* Darker brown when clicked */
+    transform: scale(0.95);
+}
+
+/* Responsive Grid Layout */
+.service-history-row > .col {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .service-history-row {
+        row-cols: 1 !important; /* Single column on small screens */
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .service-history-row {
+        row-cols: 2 !important; /* Two columns on medium screens */
+    }
+}

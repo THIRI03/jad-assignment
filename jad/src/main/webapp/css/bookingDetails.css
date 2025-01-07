@@ -1,0 +1,122 @@
+/* 
+ * JAD-CA1
+ * Class-DIT/FT/2A/23
+ * Student Name: Moe Myat Thwe
+ * Admin No.: P2340362
+ */
+
+.booking-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #f8f4e3;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+}
+
+.service-summary {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.service-summary h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #674636;
+    margin-bottom: 10px;
+}
+
+.service-summary p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.service-summary img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-weight: bold;
+    margin-top: 15px;
+    display: block;
+    color: #333;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical; /* Allow resizing only vertically */
+}
+
+.btn {
+    display: inline-block;
+    width: 48%; /* Split width for buttons */
+    padding: 10px;
+    background-color: #674636;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background-color: #b78c77;
+}
+
+.back-btn {
+    background-color: #ccc;
+    color: black;
+    text-align: center;
+}
+
+.back-btn:hover {
+    background-color: #aaa;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+	flex: 1;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #6b4f3e; /* Brown color */
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #8c6a56; /* Slightly lighter brown for hover */
+}
+
+.btn.view-cart-btn {
+    margin-top: 10px; /* Optional: Add spacing */
+}
+

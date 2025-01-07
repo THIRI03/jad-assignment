@@ -1,0 +1,59 @@
+/*     JAD-CA1
+Class-DIT/FT/2A/23
+Student Name: Thiri Lae Win
+Admin No.: P2340739 */
+
+
+@charset "UTF-8";
+
+body {
+    margin: 0;  
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #6b4423;
+    color: white;
+    padding: 10px 20px;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;  
+    z-index: 1000;  
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+}
+
+.navbar h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 20px;
+}
+
+.navbar ul li {
+    margin: 0 10px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    background-color: #575757;
+}
+
+.menu-toggle {
+    display: none;
+}

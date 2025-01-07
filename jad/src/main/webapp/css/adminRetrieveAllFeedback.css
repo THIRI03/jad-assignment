@@ -1,0 +1,78 @@
+/*     JAD-CA1
+Class-DIT/FT/2A/23
+Student Name: Thiri Lae Win
+Admin No.: P2340739 */
+
+
+@charset "UTF-8";
+
+/* Style for the main container */
+.container {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+h2 {
+	margin-top: 60px;
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Table styling */
+.feedback-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.feedback-table th, .feedback-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+/* Table header styling */
+.feedback-table th {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+}
+
+/* Table row styling */
+.feedback-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.feedback-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* No feedback message styling */
+.feedback-table td[colspan="6"] {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+    
+    .feedback-table th, .feedback-table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+}
