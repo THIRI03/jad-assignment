@@ -28,7 +28,7 @@
 <body>
     <div class="booking-container">
         <%
-        String serviceId = request.getParameter("service_id");
+        String categoryId = request.getParameter("category_id");
         
         // User ID is already fetched in header.jsp, so no need to redeclare
         if (userId == null) {
@@ -37,29 +37,29 @@
         }
 
         // Fetch sub_service_id from the request
-        String subServiceId = request.getParameter("sub_service_id");
-        if (subServiceId == null) {
-            out.println("<p style='color:red;'>Error: Sub-service ID is missing!</p>");
+        String serviceId = request.getParameter("service_id");
+        if (serviceId == null) {
+            out.println("<p style='color:red;'>Error: Service ID is missing!</p>");
             return;
         }
 
-        String subServiceName = "";
+        String serviceName = "";
         String description = "";
         String price = "";
         String image = "";
 
-        String query = "SELECT sub_service_name, description, price, image FROM sub_service WHERE sub_service_id = ?";
+        String query = "SELECT * FROM service WHERE id = ?";
         try (Connection conn = com.cleaningService.util.DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, Integer.parseInt(subServiceId));
+            stmt.setInt(1, Integer.parseInt(serviceId));
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    subServiceName = rs.getString("sub_service_name");
+                    serviceName = rs.getString("name");
                     description = rs.getString("description");
                     price = String.format("$%.2f", rs.getDouble("price"));
                     image = rs.getString("image");
                 } else {
-                    out.println("<p style='color:red;'>Sub-service not found!</p>");
+                    out.println("<p style='color:red;'>Service not found!</p>");
                     return;
                 }
             }
@@ -72,16 +72,16 @@
 
         <!-- Display Selected Service Details -->
         <div class="service-summary">
-            <h1>Booking for: <%= subServiceName %></h1>
+            <h1>Booking for: <%= serviceName %></h1>
             <p>Description: <%= description %></p>
             <p>Price: <%= price %></p>
-            <img src="../<%= image %>" alt="<%= subServiceName %>" class="service-image">
+            <img src="../<%= image %>" alt="<%= serviceName %>" class="service-image">
         </div>
 
         <!-- Booking Form -->
 			<form method="post">
-		        <input type="hidden" name="service_id" value="<%= serviceId %>">
-                <input type="hidden" name="sub_service_id" value="<%= subServiceId %>">
+		        <input type="hidden" name="category_id" value="<%= categoryId %>">
+                <input type="hidden" name="service_id" value="<%= serviceId %>">
 		        
 			    
 			    <label for="date">Select Date:</label>
@@ -100,7 +100,7 @@
 			    <textarea name="specialRequest" rows="4"></textarea>
 			    
 			    <div class="buttons-container">
-			        <a href="serviceDetails.jsp?service_id=<%= serviceId %>" class="btn back-btn">Back to Services</a>
+			        <a href="services.jsp?category_id=<%= categoryId %>" class="btn back-btn">Back to Services</a>
 			        <button type="submit" class="btn">Add to Cart</button>
 			    </div>
 			</form>
@@ -115,25 +115,25 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
     String specialRequest = request.getParameter("specialRequest");
 
     // Create a booking map
-    Map<String, String> booking = new HashMap<>();
+    Map<String, Object> booking = new HashMap<>();
+    booking.put("categoryId", serviceId);
     booking.put("serviceId", serviceId);
-    booking.put("subServiceId", subServiceId);
-    booking.put("subServiceName", subServiceName);
-    booking.put("date", date);
+/*     booking.put("subServiceName", serviceName);
+ */    booking.put("date", date);
     booking.put("time", time);
     booking.put("duration", duration);
     booking.put("serviceAddress", serviceAddress);
     booking.put("specialRequest", specialRequest);
 
     // Add to session cart
-    ArrayList<Map<String, String>> cart = (ArrayList<Map<String, String>>) session.getAttribute("cart");
+    ArrayList<Map<String, Object>> cart = (ArrayList<Map<String, Object>>) session.getAttribute("cart");
     if (cart == null) {
         cart = new ArrayList<>();
     }
     cart.add(booking);
     session.setAttribute("cart", cart);
     out.println("<script>showAlert('Service successfully added to the cart!');</script>");
-    out.println("<p>Added to cart. <a href='cart.jsp?service_id=" + serviceId + "&sub_service_id=" + subServiceId + "' class='btn view-cart-btn'>View Cart</a></p>");
+    out.println("<p>Added to cart. <a href='cart.jsp?category_id=" + categoryId + "&service_id=" + serviceId + "' class='btn view-cart-btn'>View Cart</a></p>");
 }
 %>
 	

@@ -47,7 +47,7 @@ Admin No.: P2340739 -->
 
 
         if (user != null) {
-        	
+        	        	
         	int roleId = user.getRoleId();
         	session.setAttribute("userRole", roleId);
             session.setAttribute("userId", user.getId());
@@ -76,7 +76,6 @@ Admin No.: P2340739 -->
             %>
         	<script>alert('Login Successful!')</script>
         	<%
-        	System.out.println(roleId);
             if(roleId == 1){
             	response.sendRedirect("adminDashboard.jsp");
             }else if(roleId == 2 || roleId == 3){
@@ -92,7 +91,7 @@ Admin No.: P2340739 -->
     
     <!-- For show password -->
     <script>
-    function togglePasswordVisibility(inputField, icon) {
+    /* function togglePasswordVisibility(inputField, icon) {
         if (inputField.type === "password") {
             inputField.type = "text";
             icon.src = "../gallery/eye-open-password.png";
@@ -100,8 +99,8 @@ Admin No.: P2340739 -->
             inputField.type = "password";
             icon.src = "../gallery/eye-close-password.png";
         }
-    }
-    function setupPasswordToggle() {
+    } */
+    /* function setupPasswordToggle() {
         const eyePassword = document.getElementById("eye-close-password");
         const eyeRepassword = document.getElementById("eye-close-repassword");
         const password = document.getElementById("password");
@@ -115,7 +114,7 @@ Admin No.: P2340739 -->
             togglePasswordVisibility(repassword, eyeRepassword);
         };
     }
-    window.addEventListener("DOMContentLoaded", setupPasswordToggle);
+    window.addEvent Listener("DOMContentLoaded", setupPasswordToggle);*/
 
     </script>
 </body>
