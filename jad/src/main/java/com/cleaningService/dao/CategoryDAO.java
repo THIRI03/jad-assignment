@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.cleaningService.model.Category;
-
-import com.cleaningService.model.Category;
 import com.cleaningService.util.DBConnection;
 
 public class CategoryDAO{

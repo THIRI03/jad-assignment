@@ -53,8 +53,7 @@
             <ul class="navbar">
                 <!-- Links for All Users -->
                 <li><a href="home.jsp">Home</a></li>
-                <li><a href="categories.jsp">Services</a></li>
-
+				<li><a href="<%= request.getContextPath() %>/CategoryServlet?fetch=true">Categories</a></li>
                 <% 
                 if (username != null) { // User is logged in
                     if ("admin".equalsIgnoreCase(role)) { // Admin-specific links

@@ -15,7 +15,7 @@
     String redirectURL;
     if (session != null && session.getAttribute("username") != null) {
         // If user is logged in, redirect to the services page
-        redirectURL = "services.jsp";
+        redirectURL = "categories.jsp";
     } else {
         // If user is not logged in, redirect to the register page
         redirectURL = "register.jsp";
