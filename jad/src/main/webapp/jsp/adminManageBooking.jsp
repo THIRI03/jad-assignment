@@ -16,6 +16,8 @@
 <%
 BookingDAO bookingDAO = new BookingDAO();
 List<Booking>bookings = bookingDAO.retrieveAllBookings();
+
+System.out.println("ok");
 %>
 
 	<table>
