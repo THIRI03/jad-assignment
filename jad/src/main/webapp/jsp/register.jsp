@@ -45,6 +45,9 @@
 	        
 	        <label for="address">Address:</label>
 	        <input type="text" id="address" name="address" required><br><br>
+	        
+	        <label for="postalcode">Postal Code:</label>
+	        <input type="number" id="postalcode" name="postalcode" required><br><br>
 
             <button type="submit">Register</button>
         </form>
@@ -60,7 +63,9 @@
             String password = request.getParameter("password");
             String repassword = request.getParameter("repassword");
             String phoneNumStr = request.getParameter("phoneNum");
+            int phoneNum = Integer.parseInt(phoneNumStr);
             String address = request.getParameter("address");
+            int postalCode = Integer.parseInt(request.getParameter("postalcode"));
             int role = 2;
             
             if(!password.equals(repassword)){
@@ -70,7 +75,7 @@
 
             }else{
             	// Create a User object
-                User user = new User(name, email, password, phoneNumStr, address, role);
+                User user = new User(name, email, password, phoneNum, address, postalCode, role);
 
                 // Call the UserDAO to register the user
                 UserDAO userDAO = new UserDAO();

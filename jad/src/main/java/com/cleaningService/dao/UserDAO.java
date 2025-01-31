@@ -25,7 +25,7 @@ public class UserDAO {
     public boolean registerUser(User user) {
 
         boolean isUserRegistered = false;
-        String sql = "INSERT INTO users (name, email, password, phone_number, address, role_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (name, email, password, phone_number, address, postal_code, role_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         try (Connection connection = DBConnection.getConnection();
@@ -36,7 +36,8 @@ public class UserDAO {
             statement.setString(3, hashedPassword);
             statement.setInt(4, user.getPhoneNum());
             statement.setString(5, user.getAddress());
-            statement.setInt(6, 2);
+            statement.setInt(6, user.getPostalCode());
+            statement.setInt(7, 2);
             
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
