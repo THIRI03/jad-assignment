@@ -5,20 +5,22 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String phoneNum;
+    private int phoneNum;
     private String address;
+    private int postalCode;
     private int roleId;
     
     public User() {
     	
     }
     
-    public User(String name, String email, String password, String phoneNum, String address, int roleId) {
+    public User(String name, String email, String password, int phoneNum, String address, int postalCode, int roleId) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.phoneNum = phoneNum;
         this.address = address;
+        this.setPostalCode(postalCode);
         this.roleId = roleId;
     }
     
@@ -36,11 +38,11 @@ public class User {
         return name;
     }
 
-    public String getPhoneNum() {
+    public int getPhoneNum() {
 		return phoneNum;
 	}
 
-	public void setPhoneNum(String phoneNum) {
+	public void setPhoneNum(int phoneNum) {
 		this.phoneNum = phoneNum;
 	}
 
@@ -78,5 +80,13 @@ public class User {
 
 	public void setRoleId(int roleId) {
 		this.roleId = roleId;
+	}
+
+	public int getPostalCode() {
+		return postalCode;
+	}
+
+	public void setPostalCode(int postalCode) {
+		this.postalCode = postalCode;
 	}
 }

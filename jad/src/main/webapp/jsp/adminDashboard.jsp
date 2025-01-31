@@ -7,7 +7,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import = "java.util.List" %>
-<%@ include file="authCheck.jsp" %>
+<%-- <%@ include file="authCheck.jsp" %> --%>
 <%@page import = "com.cleaningService.dao.ServiceDAO" %>
 <%@page import = "com.cleaningService.dao.BookingDAO" %>
 <%@page import = "com.cleaningService.dao.FeedbackDAO" %>
@@ -24,11 +24,11 @@
 </head>
 <body>
 <%
-Integer loggedInUserRoleId = (Integer) session.getAttribute("userRole");
+/* Integer loggedInUserRoleId = (Integer) session.getAttribute("userRole");
 if(loggedInUserRoleId == null || loggedInUserRoleId == 2){
     response.sendRedirect("login.jsp");
     return;    
-}
+} */
 
 ServiceDAO serviceDAO = new ServiceDAO();
 BookingDAO bookingDAO = new BookingDAO();
@@ -66,13 +66,7 @@ int numOfFeedbacks = feedbackDAO.retrieveFeedbackNum();
     <!-- Bookings Table -->
     <%
     List<Booking> bookings = bookingDAO.retrieveAllBookings();
-    
-    if (numOfBookings == 0) {
-        %>
-        <p>There are no bookings yet.</p>
-        <%
-    } else {
-    %>
+	%>
 
     <h2>Recent Bookings</h2>
     <table>
@@ -104,9 +98,6 @@ int numOfFeedbacks = feedbackDAO.retrieveFeedbackNum();
     </table>
 </div>
 
-    <%
-    }
-    %>
 
 <script>
     const menuToggle = document.querySelector('.menu-toggle');

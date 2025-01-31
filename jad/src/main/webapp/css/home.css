@@ -5,6 +5,8 @@
  * Admin No.: P2340362
  */
 
+@charset "UTF-8";
+
 /* General Styles */
 body,html{
 	margin: 0;
@@ -161,8 +163,8 @@ h1, h2, h3, p {
 .hero-section {
     position: relative;
     height: 100vh;
-    background: url('/jad/JAD-CA1/gallery/home.jpg') no-repeat center center/cover;
-    display: flex;
+/*     background: url('/jad/gallery/home.jpg') no-repeat center center/cover;
+ */    display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;

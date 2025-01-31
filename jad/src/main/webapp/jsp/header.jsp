@@ -53,7 +53,7 @@
             <ul class="navbar">
                 <!-- Links for All Users -->
                 <li><a href="home.jsp">Home</a></li>
-                <li><a href="services.jsp">Services</a></li>
+                <li><a href="categories.jsp">Services</a></li>
 
                 <% 
                 if (username != null) { // User is logged in

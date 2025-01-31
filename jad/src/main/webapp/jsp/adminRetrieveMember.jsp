@@ -11,7 +11,7 @@
 	<%@ page import="java.util.List" %>
 	<%@ page import="com.cleaningService.model.User" %>
 	<%@ page import="com.cleaningService.dao.UserDAO" %>
-	<%@ include file="authCheck.jsp" %>
+<%-- 	<%@ include file="authCheck.jsp" %> --%>
 	<%@ include file="../html/adminNavbar.html" %>
 <!DOCTYPE html>
 <html>

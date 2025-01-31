@@ -21,7 +21,7 @@ public class FeedbackDAO {
 	 */
 	
     public boolean addFeedback(int userId, int bookingId, int subServiceId, String comments, int rating) {
-        String sql = "INSERT INTO feedback (user_id, booking_id, sub_service_id, comments, rating) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO feedback (user_id, booking_id, service_id, comment, rating) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -53,7 +53,7 @@ public class FeedbackDAO {
     /////////////////////////////////////////////////////////////////////////////
     public int retrieveFeedbackNum() {
     	int count = 0;
-	    String sql = "SELECT COUNT(feedback_id) AS feedbackCount FROM feedback";
+	    String sql = "SELECT COUNT(id) AS feedbackCount FROM feedback";
 
 	    try (Connection connection = DBConnection.getConnection();
 	         PreparedStatement stmt = connection.prepareStatement(sql);
@@ -70,10 +70,10 @@ public class FeedbackDAO {
     
     public List<Feedback> retrieveAllFeedbacks() {
         List<Feedback> feedbackList = new ArrayList<>();
-        String sql = "SELECT fb.feedback_id, fb.comments, fb.rating, u.name AS customer_name, s.service_name AS service_name "
+        String sql = "SELECT fb.id, fb.comments, fb.rating, u.name AS customer_name, s.name AS service_name "
                      + "FROM feedback fb "
                      + "JOIN users u ON fb.user_id = u.id "
-                     + "JOIN service s ON fb.service_id = s.service_id ";
+                     + "JOIN service s ON fb.service_id = s.id ";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -82,7 +82,7 @@ public class FeedbackDAO {
             while (rs.next()) {
                 Feedback feedback = new Feedback(0,null,0,null,null,0);
                 
-                feedback.setId(rs.getInt("feedback_id"));
+                feedback.setId(rs.getInt("id"));
                 feedback.setUsername(rs.getString("customer_name"));  // Correctly map customer_name
                 feedback.setServiceName(rs.getString("service_name")); // Correctly map service_name
                 feedback.setRating(rs.getInt("rating"));

@@ -42,7 +42,7 @@
                 if (rs.next()) {
                     name = rs.getString("name");
                     email = rs.getString("email");
-                    phone = rs.getString("phone") != null ? rs.getString("phone") : phone;
+                    phone = rs.getString("phone_number") != null ? rs.getString("phone_number") : phone;
                     address = rs.getString("address") != null ? rs.getString("address") : address;
                     avatarUrl = rs.getString("avatar_url") != null ? rs.getString("avatar_url") : avatarUrl;
                     coverPhotoUrl = rs.getString("cover_photo_url") != null ? rs.getString("cover_photo_url") : coverPhotoUrl;

@@ -44,13 +44,13 @@
         pstmt.close();
 
         // Fetch the latest 3 feedbacks
-        String feedbackSql = "SELECT comments, rating FROM feedback ORDER BY feedback_id DESC LIMIT 3";
+        String feedbackSql = "SELECT comment, rating FROM feedback ORDER BY id DESC LIMIT 3";
         pstmt = conn.prepareStatement(feedbackSql);
         rs = pstmt.executeQuery();
 
         while (rs.next()) {
             Map<String, String> review = new HashMap<>();
-            review.put("comments", rs.getString("comments"));
+            review.put("comment", rs.getString("comment"));
             review.put("rating", String.valueOf(rs.getInt("rating")));
             reviews.add(review);
         }
@@ -90,7 +90,7 @@
     </section>
     
     <!-- Hero Section -->
-	<section id="home" class="hero-section">
+	<section id="home" class="hero-section" style="background: url('/jad/gallery/home.jpg') no-repeat center center/cover;">
 	    <div class="hero-overlay">
 	        <h1>Professional Cleaning Services at Your Doorstep</h1>
 	        <p>Your trusted partner for a cleaner, healthier environment.</p>
@@ -138,7 +138,7 @@
     <div class="container">
         <h2 class="section-title">Hear What Our Customers Have to Say</h2>
         <p class="section-subtitle">
-            Trusted by both local & expat communities, we are rated 
+            Trusted by both local & expert communities, we are rated 
             <%= String.format("%.1f", averageRating) %>/5 stars on Google by over <%= totalUsers %>+ users!
         </p>
         <div class="row">

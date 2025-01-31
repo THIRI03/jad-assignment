@@ -25,7 +25,7 @@ public class UserDAO {
     public boolean registerUser(User user) {
 
         boolean isUserRegistered = false;
-        String sql = "INSERT INTO users (name, email, password, phone_number, address, roleId) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (name, email, password, phone_number, address, postal_code, role_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         try (Connection connection = DBConnection.getConnection();
@@ -34,9 +34,10 @@ public class UserDAO {
             statement.setString(1, user.getName());
             statement.setString(2, user.getEmail());
             statement.setString(3, hashedPassword);
-            statement.setString(4, user.getPhoneNum());
+            statement.setInt(4, user.getPhoneNum());
             statement.setString(5, user.getAddress());
-            statement.setInt(6, 2);
+            statement.setInt(6, user.getPostalCode());
+            statement.setInt(7, 2);
             
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
@@ -52,6 +53,8 @@ public class UserDAO {
     	User user = new User();
     	String sql = "SELECT * FROM users WHERE email=?";
     	
+//    	System.out.println(email);
+    	
     	try(Connection connection = DBConnection.getConnection()) {
     		PreparedStatement statement = connection.prepareStatement(sql);
     		
@@ -60,18 +63,18 @@ public class UserDAO {
     		
     		if(resultSet.next()) {
     			user.setEmail(resultSet.getString("email"));
-    			user.setRoleId(resultSet.getInt("roleId"));
+    			user.setRoleId(resultSet.getInt("role_id"));
     			String storedEmail = user.getEmail();
     			String storedPassword = resultSet.getString("password");
     			
     			if(BCrypt.checkpw(password, storedPassword) && storedEmail.equals(email)) {
     				user.setId(resultSet.getInt("id"));
         			user.setName(resultSet.getString("name"));
-        			user.setPhoneNum(resultSet.getString("phone_number"));
+        			user.setPhoneNum(resultSet.getInt("phone_number"));
         			user.setAddress(resultSet.getString("address"));
-        			
-        			
+        			        			
     				return user;
+    				
     			}
     		}
     	}catch (SQLException e) {
@@ -93,7 +96,7 @@ public class UserDAO {
     			User user = new User();
     			user.setId(resultSet.getInt("id"));
     			user.setName(resultSet.getString("name"));
-    			user.setPhoneNum(resultSet.getString("phone_number"));
+    			user.setPhoneNum(resultSet.getInt("phone_number"));
     			user.setAddress(resultSet.getString("address"));
     			
     			user.setEmail(resultSet.getString("email"));
@@ -101,6 +104,7 @@ public class UserDAO {
     			
     			users.add(user);
     		}
+    		
     		
     	}catch (SQLException e) {
             e.printStackTrace();

@@ -53,10 +53,10 @@
     <div class="cart-container">
         <h1 class="cart-header">My Cart</h1>
         <p class="service-info">You have selected <span id="serviceCount">0</span> service(s) for checkout.</p>
-        <form action="/jad/CartCheckoutServlet" method="post">
+        <form action="<%=request.getContextPath()%>/CartCheckoutServlet" method="post">
             <%
+            String categoryIdParam = request.getParameter("category_id");
             String serviceIdParam = request.getParameter("service_id");
-            String subServiceIdParam = request.getParameter("sub_service_id");
                 List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
 
                 if (cart == null || cart.isEmpty()) {
@@ -67,18 +67,18 @@
                     for (int i = 0; i < cart.size(); i++) {
                         Map<String, Object> item = cart.get(i);
 
-                        int subServiceId = Integer.parseInt(item.get("subServiceId").toString());
-                        String subServiceName = "";
+                        int serviceId = Integer.parseInt(item.get("service_id").toString());
+                        String serviceName = "";
                         String image = "";
                         double price = 0.0;
 
                         try (Connection conn = DBConnection.getConnection();
                              PreparedStatement stmt = conn.prepareStatement(
-                                 "SELECT sub_service_name, image, price FROM sub_service WHERE sub_service_id = ?")) {
-                            stmt.setInt(1, subServiceId);
+                                 "SELECT name, image, price FROM service WHERE id = ?")) {
+                            stmt.setInt(1, serviceId);
                             try (ResultSet rs = stmt.executeQuery()) {
                                 if (rs.next()) {
-                                    subServiceName = rs.getString("sub_service_name");
+                                    serviceName = rs.getString("name");
                                     image = rs.getString("image");
                                     price = rs.getDouble("price");
                                 }
@@ -97,11 +97,11 @@
                 <div class="cart-item-left">
                     <input type="checkbox" name="selectedItems" value="<%= i %>" class="cart-checkbox" onchange="updateSummary()">
                     <div class="cart-item-image">
-                        <img src="../<%= image %>" alt="<%= subServiceName %>">
+                        <img src="../<%= image %>" alt="<%= serviceName %>">
                     </div>
                 </div>
                 <div class="cart-item-details">
-                    <h2><%= subServiceName %></h2>
+                    <h2><%= serviceName %></h2>
                     <p class="cart-price">$<%= String.format("%.2f", price) %></p>
                     <p>Date: <%= date %></p>
                     <p>Time: <%= time %></p>

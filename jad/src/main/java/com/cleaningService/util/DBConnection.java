@@ -7,7 +7,7 @@ package com.cleaningService.util;
 import java.sql.*;
 
 public class DBConnection {
-	private static final String URL = "jdbc:postgresql://ep-black-sea-a1x1cg6b.ap-southeast-1.aws.neon.tech:5432/neondb?sslmode=require";
+	private static final String URL = "jdbc:postgresql://ep-black-sea-a1x1cg6b.ap-southeast-1.aws.neon.tech/jad_assignment?user=neondb_owner&password=nYHFhP9l5UaJ&sslmode=require";
     private static final String USER = "neondb_owner";
     private static final String PASSWORD = "nYHFhP9l5UaJ";
 
