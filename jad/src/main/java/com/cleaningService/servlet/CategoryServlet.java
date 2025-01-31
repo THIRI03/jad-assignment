@@ -50,7 +50,8 @@ public class CategoryServlet extends HttpServlet {
         RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/categories.jsp");
         dispatcher.forward(request, response);
     }
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
-    }
+    }
 }
