@@ -2,27 +2,25 @@
 Class-DIT/FT/2A/23
 Student Name: Thiri Lae Win
 Admin No.: P2340739  -->
-
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="../css/adminNavbar.css">
-<title>nav-bar</title>
+<title>Insert title here</title>
+</head>
+<body>
 
-<!--  
-Not in use
--->
-
-<!-- </head>
+</head>
 <body>
 <div class="navbar">
         <h1>Cleaning Service</h1>
         <div class="menu-toggle">Menu</div>
         <ul>
             <li><a href="adminDashboard.jsp">Dashboard</a></li>
-			<li><a id="manageLink" href="#">Manage Bookings</a></li>
+			<li><a href= "<%=request.getContextPath()%>/SortBookingByDateAndIdServlet">Manage Bookings</a></li>
             <li><a href="adminRetrieveMember.jsp">Users</a>
             <li><a href="adminRetrieveServices.jsp">Services</a></li>
             <li><a href="adminRetrieveAllCategories.jsp">Categories</a></li>
@@ -31,4 +29,4 @@ Not in use
         </ul>
     </div>
 </body>
-</html> -->
+</html>

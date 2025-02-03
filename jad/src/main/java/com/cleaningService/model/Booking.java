@@ -9,6 +9,7 @@ public class Booking {
 	private String date;
 	private String time;
 	private String categoryName;
+	private String status;
 	
 	public Booking() {
 		
@@ -17,7 +18,7 @@ public class Booking {
 
 
 	public Booking(int id, String serviceName, String specialRequest, String customerName, int duration, String date,
-			String time, String categoryName) {
+			String time, String categoryName, String status) {
 		this.id = id;
 		this.serviceName = serviceName;
 		this.specialRequest = specialRequest;
@@ -26,6 +27,19 @@ public class Booking {
 		this.date = date;
 		this.time = time;
 		this.categoryName = categoryName;
+		this.status = status;
+	}
+
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 
@@ -100,7 +114,7 @@ public class Booking {
 		return time;
 	}
 
-	public void setTime(String time) {
-		this.time = time;
+	public void setTime(String i) {
+		this.time = i;
 	}
 }

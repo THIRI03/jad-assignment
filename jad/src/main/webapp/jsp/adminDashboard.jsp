@@ -65,7 +65,8 @@ int numOfFeedbacks = feedbackDAO.retrieveFeedbackNum();
 
     <!-- Bookings Table -->
     <%
-    List<Booking> bookings = bookingDAO.retrieveAllBookings();
+    String sortColumn = "id";
+    List<Booking> bookings = bookingDAO.retrieveAllBookings(sortColumn);
 	%>
 
     <h2>Recent Bookings</h2>

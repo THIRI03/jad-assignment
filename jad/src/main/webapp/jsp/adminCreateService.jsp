@@ -14,71 +14,14 @@
 <%@ page import="java.io.File" %>
 <%@ page import="jakarta.servlet.http.Part" %>
 <%-- <%@ include file="authCheck.jsp" %>--%>
-<%@ include file="../html/adminNavbar.html" %>
-
+<%-- <%@ include file="../html/adminNavbar.html" %>
+ --%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Add New Service</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-    .card {
-        background-color: white;
-        width: 100%;
-        max-width: 600px;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    label {
-        font-weight: bold;
-    }
-    input, select, textarea {
-        padding: 10px;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-    button {
-        padding: 10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #0056b3;
-    }
-    .message {
-        text-align: center;
-        font-size: 18px;
-        margin-top: 10px;
-        color: green;
-    }
-    .error {
-        color: red;
-    }
-</style>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminCreateService.css">
 </head>
 <body>
 
@@ -125,7 +68,7 @@
         <input type="text" id="serviceName" name="serviceName" required><br>
 
         <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4" required></textarea><br>
+        <input id="description" name="description" rows="4" required><br>
 
         <label for="price">Price (USD):</label>
         <input type="number" id="price" name="price" step="0.01" required><br>

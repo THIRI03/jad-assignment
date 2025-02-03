@@ -2,7 +2,7 @@
 <%@ page import="com.cleaningService.dao.ServiceDAO" %>
 <%@ page import="com.cleaningService.model.Service" %>
 <%@ include file="authCheck.jsp" %>
-<%@ include file="../html/adminNavbar.html" %>
+<%-- <%@ include file="../html/adminNavbar.html" %> --%>
 
 <!DOCTYPE html>
 <html lang="en">
