@@ -5,7 +5,7 @@
     Admin No.: P2340362
 --%>
 <%@ include file="header.jsp" %>
-<%@ include file="check.jsp" %>
+<%@ include file="authCheck.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ page import="java.util.*, java.sql.*" %>
 <%@ page import="java.util.ArrayList, java.util.HashMap, java.util.Map, java.util.List" %>
@@ -116,7 +116,7 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
 
     // Create a booking map
     Map<String, Object> booking = new HashMap<>();
-    booking.put("categoryId", serviceId);
+    booking.put("categoryId", categoryId);
     booking.put("serviceId", serviceId);
 /*     booking.put("subServiceName", serviceName);
  */    booking.put("date", date);

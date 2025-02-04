@@ -5,16 +5,17 @@
     Admin No.: P2340362
 --%>
 <%@ include file="header.jsp" %>
-<%@ include file="check.jsp" %>
+<%@ include file="authCheck.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ page import="java.util.*, java.sql.*, com.cleaningService.util.DBConnection" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Cart</title>
-    <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="../css/cart.css">
-    <script>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/cart.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/home.css">
+
+  <%-- <script>
  
         function updateSummary() {
             const checkboxes = document.querySelectorAll('.cart-checkbox');
@@ -47,7 +48,7 @@
                 alert('Please select at least one service to proceed to checkout.');
             }
         }
-    </script>
+    </script>--%>  
 </head>
 <body>
     <div class="cart-container">
@@ -67,7 +68,7 @@
                     for (int i = 0; i < cart.size(); i++) {
                         Map<String, Object> item = cart.get(i);
 
-                        int serviceId = Integer.parseInt(item.get("service_id").toString());
+                        int serviceId = Integer.parseInt(item.get("serviceId").toString());
                         String serviceName = "";
                         String image = "";
                         double price = 0.0;
@@ -95,7 +96,7 @@
             %>
             <div class="cart-item">
                 <div class="cart-item-left">
-                    <input type="checkbox" name="selectedItems" value="<%= i %>" class="cart-checkbox" onchange="updateSummary()">
+                    <input type="checkbox" name="selectedItems" value="<%= i %>" class="cart-checkbox" >
                     <div class="cart-item-image">
                         <img src="../<%= image %>" alt="<%= serviceName %>">
                     </div>
@@ -118,14 +119,78 @@
                 }
             %>
             <div class="cart-summary">
-               
+               <p>Subtotal: <span id="subtotal">$0.00</span></p>
+               <p>GST (7%): <span id="gst">$0.00</span></p>
+               <p>Discount (10%): <span id="discount">$0.00</span></p>
+               <p><strong>Total Amount: <span id="totalAmount">$0.00</span></strong></p>
                 <button type="submit" name="checkout" class="checkout-btn" value="true" onclick="validateCheckout(event)">Checkout</button>
             </div>
         </form>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', updateSummary);
-    </script>
+    function updateSummary() {
+    	 console.log("Running updateSummary...");
+        const checkboxes = document.querySelectorAll('.cart-checkbox');
+        const prices = document.querySelectorAll('.cart-price');
+        const serviceCount = document.getElementById('serviceCount');
+        const subtotalElement = document.getElementById('subtotal');
+        const gstElement = document.getElementById('gst');
+        const discountElement = document.getElementById('discount');
+        const totalAmountElement = document.getElementById('totalAmount');
+
+        let subtotal = 0;
+        let selectedCount = 0;
+
+        checkboxes.forEach((checkbox, index) => {
+            if (checkbox.checked) {
+                const priceText = prices[index]?.textContent.trim().replace('$', '');
+                console.log(`Price extracted for item ${index}: "${priceText}"`);
+                
+                const priceValue = parseFloat(priceText);
+
+                if (!isNaN(priceValue)) {
+                    subtotal += priceValue;
+                    selectedCount++;
+                } else {
+                    console.warn(`Invalid price format: "${priceText}"`);
+                }
+            }
+        });
+
+        const gst = subtotal * 0.07;  // GST is 7%
+        const discount = subtotal * 0.10;  // Discount is 10%
+        const totalAmount = subtotal + gst - discount;
+        
+        console.log(`Subtotal: ${subtotal}, GST: ${gst}, Discount: ${discount}, Total Amount: ${totalAmount}`);
+
+        serviceCount.innerText = selectedCount;
+        subtotalElement.innerText = `$${subtotal.toFixed(2)}`;
+        gstElement.innerText = `$${gst.toFixed(2)}`;
+        discountElement.innerText = `$${discount.toFixed(2)}`;
+        totalAmountElement.innerText = `$${totalAmount.toFixed(2)}`;
+    }
+
+    function validateCheckout(event) {
+        const checkboxes = document.querySelectorAll('.cart-checkbox');
+        const isAnySelected = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+        if (!isAnySelected) {
+            event.preventDefault();
+            alert('Please select at least one service to proceed to checkout.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+    	console.log('Page loaded. Running updateSummary.');
+        updateSummary();
+
+        // Add event listeners to checkboxes
+        const checkboxes = document.querySelectorAll('.cart-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSummary);
+        });
+    });
+</script>
     <jsp:include page="../html/footer.html" />
 </body>
 </html>
