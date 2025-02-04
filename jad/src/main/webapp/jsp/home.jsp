@@ -94,7 +94,7 @@
 	    <div class="hero-overlay">
 	        <h1>Professional Cleaning Services at Your Doorstep</h1>
 	        <p>Your trusted partner for a cleaner, healthier environment.</p>
-	        <button onclick="location.href='<%= redirectURL %>'" class="custom-btn">Book a Service</button>
+	        <button onclick="location.href='<%= request.getContextPath() %>/CategoryServlet?fetch=true'" class="custom-btn">Book a Service</button>
 	        
 	    </div>
 	</section>

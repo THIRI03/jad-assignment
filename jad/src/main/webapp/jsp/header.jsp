@@ -37,7 +37,7 @@
             <!-- Logo and Brand Name -->
             <div class="logo">
                 <a href="home.jsp">
-                    <img src="../gallery/ShinyLogo.jpg" alt="Shiny Logo">
+                   <img src="<%= request.getContextPath() %>/gallery/ShinyLogo.jpg" alt="Shiny Logo">
                     Shiny
                 </a>
             </div>
