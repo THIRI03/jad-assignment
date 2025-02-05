@@ -15,6 +15,7 @@ public class ServiceDAO {
 	public List<Service> retrieveServicesByCategoryId(int categoryId) {
 	    List<Service> services = new ArrayList<>();
 	    String sql = "SELECT * FROM service WHERE category_id = ?";
+	    double price = 0.0;
 
 	    try (Connection connection = DBConnection.getConnection();
 	         PreparedStatement stmt = connection.prepareStatement(sql)) {

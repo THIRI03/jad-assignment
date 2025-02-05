@@ -6,7 +6,8 @@
  */
 package com.cleaningService.servlet;
 
-import com.cleaningService.util.DBConnection;
+import com.cleaningService.dao.BookingDAO;
+import com.cleaningService.model.Booking;
 import com.cleaningService.util.EmailUtil;
 
 import jakarta.mail.MessagingException;
@@ -18,13 +19,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 
 @WebServlet("/CartCheckoutServlet")
 public class CartCheckoutServlet extends HttpServlet {
@@ -32,13 +28,14 @@ public class CartCheckoutServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         Integer userId = (Integer) session.getAttribute("userId");
-       
+
+        // Redirect to login if user is not authenticated
         if (userId == null) {
-            response.sendRedirect("/jsp/login.jsp");
+            response.sendRedirect(request.getContextPath() + "/jsp/login.jsp");
             return;
         }
 
-        // Retrieve the cart from the session
+        // Retrieve the cart from session
         List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
         if (cart == null || cart.isEmpty()) {
             request.setAttribute("error", "Your cart is empty.");
@@ -46,128 +43,81 @@ public class CartCheckoutServlet extends HttpServlet {
             return;
         }
 
-        // Handle item removal
-        if (request.getParameter("remove") != null) {
-            int removeIndex = Integer.parseInt(request.getParameter("remove"));
-            if (removeIndex >= 0 && removeIndex < cart.size()) {
-                cart.remove(removeIndex);
-                session.setAttribute("cart", cart); // Update the session
-            }
-            response.sendRedirect(request.getContextPath() + "/jsp/cart.jsp");
-
+        // Get selected items from the form
+        String[] selectedItems = request.getParameterValues("selectedItems");
+        if (selectedItems == null || selectedItems.length == 0) {
+            request.setAttribute("error", "No items selected for checkout.");
+            request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
             return;
         }
 
-        // Handle checkout
-        if (request.getParameter("checkout") != null) {
-            String[] selectedItems = request.getParameterValues("selectedItems");
+        // Create BookingDAO for booking operations
+        BookingDAO bookingDAO = new BookingDAO();
+        boolean allSuccess = true;
 
-            if (selectedItems == null || selectedItems.length == 0) {
-                request.setAttribute("error", "No items selected for checkout.");
-                request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
-                return;
-            }
-            
-            System.out.println("Selected items for checkout: " + Arrays.toString(selectedItems));
-
-            try (Connection conn = DBConnection.getConnection()) {
-                boolean allSuccess = true;
-
-                for (String index : selectedItems) {
-                    int itemIndex = Integer.parseInt(index);
-                    Map<String, Object> item = cart.get(itemIndex);
-
-                    int categoryId = Integer.parseInt(item.get("categoryId").toString());
-                    int serviceId = Integer.parseInt(item.get("serviceId").toString());
-                    String dateString = item.get("date").toString();
-                    String timeString = item.get("time").toString();
-                    int duration = Integer.parseInt(item.get("duration").toString());
-                    String address = item.get("serviceAddress").toString();
-                    String specialRequest = item.get("specialRequest").toString();
-                    double price = Double.parseDouble(item.get("price").toString());
-
-                    // Convert date string to java.sql.Date
-                    java.sql.Date sqlDate = java.sql.Date.valueOf(dateString); // Use Date.valueOf for yyyy-MM-dd format
-                    java.sql.Time sqlTime;
-                    if (timeString != null && !timeString.trim().isEmpty()) {
-                        if (timeString.length() == 5) { // Format is HH:mm
-                            timeString += ":00"; // Append seconds
-                        }
-                        sqlTime = java.sql.Time.valueOf(timeString);
-                    } else {
-                        throw new IllegalArgumentException("Invalid time value: " + timeString);
-                    }
-                    try (PreparedStatement stmt = conn.prepareStatement(
-                            "INSERT INTO bookings (userid,categoryid, serviceid, booking_date, booking_time, duration, service_address, special_request,status,total_price, created) " +
-                                    "VALUES (?,?, ?, ?, ?, ?, ?, ?,'pending',?, CURRENT_TIMESTAMP)", 
-                                    PreparedStatement.RETURN_GENERATED_KEYS)) {
-                        stmt.setInt(1, userId);
-                        stmt.setInt(2, categoryId);
-                        stmt.setInt(3, serviceId);
-                        stmt.setDate(4, sqlDate); // Use java.sql.Date
-                        stmt.setTime(5, sqlTime);
-                        stmt.setInt(6, duration);
-                        stmt.setString(7, address);
-                        stmt.setString(8, specialRequest);
-                        stmt.setDouble(9, price);
-                        stmt.executeUpdate();
-                        
-                        System.out.println("Booking inserted successfully for service ID: " + serviceId);
-                     // Retrieve the booking ID (for logging and future updates)
-                        try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                            if (generatedKeys.next()) {
-                                int bookingId = generatedKeys.getInt(1);
-                                System.out.println("Booking ID created: " + bookingId);
-                            }
-                        }
-             
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        allSuccess = false;
-                        break;
-                    }
+        // Process each selected item (simplified for testing)
+        for (String indexStr : selectedItems) {
+            try {
+                int itemIndex = Integer.parseInt(indexStr);
+                if (itemIndex < 0 || itemIndex >= cart.size()) {
+                    throw new IndexOutOfBoundsException("Invalid cart item index.");
                 }
 
-                if (allSuccess) {
-                	// Send the invoice email
-                    String userEmail = getUserEmail(userId, conn);
-                    if (userEmail != null) {
-                        String invoiceContent = generateInvoice(cart);
-                        EmailUtil.sendEmail(userEmail, "Your Invoice from Shiny Cleaning Services", invoiceContent);
+                Map<String, Object> item = cart.get(itemIndex);
 
-                        // Update the status to "confirmed"
-                        updateBookingStatusToConfirmed(userId, conn);
-                    }
-                    session.removeAttribute("cart");
-                    response.sendRedirect(request.getContextPath() + "/jsp/serviceHistory.jsp");
-                } else {
-                    request.setAttribute("error", "Failed to process booking.");
-                    request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
+                // Create booking object
+                Booking booking = new Booking();
+                booking.setUserId(userId);
+                booking.setCategoryId(Integer.parseInt(item.get("categoryId").toString()));
+                booking.setServiceId(Integer.parseInt(item.get("serviceId").toString()));
+                booking.setDate(item.get("date").toString());
+                booking.setTime(item.get("time").toString());
+                booking.setDuration(Integer.parseInt(item.get("duration").toString()));
+                booking.setServiceAddress(item.get("serviceAddress").toString());
+                booking.setSpecialRequest(item.get("specialRequest").toString());
+                booking.setTotalPrice(Double.parseDouble(item.get("price").toString()));
 
+                // Save booking to the database
+                if (!bookingDAO.createBooking(booking)) {
+                    allSuccess = false;
+                    break;
                 }
-            } catch (SQLException | MessagingException e) {
+
+            } catch (Exception e) {
                 e.printStackTrace();
-                request.setAttribute("error", "Database connection failed.");
-                request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
-
+                allSuccess = false;
+                break;
             }
-
         }
-    }
-    
-    private String getUserEmail(int userId, Connection conn) throws SQLException {
-        String email = null;
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT email FROM users WHERE id = ?")) {
-            stmt.setInt(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    email = rs.getString("email");
+
+        if (allSuccess) {
+            try {
+                // Send confirmation email with invoice
+                String userEmail = bookingDAO.getUserEmail(userId);
+                if (userEmail != null) {
+                    String invoiceContent = generateInvoice(cart);
+                    EmailUtil.sendEmail(userEmail, "Your Invoice from Shiny Cleaning Services", invoiceContent);
                 }
+
+                // Clear the cart after successful checkout
+                session.removeAttribute("cart");
+                response.sendRedirect(request.getContextPath() + "/jsp/serviceHistory.jsp");
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Failed to send confirmation email.");
+                request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
             }
+        } else {
+            request.setAttribute("error", "Failed to process booking.");
+            request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
         }
-        return email;
     }
 
+    /**
+     * Generates an invoice for the selected services.
+     * @param cart The cart containing the services.
+     * @return The invoice as a string.
+     */
     private String generateInvoice(List<Map<String, Object>> cart) {
         StringBuilder invoice = new StringBuilder();
         invoice.append("Dear Customer,\n\n");
@@ -184,7 +134,7 @@ public class CartCheckoutServlet extends HttpServlet {
             invoice.append("Price: $").append(String.format("%.2f", price)).append("\n\n");
         }
 
-        double gst = totalAmount * 0.07; // 7% GST
+        double gst = totalAmount * 0.07;  // 7% GST
         double finalAmount = totalAmount + gst;
 
         invoice.append("Subtotal: $").append(String.format("%.2f", totalAmount)).append("\n");
@@ -193,13 +143,5 @@ public class CartCheckoutServlet extends HttpServlet {
         invoice.append("\nThank you for choosing us!\n\nRegards,\nShiny Cleaning Services");
 
         return invoice.toString();
-    }
-
-    private void updateBookingStatusToConfirmed(int userId, Connection conn) throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement(
-                "UPDATE bookings SET status = 'confirmed' WHERE userid = ? AND status = 'pending'")) {
-            stmt.setInt(1, userId);
-            stmt.executeUpdate();
-        }
     }
 }

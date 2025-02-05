@@ -1,106 +1,135 @@
 package com.cleaningService.model;
 
 public class Booking {
-	private int id;
-	private String serviceName;
-	private String specialRequest;
-	private String customerName;
-	private int duration;
-	private String date;
-	private String time;
-	private String categoryName;
-	
-	public Booking() {
-		
-	}
-	
+    private int id;
+    private int userId;
+    private int categoryId;
+    private int serviceId;
+    private String serviceName;
+    private String specialRequest;
+    private String customerName;
+    private int duration;
+    private String date;
+    private String time;
+    private String categoryName;
+    private String serviceAddress;
+    private String status;
+    private double totalPrice;
 
+    public Booking() {
+    }
 
-	public Booking(int id, String serviceName, String specialRequest, String customerName, int duration, String date,
-			String time, String categoryName) {
-		this.id = id;
-		this.serviceName = serviceName;
-		this.specialRequest = specialRequest;
-		this.customerName = customerName;
-		this.duration = duration;
-		this.date = date;
-		this.time = time;
-		this.categoryName = categoryName;
-	}
+    // Getters and Setters
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getCategoryName() {
-		return categoryName;
-	}
+    public int getUserId() {
+        return userId;
+    }
 
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
 
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
 
+    public int getServiceId() {
+        return serviceId;
+    }
 
+    public void setServiceId(int serviceId) {
+        this.serviceId = serviceId;
+    }
 
-	public String getServiceName() {
-		return serviceName;
-	}
+    public String getServiceName() {
+        return serviceName;
+    }
 
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
+    public String getSpecialRequest() {
+        return specialRequest;
+    }
 
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
+    public void setSpecialRequest(String specialRequest) {
+        this.specialRequest = specialRequest;
+    }
 
+    public String getCustomerName() {
+        return customerName;
+    }
 
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 
-	public String getCustomerName() {
-		return customerName;
-	}
+    public int getDuration() {
+        return duration;
+    }
 
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 
+    public String getDate() {
+        return date;
+    }
 
-	public void setCustomerName(String custerName) {
-		this.customerName = custerName;
-	}
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public String getTime() {
+        return time;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setTime(String time) {
+        this.time = time;
+    }
 
-	public String getSpecialRequest() {
-		return specialRequest;
-	}
+    public String getCategoryName() {
+        return categoryName;
+    }
 
-	public void setSpecialRequest(String specialRequest) {
-		this.specialRequest = specialRequest;
-	}
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
-	public int getDuration() {
-		return duration;
-	}
+    public String getServiceAddress() {
+        return serviceAddress;
+    }
 
-	public void setDuration(int duration) {
-		this.duration = duration;
-	}
+    public void setServiceAddress(String serviceAddress) {
+        this.serviceAddress = serviceAddress;
+    }
 
-	public String getDate() {
-		return date;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public String getTime() {
-		return time;
-	}
+    public double getTotalPrice() {
+        return totalPrice;
+    }
 
-	public void setTime(String time) {
-		this.time = time;
-	}
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 }

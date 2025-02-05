@@ -1,16 +1,9 @@
-<%-- 
-    JAD-CA1
-    Class-DIT/FT/2A/23
-    Student Name: Moe Myat Thwe
-    Admin No.: P2340362
---%>
-<%@ include file="header.jsp" %>
+
 <%@ include file="authCheck.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ page import="java.util.*" %>
 
 <%
-    // Get the cart data passed from CartServlet
     List<Map<String, Object>> cart = (List<Map<String, Object>>) request.getAttribute("cart");
     if (cart == null) {
         cart = new ArrayList<>();
@@ -86,59 +79,56 @@
         <h1 class="cart-header">My Cart</h1>
         <p class="service-info">You have selected <span id="serviceCount">0</span> service(s) for checkout.</p>
 
-        <form action="<%= request.getContextPath() %>/CartCheckoutServlet" method="POST" onsubmit="validateCheckout(event)">
-            <%
-                if (cart.isEmpty()) {
-            %>
-                    <p class="empty-cart">Your cart is empty.</p>
-            <%
-                } else {
-                    for (int i = 0; i < cart.size(); i++) {
-                        Map<String, Object> item = cart.get(i);
+        <%
+            if (cart.isEmpty()) {
+        %>
+                <p class="empty-cart">Your cart is empty.</p>
+        <%
+            } else {
+                for (int i = 0; i < cart.size(); i++) {
+                    Map<String, Object> item = cart.get(i);
 
-                        String serviceName = (String) item.getOrDefault("serviceName", "Unavailable");
-                        String imagePath = (String) item.getOrDefault("imagePath", "images/default-placeholder.png");
-                        String price = item.getOrDefault("price", "0.00").toString();
-                        String date = item.getOrDefault("date", "Not specified").toString();
-                        String time = item.getOrDefault("time", "Not specified").toString();
-                        String address = item.getOrDefault("serviceAddress", "Not specified").toString();
-                        String specialRequest = item.getOrDefault("specialRequest", "NA").toString();
-                        String duration = item.getOrDefault("duration", "1").toString();
-            %>
-            <div class="cart-item">
-                <div class="cart-item-left">
-                    <input type="checkbox" name="selectedItems" value="<%= i %>" class="cart-checkbox" onchange="updateSummary()">
-                    <div class="cart-item-image">
-                        <img src="<%= request.getContextPath() + "/" + imagePath %>" alt="<%= serviceName %>">
-                    </div>
-                </div>
-                <div class="cart-item-details">
-                    <h2><%= serviceName %></h2>
-                    <p class="cart-price">$<%= price %></p>
-                    <p>Date: <%= date %></p>
-                    <p>Time: <%= time %></p>
-                    <p>Duration: <%= duration %> hours</p>
-                    <p>Address: <%= address %></p>
-                    <p>Special Request: <%= specialRequest %></p>
-                </div>
-                <div class="cart-item-right">
-                    <button type="button" onclick="removeFromCart(<%= i %>)" class="remove-btn">Remove from Cart</button>
+                    String serviceName = (String) item.getOrDefault("serviceName", "Unavailable");
+                    String imagePath = (String) item.getOrDefault("imagePath", "images/default-placeholder.png");
+                    String price = item.getOrDefault("price", "0.00").toString();
+                    String date = item.getOrDefault("date", "Not specified").toString();
+                    String time = item.getOrDefault("time", "Not specified").toString();
+                    String address = item.getOrDefault("serviceAddress", "Not specified").toString();
+                    String specialRequest = item.getOrDefault("specialRequest", "NA").toString();
+                    String duration = item.getOrDefault("duration", "1").toString();
+        %>
+        <div class="cart-item">
+            <div class="cart-item-left">
+                <input type="checkbox" name="selectedItems" value="<%= i %>" class="cart-checkbox" onchange="updateSummary()">
+                <div class="cart-item-image">
+                    <img src="<%= request.getContextPath() + "/" + imagePath %>" alt="<%= serviceName %>">
                 </div>
             </div>
-            <%
-                    }
+            <div class="cart-item-details">
+                <h2><%= serviceName %></h2>
+                <p class="cart-price">$<%= price %></p>
+                <p>Date: <%= date %></p>
+                <p>Time: <%= time %></p>
+                <p>Duration: <%= duration %> hours</p>
+                <p>Address: <%= address %></p>
+                <p>Special Request: <%= specialRequest %></p>
+            </div>
+            <div class="cart-item-right">
+                <button type="button" onclick="removeFromCart(<%= i %>)" class="remove-btn">Remove from Cart</button>
+            </div>
+        </div>
+        <%
                 }
-            %>
+            }
+        %>
 
-            <div class="cart-summary">
-                <h3>Summary</h3>
-                <p>Subtotal: <span id="subtotal">$0.00</span></p>
-                <p>GST (7%): <span id="gst">$0.00</span></p>
-                <p>Discount (10%): <span id="discount">$0.00</span></p>
-                <p>Total Amount: <span id="totalAmount">$0.00</span></p>
-                <button type="submit" name="checkout" class="checkout-btn" value="true" onclick="validateCheckout(event)">Checkout</button>
-            </div>
-        </form>
+        <div class="cart-summary">
+            <h3>Summary</h3>
+            <p>Subtotal: <span id="subtotal">$0.00</span></p>
+            <p>GST (7%): <span id="gst">$0.00</span></p>
+            <p>Discount (10%): <span id="discount">$0.00</span></p>
+            <p>Total Amount: <span id="totalAmount">$0.00</span></p>
+        </div>
     </div>
     <jsp:include page="../html/footer.html" />
 </body>
