@@ -78,31 +78,34 @@ public class BookingDAO {
             return email;
         }
 
-    public boolean createBooking(Booking booking) {
-        String sql = "INSERT INTO bookings (userid, categoryid, serviceid, booking_date, booking_time, duration, "
-                   + "service_address, special_request, status, total_price, created) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, CURRENT_TIMESTAMP)";
+        public boolean createBooking(Booking booking) {
+            String sql = "INSERT INTO bookings (userid, categoryid, serviceid, booking_date, booking_time, duration, "
+                       + "service_address, special_request, status, total_price, created) "
+                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, CURRENT_TIMESTAMP)";
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+            try (Connection connection = DBConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setInt(1, booking.getUserId());
-            statement.setInt(2, booking.getCategoryId());
-            statement.setInt(3, booking.getServiceId());
-            statement.setDate(4, Date.valueOf(booking.getDate()));
-            statement.setTime(5, Time.valueOf(booking.getTime() + ":00"));
-            statement.setInt(6, booking.getDuration());
-            statement.setString(7, booking.getServiceAddress());
-            statement.setString(8, booking.getSpecialRequest());
-            statement.setDouble(9, booking.getTotalPrice());
+                // Set the parameters in the prepared statement
+                statement.setInt(1, booking.getUserId());
+                statement.setInt(2, booking.getCategoryId());
+                statement.setInt(3, booking.getServiceId());
+                statement.setDate(4, Date.valueOf(booking.getDate()));         // Assuming date is in the format 'YYYY-MM-DD'
+                statement.setTime(5, Time.valueOf(booking.getTime() + ":00")); // Assuming time is in 'HH:mm' format
+                statement.setInt(6, booking.getDuration());
+                statement.setString(7, booking.getServiceAddress());
+                statement.setString(8, booking.getSpecialRequest());
+                statement.setDouble(9, booking.getTotalPrice());
 
-            int rowsInserted = statement.executeUpdate();
-            return rowsInserted > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+                // Execute the query
+                int rowsInserted = statement.executeUpdate();
+                return rowsInserted > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return false;
         }
-        return false;
-    }
 
     public int retrieveBookingNum() {
         int count = 0;

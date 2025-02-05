@@ -31,7 +31,7 @@ public class CartServlet extends HttpServlet {
             cart = new java.util.ArrayList<>();
         }
 
-        // Handle remove action
+     // Handle remove action
         String removeIndexStr = request.getParameter("remove");
         if (removeIndexStr != null) {
             try {
@@ -46,16 +46,47 @@ public class CartServlet extends HttpServlet {
             }
         }
 
-        // Check if the request is an AJAX request
+     // Check if the request is an AJAX request
         String isAjax = request.getHeader("X-Requested-With");
         if ("XMLHttpRequest".equals(isAjax)) {
-            request.setAttribute("cart", cart);
-            request.getRequestDispatcher("/jsp/cartItemsFragment.jsp").forward(request, response);
+            response.setContentType("text/html");
+            response.getWriter().write(generateCartHtml(cart, request.getContextPath()));
         } else {
             request.setAttribute("cart", cart);
             request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
         }
     }
+    
+    private String generateCartHtml(List<Map<String, Object>> cart, String contextPath) {
+        if (cart.isEmpty()) {
+            return "<p class='empty-cart'>Your cart is empty.</p>";
+        }
+
+        StringBuilder html = new StringBuilder();
+        for (int i = 0; i < cart.size(); i++) {
+            Map<String, Object> item = cart.get(i);
+            String serviceName = (String) item.get("serviceName");
+            String imagePath = (String) item.getOrDefault("imagePath", "images/default-placeholder.png");
+            String price = item.getOrDefault("price", "0.00").toString();
+
+            html.append("<div class='cart-item'>")
+                .append("<div class='cart-item-left'>")
+                .append("<input type='checkbox' name='selectedItems' value='").append(i).append("' class='cart-checkbox'>")
+                .append("<div class='cart-item-image'>")
+                .append("<img src='").append(contextPath).append("/").append(imagePath).append("' alt='").append(serviceName).append("'>")
+                .append("</div></div>")
+                .append("<div class='cart-item-details'>")
+                .append("<h2>").append(serviceName).append("</h2>")
+                .append("<p class='cart-price'>$").append(price).append("</p>")
+                .append("</div>")
+                .append("<div class='cart-item-right'>")
+                .append("<button type='button' onclick='removeFromCart(").append(i).append(")' class='remove-btn'>Remove from Cart</button>")
+                .append("</div></div>");
+        }
+
+        return html.toString();
+    }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
