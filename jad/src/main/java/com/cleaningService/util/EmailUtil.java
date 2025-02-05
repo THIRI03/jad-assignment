@@ -25,38 +25,42 @@ public class EmailUtil {
                 return new PasswordAuthentication(senderEmail, senderPassword);
             }
         });
-
+   try {
         // Create the email message
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(senderEmail));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
         message.setSubject(subject);
 
-        // Email body (HTML)
+     // Add content as a part
         MimeBodyPart textPart = new MimeBodyPart();
-        textPart.setContent(messageContent, "text/html; charset=utf-8");
+        textPart.setContent(messageContent, "text/html");
 
-        // Create multipart message and add the body part
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(textPart);
 
-        // Attach file if available
+        // Check and attach file if exists
         if (attachmentPath != null) {
             File file = new File(attachmentPath);
             if (file.exists()) {
                 MimeBodyPart attachmentPart = new MimeBodyPart();
                 attachmentPart.attachFile(file);
                 multipart.addBodyPart(attachmentPart);
+                System.out.println("DEBUG: Attached file: " + file.getAbsolutePath());
             } else {
-                System.out.println("Attachment file not found: " + attachmentPath);
+                System.out.println("DEBUG: Attachment file not found.");
             }
         }
 
-        // Set the content of the message
         message.setContent(multipart);
 
-        // Send the email
+        // Print message content for debugging
+        System.out.println("DEBUG: Email message content: " + messageContent);
+
         Transport.send(message);
-        System.out.println("Email sent successfully!");
+        System.out.println("DEBUG: Email sent successfully!");
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 }

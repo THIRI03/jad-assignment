@@ -15,7 +15,6 @@ import com.cleaningService.dao.BookingDAO;
 import com.cleaningService.model.Booking;
 import com.cleaningService.util.EmailUtil;
 
-import java.util.UUID;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
@@ -50,12 +49,16 @@ public class ConfirmCheckoutServlet extends HttpServlet {
                 return;
             }
 
+            booking.setServiceId(Integer.parseInt(item.get("serviceId").toString()));
+            booking.setCategoryId(Integer.parseInt(item.get("categoryId").toString()));
             booking.setServiceName((String) item.get("serviceName"));
+            booking.setDuration(Integer.parseInt(item.get("duration").toString()));
             booking.setTotalPrice(Double.parseDouble(item.get("price").toString().replace("$", "")));
             booking.setDate((String) item.get("date"));
             booking.setTime((String) item.get("time"));
             booking.setServiceAddress((String) item.get("serviceAddress"));
             booking.setSpecialRequest((String) item.get("specialRequest"));
+            booking.setUserId((Integer) session.getAttribute("userId"));
 
             Object userIdObj = session.getAttribute("userId");
             if (userIdObj instanceof String) {
@@ -70,13 +73,7 @@ public class ConfirmCheckoutServlet extends HttpServlet {
             }
         }
 
-        // Calculate totals for the invoice
-        double subtotal = calculateSubtotal(selectedCartItems);
-        double gst = subtotal * 0.07;
-        double discount = subtotal * 0.10;
-        double finalAmount = subtotal + gst - discount;
-
-        // Clear cart after successful checkout
+     // Clear cart after successful checkout
         session.removeAttribute("cart");
 
         // Send confirmation email
@@ -86,40 +83,61 @@ public class ConfirmCheckoutServlet extends HttpServlet {
         String qrCodePath = generateQRCodeOnce("Thank you for using Shiny Cleaning Services!", request);
 
         try {
+            double subtotal = 90.0;  // Replace with actual subtotal from cart
+            double gst = subtotal * 0.07;
+            double discount = subtotal * 0.10;
+            double finalAmount = subtotal + gst - discount;
+
             String emailContent = generateInvoiceEmail(selectedCartItems, subtotal, gst, discount, finalAmount);
-            EmailUtil.sendEmailWithAttachment(userEmail, "Booking Confirmation", emailContent, qrCodePath);
+
+            System.out.println("DEBUG: Email content generated.");
+            System.out.println(emailContent);
+
+            System.out.println("DEBUG: QR Code path: " + qrCodePath);
+
+            // Send the email
+            EmailUtil.sendEmailWithAttachment(userEmail, "Payment Successful!!", emailContent, qrCodePath);
+
+            System.out.println("DEBUG: Email sent successfully!");
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().write("Failed to send email: " + e.getMessage());
             return;
         }
 
-        // Display a confirmation message to the user
         response.setContentType("text/html");
-        response.getWriter().write("<html><body>");
-        response.getWriter().write("<h1>Checkout Successful</h1>");
-        response.getWriter().write("<p>Your booking has been confirmed. A confirmation email has been sent to " + userEmail + ".</p>");
-        response.getWriter().write("<a href='" + request.getContextPath() + "/home.jsp'>Go to Home</a>");
-        response.getWriter().write("</body></html>");
+
+     // Start writing the HTML response
+     response.getWriter().write("<html>");
+     response.getWriter().write("<head>");
+
+     // Add the CSS link tag, dynamically including the context path
+     response.getWriter().write("<title>Payment Successful</title>");
+     response.getWriter().write("<link rel='stylesheet' type='text/css' href='" + request.getContextPath() + "/css/checkout.css'>");
+
+     response.getWriter().write("</head>");
+     response.getWriter().write("<body>");
+     response.getWriter().write("<div class='confirmation-container'>");
+
+     // Page content
+     response.getWriter().write("<h1>Payment Successful</h1>");
+     response.getWriter().write("<p>You have booked an appointment successfully.</p>");
+     response.getWriter().write("<p>A confirmation email has been sent to " + userEmail + ".</p>");
+     response.getWriter().write("<a href='" + request.getContextPath() + "/home.jsp'>Go to Home</a>");
+
+     response.getWriter().write("</div>");
+     response.getWriter().write("</body>");
+     response.getWriter().write("</html>");
+
+
     }
 
-    // Helper method to calculate subtotal
-    private double calculateSubtotal(List<Map<String, Object>> cart) {
-        double subtotal = 0.0;
-        for (Map<String, Object> item : cart) {
-            double price = Double.parseDouble(item.get("price").toString().replace("$", ""));
-            subtotal += price;
-        }
-        return subtotal;
-    }
-
-    // Generate an HTML email for the invoice
     private String generateInvoiceEmail(List<Map<String, Object>> cart, double subtotal, double gst, double discount, double finalAmount) {
         StringBuilder invoice = new StringBuilder();
-        invoice.append("<!DOCTYPE html><html><head><title>Booking Confirmation</title></head><body>");
-        invoice.append("<h1 style='color: #4CAF50;'>Booking Confirmation</h1>");
+        invoice.append("<html><body>");
+        invoice.append("<h1>Payment Successful!!</h1>");
         invoice.append("<p>Thank you for using Shiny Cleaning Services! Here are your booking details:</p>");
-        invoice.append("<table border='1' cellpadding='8' cellspacing='0' style='border-collapse: collapse;'>");
+        invoice.append("<table border='1' cellpadding='8' cellspacing='0'>");
         invoice.append("<tr><th>Service</th><th>Price</th><th>Date</th><th>Time</th></tr>");
 
         for (Map<String, Object> item : cart) {
@@ -147,30 +165,23 @@ public class ConfirmCheckoutServlet extends HttpServlet {
         return invoice.toString();
     }
 
-
-    // Generate a QR code and save it to a file
     private String generateQRCodeOnce(String content, HttpServletRequest request) {
         try {
-            // Use a path within your project directory (instead of a servlet path)
-            String projectPath = "C:/Users/Moe Myat Thwe/Desktop/dev/jad/jad/src/main/webapp/gallery/qr_codes/";
-            File qrDir = new File(projectPath);
+            String qrDirPath = request.getServletContext().getRealPath("/gallery/qr_codes/");
+            File qrDir = new File(qrDirPath);
 
-            // Ensure the directory exists
             if (!qrDir.exists()) {
                 qrDir.mkdirs();
             }
 
-            // Define a fixed filename for the QR code
             String fileName = "shiny_cleaning_service_qr.png";
             File qrFile = new File(qrDir, fileName);
 
-            // Check if the QR code already exists
             if (qrFile.exists()) {
                 System.out.println("QR Code already exists at: " + qrFile.getAbsolutePath());
-                return qrFile.getAbsolutePath();  // Return the existing file path
+                return qrFile.getAbsolutePath();
             }
 
-            // Generate the QR code and save it
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, 200, 200);
             Path filePath = qrFile.toPath();
@@ -184,5 +195,4 @@ public class ConfirmCheckoutServlet extends HttpServlet {
             return null;
         }
     }
-
 }
