@@ -1,11 +1,11 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Moe Myat Thwe
     Admin No.: P2340362
 --%>
 <%@ include file="header.jsp" %>
-<%@ include file="check.jsp" %>
+<%@ include file="authCheck.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ page import="java.sql.*, com.cleaningService.util.DBConnection" %>
 <!DOCTYPE html>
@@ -21,7 +21,6 @@
             <h1>Update Feedback</h1>
             <%
             // Ensure the user is logged in
-          
             if (userId == null) {
                 out.println("<p style='color:red;'>Please log in to update feedback.</p>");
                 return;
@@ -34,13 +33,13 @@
 
             try (Connection conn = DBConnection.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "SELECT comments, rating FROM feedback WHERE feedback_id = ? AND user_id = ?")) {
+                         "SELECT comment, rating FROM feedback WHERE id = ? AND userid = ?")) {
                 stmt.setInt(1, Integer.parseInt(feedbackId));
                 stmt.setInt(2, userId);
 
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
-                        comments = rs.getString("comments");
+                        comments = rs.getString("comment");  // Corrected column name
                         rating = rs.getInt("rating");
                     } else {
                         out.println("<p style='color:red;'>Feedback not found or unauthorized access.</p>");
@@ -67,8 +66,8 @@
                 </div>
 
                 <!-- Feedback Textarea -->
-                <label for="comments">Your Feedback:</label>
-                <textarea id="comments" name="comments" rows="4" required><%= comments %></textarea>
+                <label for="comment">Your Feedback:</label>
+                <textarea id="comment" name="comment" rows="4" required><%= comments %></textarea>
 
                 <!-- Submit Button -->
                 <button type="submit" class="submit-btn">Update Feedback</button>

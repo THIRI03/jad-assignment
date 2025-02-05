@@ -2,6 +2,7 @@ package com.cleaningService.servlet;
 
 import com.cleaningService.dao.CategoryDAO;
 import com.cleaningService.model.Category;
+import com.cleaningService.util.AuthUtil;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -26,7 +27,13 @@ public class CategoryServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String fetchParam = request.getParameter("fetch");
+    	// Step 1: Authentication check
+        if (!AuthUtil.checkAuthentication(request, response)) {
+            return;  // If not authenticated, redirect to login.jsp is already handled
+        }
+        
+        // Step 2: Handle fetch parameter
+    	String fetchParam = request.getParameter("fetch");
 
         // If fetch parameter is not set, display a default error or redirect
         if (fetchParam == null || !fetchParam.equals("true")) {
@@ -34,7 +41,7 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        // Proceed to retrieve categories
+     // Step 3: Retrieve categories
         List<Category> categories = categoryDAO.getAllCategory();
 
         if (categories == null || categories.isEmpty()) {
@@ -46,7 +53,7 @@ public class CategoryServlet extends HttpServlet {
         // Store categories in request scope
         request.setAttribute("categories", categories);
 
-        // Forward request to categories.jsp
+     // Step 4: Store categories in request scope and forward to categories.jsp
         RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/categories.jsp");
         dispatcher.forward(request, response);
     }

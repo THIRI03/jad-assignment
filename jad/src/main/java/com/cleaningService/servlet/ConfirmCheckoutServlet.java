@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import com.cleaningService.util.AuthUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,7 +29,12 @@ import java.nio.file.Path;
 public class ConfirmCheckoutServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
+    	// Step 1: Authentication check
+        if (!AuthUtil.checkAuthentication(request, response)) {
+            return;  // If not authenticated, redirect to login.jsp is already handled
+        }
+        
+    	HttpSession session = request.getSession();
         List<Map<String, Object>> selectedCartItems = (List<Map<String, Object>>) session.getAttribute("selectedCartItems");
 
         if (selectedCartItems == null || selectedCartItems.isEmpty()) {
@@ -123,7 +129,7 @@ public class ConfirmCheckoutServlet extends HttpServlet {
      response.getWriter().write("<h1>Payment Successful</h1>");
      response.getWriter().write("<p>You have booked an appointment successfully.</p>");
      response.getWriter().write("<p>A confirmation email has been sent to " + userEmail + ".</p>");
-     response.getWriter().write("<a href='" + request.getContextPath() + "/home.jsp'>Go to Home</a>");
+     response.getWriter().write("<a href='" + request.getContextPath() + "/jsp/home.jsp'>Go to Home</a>");
 
      response.getWriter().write("</div>");
      response.getWriter().write("</body>");

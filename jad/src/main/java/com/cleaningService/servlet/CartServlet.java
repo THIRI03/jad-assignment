@@ -7,6 +7,7 @@
 
 package com.cleaningService.servlet;
 
+import com.cleaningService.util.AuthUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,6 +25,12 @@ public class CartServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	// Step 1: Authentication check
+        if (!AuthUtil.checkAuthentication(request, response)) {
+            return;  // If not authenticated, redirect to login.jsp is already handled
+        }
+        
+     // Step 2: Retrieve cart from session
         HttpSession session = request.getSession();
         List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
 
@@ -31,7 +38,7 @@ public class CartServlet extends HttpServlet {
             cart = new java.util.ArrayList<>();
         }
 
-     // Handle remove action
+        // Step 3: Handle remove action
         String removeIndexStr = request.getParameter("remove");
         if (removeIndexStr != null) {
             try {
@@ -57,7 +64,7 @@ public class CartServlet extends HttpServlet {
             }
         }
 
-     // Forward to cart.jsp for normal page load
+     // Step 4: Forward to cart.jsp for normal page load
         request.setAttribute("cart", cart);
         request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
     }
