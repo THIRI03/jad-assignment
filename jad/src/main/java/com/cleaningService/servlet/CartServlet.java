@@ -40,22 +40,28 @@ public class CartServlet extends HttpServlet {
                     cart.remove(removeIndex);
                     session.setAttribute("cart", cart);
                 }
+             // Check if the request is an AJAX request
+                String isAjax = request.getHeader("X-Requested-With");
+                if ("XMLHttpRequest".equals(isAjax)) {
+                    response.setContentType("text/html");
+                    response.getWriter().write(generateCartHtml(cart, request.getContextPath()));
+                    return;
+                }
+
+                // Non-AJAX request fallback
+                response.sendRedirect(request.getContextPath() + "/jsp/cart.jsp");
+                return;
             } catch (NumberFormatException e) {
                 e.printStackTrace();
                 request.setAttribute("error", "Invalid item index.");
             }
         }
 
-     // Check if the request is an AJAX request
-        String isAjax = request.getHeader("X-Requested-With");
-        if ("XMLHttpRequest".equals(isAjax)) {
-            response.setContentType("text/html");
-            response.getWriter().write(generateCartHtml(cart, request.getContextPath()));
-        } else {
-            request.setAttribute("cart", cart);
-            request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
-        }
+     // Forward to cart.jsp for normal page load
+        request.setAttribute("cart", cart);
+        request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
     }
+
     
     private String generateCartHtml(List<Map<String, Object>> cart, String contextPath) {
         if (cart.isEmpty()) {
@@ -65,6 +71,8 @@ public class CartServlet extends HttpServlet {
         StringBuilder html = new StringBuilder();
         for (int i = 0; i < cart.size(); i++) {
             Map<String, Object> item = cart.get(i);
+            String serviceId = (String) item.get("serviceId");
+            String categoryId = (String) item.get("categoryId");
             String serviceName = (String) item.get("serviceName");
             String imagePath = (String) item.getOrDefault("imagePath", "images/default-placeholder.png");
             String price = item.getOrDefault("price", "0.00").toString();

@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -32,15 +31,26 @@ public class ConfirmCheckoutServlet extends HttpServlet {
         BookingDAO bookingDAO = new BookingDAO();
         for (Map<String, Object> item : selectedCartItems) {
         	Booking booking = new Booking();
-                        
+        	
+        	// Fetch and validate serviceId and categoryId
+            if (item.containsKey("serviceId") && item.containsKey("categoryId")) {
+                booking.setServiceId(Integer.parseInt(item.get("serviceId").toString()));
+                booking.setCategoryId(Integer.parseInt(item.get("categoryId").toString()));
+            } else {
+                response.getWriter().write("Service or Category ID is missing for booking: " + item.get("serviceName"));
+                return;
+            }
+            
+        	booking.setServiceId(Integer.parseInt(item.get("serviceId").toString()));      
             booking.setServiceName((String) item.get("serviceName"));
             booking.setTotalPrice(Double.parseDouble(item.get("price").toString().replace("$", "")));
             booking.setDate((String) item.get("date"));
             booking.setTime((String) item.get("time"));
             booking.setServiceAddress((String) item.get("serviceAddress"));
             booking.setSpecialRequest((String) item.get("specialRequest"));
+            booking.setUserId((Integer) session.getAttribute("userId"));
 
-         // Fix the userId cast issue
+         // Get userId from session and set it
             Object userIdObj = session.getAttribute("userId");
             if (userIdObj instanceof String) {
                 booking.setUserId(Integer.parseInt((String) userIdObj));
@@ -48,6 +58,7 @@ public class ConfirmCheckoutServlet extends HttpServlet {
                 booking.setUserId((Integer) userIdObj);
             }
 
+            // Save booking
             if (!bookingDAO.createBooking(booking)) {
                 response.getWriter().write("Failed to save booking for service: " + booking.getServiceName());
                 return;
@@ -60,12 +71,14 @@ public class ConfirmCheckoutServlet extends HttpServlet {
         // Send confirmation email
         String userEmail = (String) session.getAttribute("userEmail");
         try {
-            EmailUtil.sendEmail(userEmail, "Booking Confirmation", generateInvoice(selectedCartItems));
+            String emailContent = generateInvoiceEmail(selectedCartItems);
+            EmailUtil.sendEmail(userEmail, "Booking Confirmation", emailContent);
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().write("Failed to send email: " + e.getMessage());
             return;
         }
+
 
         // Display a confirmation message to the user
         response.setContentType("text/html");
@@ -76,11 +89,14 @@ public class ConfirmCheckoutServlet extends HttpServlet {
         response.getWriter().write("</body></html>");
     }
 
-    private String generateInvoice(List<Map<String, Object>> cart) {
+ // Generate an HTML email for the invoice
+    private String generateInvoiceEmail(List<Map<String, Object>> cart) {
         StringBuilder invoice = new StringBuilder();
-        invoice.append("Dear Customer,\n\n");
-        invoice.append("Thank you for your booking with Shiny Cleaning Services.\n\n");
-        invoice.append("Here are your service details:\n");
+        invoice.append("<html><body>");
+        invoice.append("<h1>Booking Confirmation</h1>");
+        invoice.append("<p>Thank you for your booking with Shiny Cleaning Services!</p>");
+        invoice.append("<table border='1' cellpadding='8' cellspacing='0'>");
+        invoice.append("<tr><th>Service</th><th>Price</th></tr>");
 
         double totalAmount = 0.0;
         for (Map<String, Object> item : cart) {
@@ -88,17 +104,21 @@ public class ConfirmCheckoutServlet extends HttpServlet {
             double price = Double.parseDouble(item.get("price").toString().replace("$", ""));
             totalAmount += price;
 
-            invoice.append("Service: ").append(serviceName).append("\n");
-            invoice.append("Price: $").append(String.format("%.2f", price)).append("\n\n");
+            invoice.append("<tr>");
+            invoice.append("<td>").append(serviceName).append("</td>");
+            invoice.append("<td>$").append(String.format("%.2f", price)).append("</td>");
+            invoice.append("</tr>");
         }
 
         double gst = totalAmount * 0.07;
         double finalAmount = totalAmount + gst;
 
-        invoice.append("Subtotal: $").append(String.format("%.2f", totalAmount)).append("\n");
-        invoice.append("GST (7%): $").append(String.format("%.2f", gst)).append("\n");
-        invoice.append("Total Amount: $").append(String.format("%.2f", finalAmount)).append("\n");
-        invoice.append("\nThank you for choosing us!\n\nRegards,\nShiny Cleaning Services");
+        invoice.append("</table>");
+        invoice.append("<p>Subtotal: $").append(String.format("%.2f", totalAmount)).append("</p>");
+        invoice.append("<p>GST (7%): $").append(String.format("%.2f", gst)).append("</p>");
+        invoice.append("<p><strong>Total Amount: $").append(String.format("%.2f", finalAmount)).append("</strong></p>");
+        invoice.append("<p>Thank you for choosing us!</p>");
+        invoice.append("</body></html>");
 
         return invoice.toString();
     }

@@ -86,18 +86,16 @@ public class BookingDAO {
             try (Connection connection = DBConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(sql)) {
 
-                // Set the parameters in the prepared statement
                 statement.setInt(1, booking.getUserId());
-                statement.setInt(2, booking.getCategoryId());
-                statement.setInt(3, booking.getServiceId());
-                statement.setDate(4, Date.valueOf(booking.getDate()));         // Assuming date is in the format 'YYYY-MM-DD'
-                statement.setTime(5, Time.valueOf(booking.getTime() + ":00")); // Assuming time is in 'HH:mm' format
+                statement.setInt(2, booking.getCategoryId());   // Ensure categoryId is set
+                statement.setInt(3, booking.getServiceId());    // Ensure serviceId is set
+                statement.setDate(4, Date.valueOf(booking.getDate()));
+                statement.setTime(5, Time.valueOf(booking.getTime() + ":00"));
                 statement.setInt(6, booking.getDuration());
                 statement.setString(7, booking.getServiceAddress());
                 statement.setString(8, booking.getSpecialRequest());
                 statement.setDouble(9, booking.getTotalPrice());
 
-                // Execute the query
                 int rowsInserted = statement.executeUpdate();
                 return rowsInserted > 0;
             } catch (SQLException e) {
@@ -106,6 +104,7 @@ public class BookingDAO {
 
             return false;
         }
+
 
     public int retrieveBookingNum() {
         int count = 0;

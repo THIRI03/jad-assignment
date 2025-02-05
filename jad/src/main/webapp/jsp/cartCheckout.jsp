@@ -93,6 +93,9 @@
 
             if (selectedCartItems != null && !selectedCartItems.isEmpty()) {
                 for (Map<String, Object> item : selectedCartItems) {
+                	String serviceId = item.get("serviceId").toString();  
+                    String categoryId = item.get("categoryId").toString();
+                    
                     String serviceName = (String) item.get("serviceName");
                     String imagePath = (String) item.getOrDefault("imagePath", "images/default-placeholder.png");
                     String date = (String) item.get("date");
@@ -103,6 +106,8 @@
                     double price = Double.parseDouble(item.get("price").toString().replace("$", ""));
                     subtotal += price;
         %>
+        <input type="hidden" name="serviceId" value="<%= serviceId %>">
+        <input type="hidden" name="categoryId" value="<%= categoryId %>">
         <!-- Item details section -->
         <div class="checkout-item">
             <div class="checkout-item-left">

@@ -12,17 +12,18 @@
     <script>
  // Function to remove an item from the cart using AJAX
     function removeFromCart(index) {
-        fetch('<%= request.getContextPath() %>/CartServlet?remove=' + index, {
-            method: 'GET',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(response => response.text())
-        .then(data => {
-            // Replace the cart container content with the updated fragment
-            document.querySelector('.cart-container').innerHTML = data;
-        })
-        .catch(error => console.error('Error:', error));
-    }
+    fetch('<%= request.getContextPath() %>/CartServlet?remove=' + index, {
+        method: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Update the cart content without refreshing the page
+        document.querySelector('.cart-container').innerHTML = data;
+    })
+    .catch(error => console.error('Error:', error));
+}
+
  
         function validateCheckout(event) {
             const checkboxes = document.querySelectorAll('.cart-checkbox');
@@ -48,6 +49,10 @@
                 } else {
                     for (int i = 0; i < cart.size(); i++) {
                         Map<String, Object> item = cart.get(i);
+                     // Ensure serviceId and categoryId are present in each item
+                        String serviceId = item.get("serviceId").toString();  
+                        String categoryId = item.get("categoryId").toString();
+                        
                         String serviceName = (String) item.getOrDefault("serviceName", "Unavailable");
                         String imagePath = (String) item.getOrDefault("imagePath", "images/default-placeholder.png");
                         String price = item.getOrDefault("price", "0.00").toString();
@@ -59,6 +64,8 @@
             <div class="cart-item">
                 <div class="cart-item-left">
                     <input type="checkbox" name="selectedItems" value="<%= i %>" class="cart-checkbox">
+                    <input type="hidden" name="serviceId" value="<%= item.get("serviceId") %>">
+                    <input type="hidden" name="categoryId" value="<%= categoryId %>">
                     <div class="cart-item-image">
                         <img src="<%= request.getContextPath() + "/" + imagePath %>" alt="<%= serviceName %>">
                     </div>
