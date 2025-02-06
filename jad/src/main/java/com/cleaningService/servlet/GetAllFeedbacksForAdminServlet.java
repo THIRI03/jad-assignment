@@ -9,20 +9,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cleaningService.dao.BookingDAO;
-import com.cleaningService.model.Booking;
+import com.cleaningService.dao.FeedbackDAO;
+import com.cleaningService.model.Feedback;
 
 /**
- * Servlet implementation class GroupBookingByStatusServlet
+ * Servlet implementation class GetAllFeedbacksForAdminServlet
  */
-@WebServlet("/FilterBookingByStatusServlet")
-public class FilterBookingByStatusServlet extends HttpServlet {
+@WebServlet("/GetAllFeedbacksForAdminServlet")
+public class GetAllFeedbacksForAdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public FilterBookingByStatusServlet() {
+    public GetAllFeedbacksForAdminServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,19 +32,14 @@ public class FilterBookingByStatusServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String status = request.getParameter("status");
+		FeedbackDAO feedbackDAO = new FeedbackDAO();
+		List<Feedback>feedbacks = new ArrayList<>();
 				
-		System.out.print(status);
+		feedbacks = feedbackDAO.retrieveAllFeedbacks();
 		
-		BookingDAO bookingDAO = new BookingDAO();
-		List<Booking>bookings = new ArrayList<>();
-		if(status.equals("All")) {
-			bookings = bookingDAO.retrieveAllBookings();
-		}else {
-			bookings = bookingDAO.retrieveAllBookingsByGrouping(status);
-		}
-		request.setAttribute("bookings", bookings);
-        request.getRequestDispatcher("/jsp/adminManageBooking.jsp").forward(request, response);
+		request.setAttribute("feedbackList", feedbacks);
+        request.getRequestDispatcher("/jsp/adminRetrieveAllFeedback.jsp").forward(request, response);
 	}
+
 
 }

@@ -19,11 +19,16 @@
     <h1>Bookings</h1>
     
     <form action="<%=request.getContextPath()%>/SortBookingByDateAndIdServlet" method="GET">
-	    <select id="sortBooking" name="sortBooking" onchange="this.form.submit()">
-	    	<option value="id" <%= "id".equals(request.getParameter("sortBooking")) ? "selected" : "" %>>Booking ID</option>
-            <option value="booking_date" <%= "booking_date".equals(request.getParameter("sortBooking")) ? "selected" : "" %>>Date</option>
+	    <select id="type" name="type" onchange="this.form.submit()">
+	    	<option value="cleaningService" <%= "cleaningService".equals(request.getParameter("sortBooking")) ? "selected" : "" %>>Cleaning Service</option>
+            <option value="users" <%= "users".equals(request.getParameter("sortBooking")) ? "selected" : "" %>>Users</option>
 	    </select>
     </form>
+    <% 
+    String type = request.getParameter("type");
+    
+    
+    %>
     
     <form action="<%=request.getContextPath()%>/FilterBookingByStatusServlet" method="GET">
     	<select id="status" name="status" onchange="this.form.submit()">

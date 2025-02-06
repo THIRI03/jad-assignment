@@ -70,10 +70,10 @@ public class FeedbackDAO {
     
     public List<Feedback> retrieveAllFeedbacks() {
         List<Feedback> feedbackList = new ArrayList<>();
-        String sql = "SELECT fb.id, fb.comments, fb.rating, u.name AS customer_name, s.name AS service_name "
+        String sql = "SELECT fb.id, fb.comment, fb.rating, u.name AS customer_name, s.name AS service_name, fb.bookingid "
                      + "FROM feedback fb "
-                     + "JOIN users u ON fb.user_id = u.id "
-                     + "JOIN service s ON fb.service_id = s.id ";
+                     + "JOIN users u ON fb.userid = u.id "
+                     + "JOIN service s ON fb.serviceid = s.id ";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -86,7 +86,8 @@ public class FeedbackDAO {
                 feedback.setUsername(rs.getString("customer_name"));  // Correctly map customer_name
                 feedback.setServiceName(rs.getString("service_name")); // Correctly map service_name
                 feedback.setRating(rs.getInt("rating"));
-                feedback.setComments(rs.getString("comments"));
+                feedback.setComments(rs.getString("comment"));
+                feedback.setBooking_id(rs.getInt("bookingid"));                
                 
                 feedbackList.add(feedback);
                 System.out.println("id" + feedback.getId());
@@ -102,4 +103,6 @@ public class FeedbackDAO {
         System.out.println("Feedback list size: " + feedbackList.size()); // Check how many records are retrieved
         return feedbackList;  
     }
+    
+    
 }

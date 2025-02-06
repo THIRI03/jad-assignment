@@ -12,7 +12,9 @@
 	<%@ page import="com.cleaningService.model.User" %>
 	<%@ page import="com.cleaningService.dao.UserDAO" %>
 <%-- 	<%@ include file="authCheck.jsp" %> --%>
-	<%@ include file="../html/adminNavbar.html" %>
+<%@ include file="/jsp/adminNavbar.jsp" %>
+<link rel="stylesheet" href="../css/adminRetrieveMember.css">
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,62 +22,17 @@
   <title>All Users</title>
 </head>
 <body>
-
-
-
-  <title>All Users</title>
-  <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
-
-    .main-content {
-        padding: 20px;
-        margin-top: 60px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    table th, table td {
-        padding: 10px;
-        text-align: left;
-        border: 1px solid #ddd;
-    }
-
-    table th {
-        background-color: #f4f4f4;
-        font-weight: bold;
-    }
-
-    table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-
-    table tbody tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    .btn-update {
-        background-color: #6b4423;
-    }
-
-
-    .btn-update:hover {
-        background-color: #343a40;
-    }
-
-
-  </style>
+	<title>All Users</title>
 </head>
 <body>
 
 <div class="main-content">
   <h1>All Users</h1>
+  <form action="">
+  	<select>
+  		
+  	</select>
+  </form>
   <table>
     <thead>
       <tr>
@@ -85,7 +42,7 @@
         <th>Phone</th>
         <th>Address</th>
         <th>Role</th>
-        <th>Update</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -106,7 +63,15 @@
         <td><%= user.getRoleId() %></td>
         <td>
           <!-- Update Button -->
-          <button class="btn-update">Update</button>
+         <form action="adminUpdateUserInformation.jsp" method="POST">
+         	<input type="hidden" name="userId" value="<%= user.getId() %>">
+         	<button class="btn-update">Edit</button>
+		</form>
+		
+		<form action="<%=request.getContextPath()%>/DeleteUserForAdmin" method="POST">
+         	<input type="hidden" name="userId" value="<%= user.getId() %>">
+         	<button class="btn-delete">Delete</button>
+		</form>
         </td>
       </tr>
       <% 
@@ -122,7 +87,6 @@
     </tbody>
   </table>
 </div>
-
 
 </body>
 </html>

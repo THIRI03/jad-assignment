@@ -21,9 +21,11 @@ public class CategoryDAO{
 				PreparedStatement statement = connection.prepareStatement(sql);
 			ResultSet rs = statement.executeQuery()){
 				while(rs.next()) {
-					Category ctg = new Category(0, sql);
+					Category ctg = new Category();
 					ctg.setId(rs.getInt("id"));
 					ctg.setCategoryName(rs.getString("name"));
+					ctg.setImage(rs.getString("image"));
+					ctg.setDescription(rs.getString("description"));
 					categories.add(ctg);
 				}
 			}catch(SQLException e){

@@ -11,16 +11,16 @@
     <%@ page import="com.cleaningService.dao.FeedbackDAO" %>
 <%@ page import="com.cleaningService.model.Feedback" %>
 <%@ page import="java.util.List" %>
-	<%@ include file="authCheck.jsp" %>
-	<%@ include file="../html/adminNavbar.html" %>
+<%-- 	<%@ include file="authCheck.jsp" %>
+ --%><%@ include file="/jsp/adminNavbar.jsp" %>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>All Feedback</title>
-    <link rel="stylesheet" type="text/css" href="../css/adminRetrieveAllFeedback.css">
-
+<link rel="stylesheet" type="text/css" href="../jad/css/adminRetrieveAllFeedback.css">
+<link rel="stylesheet" type="text/css" href="../jad/css/adminNavbar.css">
 </head>
 <body>
     <div class="container">
@@ -38,7 +38,7 @@
             <tbody>
                 <%
                     FeedbackDAO feedbackDAO = new FeedbackDAO();
-                    List<Feedback> feedbackList = feedbackDAO.retrieveAllFeedbacks(); // Fetch feedback from DB
+                    List<Feedback> feedbackList = (List<Feedback>) request.getAttribute("feedbackList");
                     
                     if (feedbackList != null && !feedbackList.isEmpty()) {
                         for (Feedback feedback : feedbackList) {

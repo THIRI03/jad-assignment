@@ -19,12 +19,12 @@ Admin No.: P2340739  -->
         <h1>Cleaning Service</h1>
         <div class="menu-toggle">Menu</div>
         <ul>
-            <li><a href="adminDashboard.jsp">Dashboard</a></li>
+            <li><a href="/jad/jsp/adminDashboard.jsp">Dashboard</a></li>
 			<li><a href= "<%=request.getContextPath()%>/SortBookingByDateAndIdServlet">Manage Bookings</a></li>
-            <li><a href="adminRetrieveMember.jsp">Users</a>
-            <li><a href="adminRetrieveServices.jsp">Services</a></li>
-            <li><a href="adminRetrieveAllCategories.jsp">Categories</a></li>
-            <li><a href="#">Customer Feedback</a></li>
+            <li><a href="/jad/jsp/adminRetrieveMember.jsp">Users</a>
+            <li><a href="/jad/jsp/adminRetrieveServices.jsp">Services</a></li>
+            <li><a href="/jad/jsp/adminRetrieveAllCategories.jsp">Categories</a></li>
+            <li><a href="<%=request.getContextPath()%>/GetAllFeedbacksForAdminServlet">Customer Feedback</a></li>
             <li><a href="logout.jsp">Logout</a></li>
         </ul>
     </div>

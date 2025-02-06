@@ -43,7 +43,7 @@ public class SortBookingByDateAndIdServlet extends HttpServlet {
 		}
 		
 		BookingDAO bookingDAO = new BookingDAO();
-		List<Booking>bookings = bookingDAO.retrieveAllBookings(sortBooking);
+		List<Booking>bookings = bookingDAO.retrieveAllBookingsBySortedColumn(sortBooking);
 		
 		request.setAttribute("bookings", bookings);
         request.getRequestDispatcher("/jsp/adminManageBooking.jsp").forward(request, response);

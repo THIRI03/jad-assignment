@@ -52,9 +52,7 @@ public class UserDAO {
     public User getUserByEmail(String email, String password) {
     	User user = new User();
     	String sql = "SELECT * FROM users WHERE email=?";
-    	
-//    	System.out.println(email);
-    	
+    	    	
     	try(Connection connection = DBConnection.getConnection()) {
     		PreparedStatement statement = connection.prepareStatement(sql);
     		
@@ -83,9 +81,54 @@ public class UserDAO {
         return null;
     }
     
+    public User retrieveUserById(int id) {
+        User user = new User();
+        
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection connection = DBConnection.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            
+            if (resultSet.next()) {
+                user.setName(resultSet.getString("name"));  
+                user.setAddress(resultSet.getString("address"));   
+                user.setPostalCode(resultSet.getInt("postal_code"));  
+                user.setEmail(resultSet.getString("email"));   
+                user.setPhoneNum(resultSet.getInt("phone_number"));  
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return user;
+    }
+
+    public User retrieveUserPwdById(int id) {
+        User user = new User();
+        
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection connection = DBConnection.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            
+            if (resultSet.next()) {
+                user.setPassword(resultSet.getString("password"));  
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return user;
+    }
+    
+    // retrieve members only, admin excluded
     public List<User> retrieveAllUsers(){
     	List<User> users = new ArrayList<>();
-    	String sql = "SELECT * FROM users";
+    	String sql = "SELECT * FROM users WHERE role_id != 1 ORDER BY id ASC";
     	
     	try(Connection connection = DBConnection.getConnection()) {
     		PreparedStatement statement = connection.prepareStatement(sql);
@@ -111,6 +154,74 @@ public class UserDAO {
         }
         return users;
     	
+    }
+    
+    public boolean deleteUser(int id) {
+    	boolean isDeleted = false;
+    	
+    	String sql = "DELETE FROM users WHERE id = ?";
+    	try(Connection connection = DBConnection.getConnection()) {
+    		PreparedStatement statement = connection.prepareStatement(sql);
+    		
+    		statement.setInt(1, id);
+    		
+    		int result = statement.executeUpdate();
+			if(result > 0) {
+				isDeleted = true;
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+    	
+    	return isDeleted;
+    }
+    
+    public boolean updateUserInformation(String name, String email, int phone_num, int id) {
+    	boolean isUpdated = false;
+    	
+    	String sql = "UPDATE users SET name = ?, email = ?, phone_number = ? WHERE id = ?";
+    	try(Connection connection = DBConnection.getConnection();
+    			PreparedStatement stmt = connection.prepareStatement(sql)){
+    		stmt.setString(1, name);
+    		stmt.setString(2, email);
+    		stmt.setInt(3, phone_num);
+    		stmt.setInt(4, id);
+    		
+    		int rowsAffected = stmt.executeUpdate();
+    		
+    		if(rowsAffected > 0) {
+    			isUpdated = true;
+    		}
+    	}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return isUpdated;
+    	
+    }
+    
+    public boolean updateUserPassword(String password, int userId) {
+    	boolean isUpdated = false;
+    	
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
+    	String sql = "UPDATE users SET password = ? WHERE id = ?";
+    	try(Connection connection = DBConnection.getConnection();
+    			PreparedStatement stmt = connection.prepareStatement(sql)){
+    		stmt.setString(1, hashedPassword);
+    		stmt.setInt(2, userId);
+    		
+    		int rowsAffected = stmt.executeUpdate();
+    		
+    		if(rowsAffected > 0) {
+    			isUpdated = true;
+    		}
+    		
+    	}catch(SQLException e) {
+			e.printStackTrace();
+		}
+    	
+    	return isUpdated;
     }
 
 }

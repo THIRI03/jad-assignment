@@ -20,7 +20,7 @@ public class User {
         this.password = password;
         this.phoneNum = phoneNum;
         this.address = address;
-        this.setPostalCode(postalCode);
+        this.postalCode = postalCode;
         this.roleId = roleId;
     }
     

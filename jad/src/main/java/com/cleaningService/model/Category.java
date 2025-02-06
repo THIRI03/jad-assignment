@@ -10,9 +10,11 @@ public class Category {
 		
 	}
 	
-	public Category(int id, String categoryName) {
+	public Category(int id, String categoryName, String description, String image) {
 		this.id = id;
 		this.categoryName = categoryName;
+		this.description = description;
+		this.image = image;
 	}
 	
 	public String getDescription() {

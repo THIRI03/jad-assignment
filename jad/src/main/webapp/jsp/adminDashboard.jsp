@@ -12,7 +12,8 @@
 <%@page import = "com.cleaningService.dao.BookingDAO" %>
 <%@page import = "com.cleaningService.dao.FeedbackDAO" %>
 <%@page import = "com.cleaningService.model.Booking" %>
-<%@ include file="../html/adminNavbar.html" %>
+<%@ include file="/jsp/adminNavbar.jsp" %>
+
 
 <!DOCTYPE html>
 <html>
@@ -66,7 +67,7 @@ int numOfFeedbacks = feedbackDAO.retrieveFeedbackNum();
     <!-- Bookings Table -->
     <%
     String sortColumn = "id";
-    List<Booking> bookings = bookingDAO.retrieveAllBookings(sortColumn);
+    List<Booking> bookings = bookingDAO.retrieveBookingForDashboard();
 	%>
 
     <h2>Recent Bookings</h2>

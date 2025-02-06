@@ -16,8 +16,40 @@ import jakarta.ws.rs.core.Request;
 
 public class BookingDAO {
 	
+	public List<Booking> retrieveAllBookings(){
+		List<Booking> bookings = new ArrayList<>();
+		 
+		String sql = "SELECT b.id, u.name AS customer_name, s.name AS service_name, b.booking_date, b.booking_time, c.name AS category_name, b.status "
+				+ "FROM bookings b " + "JOIN users u ON b.userid = u.id " + "JOIN service s ON b.serviceid = s.id "
+				+ "JOIN category c ON b.categoryid = c.id "
+				+ "ORDER BY b.id ASC";
+
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(sql);
+				ResultSet rs = pstmt.executeQuery()) {
+
+			while (rs.next()) {
+				Booking booking = new Booking();
+				booking.setId(rs.getInt("id"));
+				booking.setCustomerName(rs.getString("customer_name"));
+				booking.setServiceName(rs.getString("service_name"));
+				booking.setDate(rs.getString("booking_date"));
+				booking.setTime(rs.getString("booking_time"));
+				booking.setCategoryName(rs.getString("category_name"));
+				booking.setStatus(rs.getString("status"));
+
+				bookings.add(booking);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return bookings;
+	}
+	
 	// parameters are passed to sort the booking view
-	public List<Booking> retrieveAllBookings(String sortColumn) {
+	public List<Booking> retrieveAllBookingsBySortedColumn(String sortColumn) {
 		List<Booking> bookings = new ArrayList<>();
  
 		String sql = "SELECT b.id, u.name AS customer_name, s.name AS service_name, b.booking_date, b.booking_time, c.name AS category_name, b.status "
@@ -88,9 +120,44 @@ public class BookingDAO {
 		return bookings;
 	}
 	
+	// this is for dashboard, where the not completed and in progress bookings will be shown
+	public List<Booking> retrieveBookingForDashboard() {
+		List<Booking> bookings = new ArrayList<>();
+ 
+		String sql = "SELECT b.id, u.name AS customer_name, s.name AS service_name, b.booking_date, b.booking_time, c.name AS category_name, b.status "
+				+ "FROM bookings b " + "JOIN users u ON b.userid = u.id " + "JOIN service s ON b.serviceid = s.id "
+				+ "JOIN category c ON b.categoryid = c.id WHERE b.status != 'Completed' "
+				+ "ORDER BY b.id ASC";
+
+		try (Connection connection = DBConnection.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(sql);
+				ResultSet rs = pstmt.executeQuery()) {
+
+			while (rs.next()) {
+				Booking booking = new Booking();
+				booking.setId(rs.getInt("id"));
+				booking.setCustomerName(rs.getString("customer_name"));
+				booking.setServiceName(rs.getString("service_name"));
+				booking.setDate(rs.getString("booking_date"));
+				booking.setTime(rs.getString("booking_time"));
+				booking.setCategoryName(rs.getString("category_name"));
+				booking.setStatus(rs.getString("status"));
+
+				bookings.add(booking);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return bookings;
+	}
+	
+	
 	public int retrieveBookingNum() {
 	    int count = 0;
-	    String sql = "SELECT COUNT(id) AS bookings FROM bookings";
+	    String sql = "SELECT COUNT(id) AS bookings FROM bookings WHERE status != 'Completed' ";
 
 	    try (Connection connection = DBConnection.getConnection();
 	         PreparedStatement stmt = connection.prepareStatement(sql);
@@ -103,4 +170,6 @@ public class BookingDAO {
 	    }
 	    return count;
 	}
+
+	
 }
