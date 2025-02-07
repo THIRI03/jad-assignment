@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Checkout Summary</title>
+    <title>Invoice</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/cart.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/home.css">
   <style>
@@ -85,7 +85,7 @@
 </head>
 <body>
     <div class="checkout-container">
-        <h1 class="checkout-header">Checkout Summary</h1>
+        <h1 class="checkout-header">Invoice</h1>
 
         <%
             List<Map<String, Object>> selectedCartItems = (List<Map<String, Object>>) session.getAttribute("selectedCartItems");
@@ -114,7 +114,7 @@
                 <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="<%= serviceName %>">
             </div>
             <div class="checkout-item-details">
-                <h2><%= serviceName %></h2>
+                <h2>Service Name :<%= serviceName %></h2>
                 <p>Price: $<%= String.format("%.2f", price) %></p>
                 <p>Date: <%= date %></p>
                 <p>Time: <%= time %></p>
@@ -139,7 +139,7 @@
             <p>Total Amount: $<%= String.format("%.2f", subtotal + (subtotal * 0.07) - (subtotal * 0.10)) %></p>
         </div>
         <form action="<%= request.getContextPath() %>/ConfirmCheckoutServlet" method="POST">
-            <button type="submit" class="confirm-btn">Confirm Checkout</button>
+            <button type="submit" class="confirm-btn">Make Payment</button>
         </form>
     </div>
     <jsp:include page="../html/footer.html" />
