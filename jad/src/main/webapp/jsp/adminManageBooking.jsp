@@ -18,14 +18,12 @@
 <header>
     <h1>Bookings</h1>
     
-    <form action="<%=request.getContextPath()%>/SortBookingByDateAndIdServlet" method="GET">
+    <form action="<%=request.getContextPath()%>/SortAndFilterBookingByDateAndIdServlet" method="GET">
 	    <select id="sortBooking" name="sortBooking" onchange="this.form.submit()">
 	    	<option value="id" <%= "id".equals(request.getParameter("sortBooking")) ? "selected" : "" %>>Booking ID</option>
             <option value="booking_date" <%= "booking_date".equals(request.getParameter("sortBooking")) ? "selected" : "" %>>Date</option>
 	    </select>
-    </form>
-    
-    <form action="<%=request.getContextPath()%>/FilterBookingByStatusServlet" method="GET">
+
     	<select id="status" name="status" onchange="this.form.submit()">
 		   	<option value="All" <%= "All".equals(request.getParameter("status")) ? "selected" : "" %>>All</option>
             <option value="Not Completed" <%= "Not Completed".equals(request.getParameter("status")) ? "selected" : "" %>>Not Completed</option>
@@ -63,11 +61,21 @@ List<Booking>bookings = (List<Booking>) request.getAttribute("bookings");
                 <td><%= booking.getServiceName() %></td>
                 <td><%= booking.getDate() %></td>
                 <td><%= booking.getTime() %></td>
-                <td><%= booking.getStatus() %>
                 <td>
-                	<a href="adminManageBookingDetails.jsp">
-					    <button type="button">View Details</button>
-					</a>
+				    <form action="<%= request.getContextPath() %>/UpdateBookingStatusForAdminServlet" method="POST">
+				        <input type="hidden" name="booking_id" value="<%= booking.getId() %>">
+				        <select name="statusChange" onchange="this.form.submit()">
+				            <option value="Not Completed" <%= "Not Completed".equals(booking.getStatus()) ? "selected" : "" %>>Not Completed</option>
+				            <option value="In Progress" <%= "In Progress".equals(booking.getStatus()) ? "selected" : "" %>>In Progress</option>
+				            <option value="Completed" <%= "Completed".equals(booking.getStatus()) ? "selected" : "" %>>Completed</option>
+				        </select>
+				    </form>
+				</td>
+				<td>
+                	<form action="<%=request.getContextPath() %>/GetBookingDetailsForAdminServlet" method = "POST">
+				    	<input type="hidden" name="booking_id" value="<%=booking.getId()%>">
+					    <button type="button" onclick="this.form.submit()">View Details</button>
+					</form>
                 </td>
             </tr>
             <%

@@ -8,30 +8,67 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import = "java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import = "com.cleaningService.model.Service" %> 
 <%@ page import = "com.cleaningService.dao.ServiceDAO" %> 
 <%@ page import = "jakarta.servlet.http.HttpSession" %>
-<%-- <%@ include file="authCheck.jsp" %>
- --%><%@ include file="/jsp/adminNavbar.jsp" %>
+<%-- <%@ include file="authCheck.jsp" %>--%>
+<%@ include file="/jsp/adminNavbar.jsp" %>
 
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/adminRetrieveServices.css">
+    <link rel="stylesheet" href="<%=request.getContextPath() %>/css/adminRetrieveServices.css">
 </head>
 <body>
-    <div clas="main-content">	    
-    <h3>All Services</h3>
+    <div class="main-content">	    
+    <h1>All Services</h1>
+    
+    	<!-- Search Bar -->
+	    <div class="search-reset-container">
+		    <form action="<%= request.getContextPath() %>/SearchServiceNameForAdminServlet" method="post" class="search-form">
+		        <input type="text" name="userInput" placeholder="Search by service name..." class="search-input">
+		        <button type="submit" class="search-btn">Search</button>
+		    </form>
+		
+		    <form action="<%= request.getContextPath() %>/jsp/adminRetrieveServices.jsp" method="get" class="reset-form">
+		        <button type="submit" class="reset-btn">Reset</button>
+		    </form>
+		    
+		    <form action="<%= request.getContextPath() %>/FilterServicesForAdminServlet" method="get" class="filter-form">
+                <select name="filter" class="filter-select" onchange="this.form.submit()">
+				    <option value="All" <%= "All".equals(request.getParameter("filter")) ? "selected" : "" %>>All</option>
+				    <option value="top3Rated" <%= "top3Rated".equals(request.getParameter("filter")) ? "selected" : "" %>>Top 3 Best Rated</option>
+				    <option value="least3Rated" <%= "least3Rated".equals(request.getParameter("filter")) ? "selected" : "" %>>Least 3 Rated</option>
+				    <option value="top3InDemand" <%= "top3InDemand".equals(request.getParameter("filter")) ? "selected" : "" %>>Top 3 in demand</option>
+				    <option value="least3InDemand" <%= "least3InDemand".equals(request.getParameter("filter")) ? "selected" : "" %>>Least 3 in demand</option>
+				</select>
+
+            </form>
+		</div>
+
+    
 	    <div class="card-container">
-	        <%  
-	            ServiceDAO serviceDAO = new ServiceDAO();
-	            // Retrieve the list of services from the database
-	            List<Service> services = serviceDAO.retrieveService();
-	            
-	            if (services != null && !services.isEmpty()) {
-	                for (Service service : services) {
+	    
+	     <%  
+            ServiceDAO serviceDAO = new ServiceDAO();
+            String userInput = request.getParameter("userInput");
+            String filter = request.getParameter("filter");
+            List<Service> services = new ArrayList<>();
+
+            if (userInput != null && !userInput.trim().isEmpty()) {
+                services = (List<Service>) request.getAttribute("services");
+            } if(filter != null && !filter.trim().isEmpty()){
+            	services = (List<Service>) request.getAttribute("filteredServices");
+            } else {
+                services = serviceDAO.retrieveService();
+            }
+                        	
+            if (services != null && !services.isEmpty()) {
+                for (Service service : services) {
+	                
 	        %>
 	        <div class="card">
 	            <img src="<%= request.getContextPath() %>/<%= service.getImage() %>" alt="Service Image">
@@ -63,8 +100,9 @@
 	            </form>
 	        </div>
 	        <% 
-	                }
-	            } else {
+                }
+	                
+            } else {
 	        %>
 	        <p>No services available.</p>
 	        <% 

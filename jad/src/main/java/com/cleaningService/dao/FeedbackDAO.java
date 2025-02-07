@@ -90,17 +90,12 @@ public class FeedbackDAO {
                 feedback.setBooking_id(rs.getInt("bookingid"));                
                 
                 feedbackList.add(feedback);
-                System.out.println("id" + feedback.getId());
-                System.out.println("comment" + feedback.getComments());
-                System.out.println("name" + feedback.getUsername());
 
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        System.out.println("Feedback list size: " + feedbackList.size()); // Check how many records are retrieved
         return feedbackList;  
     }
     

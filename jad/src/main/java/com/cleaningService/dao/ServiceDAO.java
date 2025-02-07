@@ -178,5 +178,114 @@ public class ServiceDAO {
 	    return count;
 	}
 
+	public List<Service> retrieveServiceByName(String userInput){
+		List<Service> services = new ArrayList<>();
+		
+		String sql = "SELECT * FROM service WHERE LOWER(name) LIKE ?";
+		try (Connection connection = DBConnection.getConnection();
+	             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+	            pstmt.setString(1, "%" + userInput.toLowerCase() + "%");
+	            ResultSet rs = pstmt.executeQuery();
+
+	            while (rs.next()) {
+	        		Service service = new Service();
+	        		service.setId(rs.getInt("id"));
+					service.setName(rs.getString("name"));
+					service.setDescription(rs.getString("description"));
+					service.setPrice(rs.getDouble("price"));
+					service.setCategory_id(rs.getInt("category_id"));
+					service.setImage(rs.getString("image"));
+					services.add(service);
+	            }
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+		return services;
+	}
+	
+	
+	public List<Service> retrieveTopAndLeastRatedServices(String filter){
+		List<Service>services = new ArrayList<>();
+		
+		String sql = null;
+		
+		if("top3Rated".equals(filter)) {
+			sql = "SELECT s.id, s.name, s.description, s.price, s.image, AVG(f.rating) AS avg_rating "
+					+ "FROM service s "
+					+ "JOIN feedback f ON s.id = f.serviceid "
+					+ "GROUP BY s.id "
+					+ "ORDER BY avg_rating DESC "
+					+ "LIMIT 3; ";
+		}else if("least3Rated".equals(filter)) {
+			sql = "SELECT s.id, s.name, s.description, s.price, s.image, AVG(f.rating) AS avg_rating "
+					+ "FROM service s "
+					+ "JOIN feedback f ON s.id = f.serviceid "
+					+ "GROUP BY s.id "
+					+ "ORDER BY avg_rating ASC "
+					+ "LIMIT 3; ";
+		}
+		
+		try(Connection connection = DBConnection.getConnection();
+				PreparedStatement stmt = connection.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery()){
+			while(rs.next()) {
+				Service service = new Service();
+				service.setId(rs.getInt("id"));
+				service.setName(rs.getString("name"));
+				service.setDescription(rs.getString("description"));
+				service.setPrice(rs.getDouble("price"));
+				service.setImage(rs.getString("image"));
+				
+				services.add(service);
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}	
+		return services;
+	}
+	
+	public List<Service> retrieveServicesInDemand(String filter){
+		List<Service> services = new ArrayList<>();
+		
+		String sql = null;
+		
+		if("top3InDemand".equals(filter)) {
+			sql = "SELECT s.id, s.name, s.description, s.price, s.image, COUNT(b.id) AS booking_count "
+					+"FROM service s "
+					+"JOIN bookings b ON s.id = b.serviceid "
+					+"GROUP by s.id "
+					+"ORDER BY booking_count DESC "
+					+"LIMIT 3";
+		}else if("least3InDemand".equals(filter)){
+			sql = "SELECT s.id, s.name, s.description, s.price, s.image, COUNT(b.id) AS booking_count "
+					+"FROM service s "
+					+"LEFT JOIN bookings b ON s.id = b.serviceid "
+					+"GROUP by s.id "
+					+"ORDER BY booking_count ASC "
+					+"LIMIT 3";
+		}
+		
+		try(Connection connection = DBConnection.getConnection();
+				PreparedStatement stmt = connection.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery()){
+
+			while(rs.next()) {
+				Service service = new Service();
+				service.setId(rs.getInt("id"));
+				service.setName(rs.getString("name"));
+				service.setDescription(rs.getString("description"));
+				service.setPrice(rs.getDouble("price"));
+				service.setImage(rs.getString("image"));
+				
+				services.add(service);
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}	
+		
+		return services;
+	}
 
 }

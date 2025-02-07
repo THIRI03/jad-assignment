@@ -8,7 +8,7 @@ Admin No.: P2340739  -->
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="../css/adminNavbar.css">
+<link rel="stylesheet" href="<%=request.getContextPath() %>/css/adminNavbar.css">
 <title>Insert title here</title>
 </head>
 <body>
@@ -20,7 +20,7 @@ Admin No.: P2340739  -->
         <div class="menu-toggle">Menu</div>
         <ul>
             <li><a href="/jad/jsp/adminDashboard.jsp">Dashboard</a></li>
-			<li><a href= "<%=request.getContextPath()%>/SortBookingByDateAndIdServlet">Manage Bookings</a></li>
+			<li><a href= "<%=request.getContextPath()%>/SortAndFilterBookingByDateAndIdServlet">Manage Bookings</a></li>
             <li><a href="/jad/jsp/adminRetrieveMember.jsp">Users</a>
             <li><a href="/jad/jsp/adminRetrieveServices.jsp">Services</a></li>
             <li><a href="/jad/jsp/adminRetrieveAllCategories.jsp">Categories</a></li>

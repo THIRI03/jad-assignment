@@ -6,23 +6,21 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.cleaningService.dao.BookingDAO;
 import com.cleaningService.model.Booking;
 
 /**
- * Servlet implementation class GroupBookingByStatusServlet
+ * Servlet implementation class GetBookingDetailsForAdminServlet
  */
-@WebServlet("/FilterBookingByStatusServlet")
-public class FilterBookingByStatusServlet extends HttpServlet {
+@WebServlet("/GetBookingDetailsForAdminServlet")
+public class GetBookingDetailsForAdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public FilterBookingByStatusServlet() {
+    public GetBookingDetailsForAdminServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,19 +30,24 @@ public class FilterBookingByStatusServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String status = request.getParameter("status");
-				
-		System.out.print(status);
+		int booking_id = Integer.parseInt(request.getParameter("booking_id"));
 		
 		BookingDAO bookingDAO = new BookingDAO();
-		List<Booking>bookings = new ArrayList<>();
-		if(status.equals("All")) {
-			bookings = bookingDAO.retrieveAllBookings();
-		}else {
-			bookings = bookingDAO.retrieveAllBookingsByGrouping(status);
-		}
-		request.setAttribute("bookings", bookings);
-        request.getRequestDispatcher("/jsp/adminManageBooking.jsp").forward(request, response);
+		Booking booking = new Booking();
+		
+		booking = bookingDAO.retrieveBookingById(booking_id);
+		
+		request.setAttribute("booking", booking);
+        request.getRequestDispatcher("/jsp/adminManageBookingDetails.jsp").forward(request, response);
+		
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
 	}
 
 }

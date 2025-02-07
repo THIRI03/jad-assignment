@@ -4,7 +4,12 @@ public class Booking {
 	private int id;
 	private String serviceName;
 	private String specialRequest;
+	private String serviceAddress;
 	private String customerName;
+	private String serviceImage;
+	
+
+
 	private int duration;
 	private String date;
 	private String time;
@@ -17,11 +22,12 @@ public class Booking {
 	
 
 
-	public Booking(int id, String serviceName, String specialRequest, String customerName, int duration, String date,
+	public Booking(int id, String serviceName, String specialRequest, String serviceAddress, String customerName, int duration, String date,
 			String time, String categoryName, String status) {
 		this.id = id;
 		this.serviceName = serviceName;
 		this.specialRequest = specialRequest;
+		this.serviceAddress = serviceAddress;
 		this.customerName = customerName;
 		this.duration = duration;
 		this.date = date;
@@ -116,5 +122,23 @@ public class Booking {
 
 	public void setTime(String i) {
 		this.time = i;
+	}
+	
+	public String getServiceAddress() {
+		return serviceAddress;
+	}
+
+	public void setServiceAddress(String serviceAddress) {
+		this.serviceAddress = serviceAddress;
+	}
+
+	public String getServiceImage() {
+		return serviceImage;
+	}
+
+
+
+	public void setServiceImage(String serviceImage) {
+		this.serviceImage = serviceImage;
 	}
 }
