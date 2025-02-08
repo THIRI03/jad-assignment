@@ -71,11 +71,16 @@ public class CartServlet extends HttpServlet {
 
     
     private String generateCartHtml(List<Map<String, Object>> cart, String contextPath) {
+    	StringBuilder html = new StringBuilder();
+    	
+    	html.append("<h1 class='cart-header'>My Cart</h1>");
+        
+    	// Check if the cart is empty
         if (cart.isEmpty()) {
-            return "<p class='empty-cart'>Your cart is empty.</p>";
+            html.append("<p class='empty-cart'>Your cart is empty.</p>");
+            return html.toString();
         }
-
-        StringBuilder html = new StringBuilder();
+        
         for (int i = 0; i < cart.size(); i++) {
             Map<String, Object> item = cart.get(i);
             String serviceId = (String) item.get("serviceId");
@@ -99,6 +104,12 @@ public class CartServlet extends HttpServlet {
                 .append("</div></div>");
         }
 
+     // Add the checkout button below the cart items
+        html.append("<form action='").append(contextPath).append("/CartCheckoutServlet' method='POST' onsubmit='validateCheckout(event)'>")
+            .append("<button type='submit' class='checkout-btn'>Checkout</button>")
+            .append("</form>");
+
+        html.append("</div>");
         return html.toString();
     }
 

@@ -20,16 +20,14 @@
         // If user is not logged in, redirect to the register page
         redirectURL = "register.jsp";
     }
+    List<Map<String, String>> reviews = new ArrayList<>();
     double averageRating = 0.0;
     int totalUsers = 0;
-    
-    List<Map<String, String>> reviews = new ArrayList<>();
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
 
     try {
-        // Get a database connection
         conn = DBConnection.getConnection();
 
      // Fetch average rating and total feedback count
@@ -43,8 +41,8 @@
         rs.close();
         pstmt.close();
 
-        // Fetch the latest 3 feedbacks
-        String feedbackSql = "SELECT comment, rating FROM feedback ORDER BY id DESC LIMIT 3";
+        // Fetch the latest 3 feedbacks with 4 or 5-star ratings
+        String feedbackSql = "SELECT comment, rating FROM feedback WHERE rating >= 4 AND comment IS NOT NULL ORDER BY id DESC LIMIT 3";
         pstmt = conn.prepareStatement(feedbackSql);
         rs = pstmt.executeQuery();
 
@@ -134,71 +132,55 @@
     </div>
 </section>
 	
-   <section class="testimonials-section">
-    <div class="container">
-        <h2 class="section-title">Hear What Our Customers Have to Say</h2>
-        <p class="section-subtitle">
-            Trusted by both local & expert communities, we are rated 
-            <%= String.format("%.1f", averageRating) %>/5 stars on Google by over <%= totalUsers %>+ users!
-        </p>
-        <div class="row">
-            <% if (reviews.isEmpty()) { %>
-                <!-- Default Testimonials -->
-                <div class="col-md-4 col-sm-6 col-12 mb-4">
-                    <div class="testimonial-card">
-                        <img src="/jad/gallery/verify.png" alt="Review Icon" class="review-icon">
-                        <p class="testimonial-text">
-                            “All pretty mummies need time for their hair and nails, right? I’m so happy that I found a part-time cleaner. She frees up so much of my weekends!”
-                        </p>
-                        <span class="customer-name">@midiforreal</span>
-                        <div class="rating">★★★★★</div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-12 mb-4">
-                    <div class="testimonial-card">
-                        <img src="/jad/gallery/verify.png" alt="Review Icon" class="review-icon">
-                        <p class="testimonial-text">
-                            “I’ve worked with many helpers before. They go through training, so the quality is consistent. Highly recommend them!”
-                        </p>
-                        <span class="customer-name">@keweitay</span>
-                        <div class="rating">★★★★★</div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-12 mb-4">
-                    <div class="testimonial-card">
-                        <img src="/jad/gallery/verify.png" alt="Review Icon" class="review-icon">
-                        <p class="testimonial-text">
-                            “No housework means more time for work! My house is squeaky clean every week. So happy with the service!”
-                        </p>
-                        <span class="customer-name">@miss_luxe</span>
-                        <div class="rating">★★★★★</div>
-                    </div>
-                </div>
-            <% } else { 
-                for (Map<String, String> review : reviews) { 
-            %>
-                <!-- Dynamic Testimonials -->
-                <div class="col-md-4 col-sm-6 col-12 mb-4">
-                    <div class="testimonial-card">
-                        <img src="/jad/JAD-CA1/gallery/verify.png" alt="Review Icon" class="review-icon">
-                        <p class="testimonial-text"><%= review.get("comments") %></p>
-                        <div class="rating">
-                            <% 
-                                int rating = Integer.parseInt(review.get("rating"));
-                                for (int i = 0; i < rating; i++) { 
-                            %>
-                                ★
-                            <% } %>
+   <!-- Section: Testimonials -->
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">Hear What Our Customers Have to Say</h2>
+            <p class="section-subtitle">
+                Trusted by both local & expert communities, we are rated 
+                <%= String.format("%.1f", averageRating) %>/5 stars on Google by over <%= totalUsers %>+ users!
+            </p>
+            <div class="row">
+                <%
+                    int reviewCount = reviews.size();
+                    // Add the dynamic reviews first
+                    for (int i = 0; i < reviewCount; i++) {
+                        Map<String, String> review = reviews.get(i);
+                %>
+                        <div class="col-md-4 col-sm-6 col-12 mb-4">
+                            <div class="testimonial-card">
+                                <img src="<%= request.getContextPath() %>/gallery/verify.png" alt="Review Icon" class="review-icon">
+                                <p class="testimonial-text"><%= review.get("comment") %></p>
+                                <div class="rating">
+                                    <% 
+                                        int rating = Integer.parseInt(review.get("rating"));
+                                        for (int j = 0; j < rating; j++) { 
+                                    %>
+                                        ★
+                                    <% } %>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            <% 
-                } 
-            } 
-            %>
+                <% 
+                    }
+                    
+                    // If there are fewer than 3 dynamic reviews, fill the rest with default reviews
+                    for (int i = reviewCount; i < 3; i++) {
+                %>
+                        <div class="col-md-4 col-sm-6 col-12 mb-4">
+                            <div class="testimonial-card">
+                                <img src="<%= request.getContextPath() %>/gallery/verify.png" alt="Review Icon" class="review-icon">
+                                <p class="testimonial-text">
+                                    “This cleaning service has exceeded my expectations! Highly professional and reliable.”
+                                </p>
+                
+                                <div class="rating">★★★★★</div>
+                            </div>
+                        </div>
+                <% } %>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
    
     
 <!-- Section 4: Benefits for Your Organization -->
