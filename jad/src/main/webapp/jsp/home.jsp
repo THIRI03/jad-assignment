@@ -56,9 +56,9 @@
         pstmt.close();
 
         // Query for top services
-        String topServicesSql = "SELECT s.name AS service_name, s.image AS image_path, COUNT(b.id) AS booking_count " +
+        String topServicesSql = "SELECT s.name AS service_name, s.image AS image_path, s.description AS description, s.price AS price, COUNT(b.id) AS booking_count " +
                                 "FROM service s LEFT JOIN bookings b ON s.id = b.serviceid " +
-                                "GROUP BY s.id, s.name, s.image " +
+                                "GROUP BY s.id, s.name, s.image, s.description, s.price " +
                                 "ORDER BY booking_count DESC LIMIT 3";
         pstmt = conn.prepareStatement(topServicesSql);
         rs = pstmt.executeQuery();
@@ -67,15 +67,17 @@
             service.put("name", rs.getString("service_name"));
             service.put("count", String.valueOf(rs.getInt("booking_count")));
             service.put("imagePath", rs.getString("image_path"));
+            service.put("description", rs.getString("description"));
+            service.put("price", rs.getString("price"));
             topServices.add(service);
         }
         rs.close();
         pstmt.close();
 
         // Fetch bottom 3 services by booking count
-        String lowServicesSql = "SELECT s.name AS service_name, s.image AS image_path, COUNT(b.id) AS booking_count " +
+        String lowServicesSql = "SELECT s.name AS service_name, s.image AS image_path, s.description AS description, s.price AS price, COUNT(b.id) AS booking_count " +
                                 "FROM service s LEFT JOIN bookings b ON s.id = b.serviceid " +
-                                "GROUP BY s.id, s.name, s.image " +
+                                "GROUP BY s.id, s.name, s.image, s.description, s.price " +
                                 "ORDER BY booking_count ASC LIMIT 3";
         pstmt = conn.prepareStatement(lowServicesSql);
         rs = pstmt.executeQuery();
@@ -84,6 +86,8 @@
             service.put("name", rs.getString("service_name"));
             service.put("count", String.valueOf(rs.getInt("booking_count")));
             service.put("imagePath", rs.getString("image_path"));
+            service.put("description", rs.getString("description"));
+            service.put("price", rs.getString("price"));
             lowServices.add(service);
         }
     } catch (Exception e) {
@@ -95,6 +99,7 @@
         if (conn != null) try { conn.close(); } catch (Exception e) {}
     }
 %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -229,11 +234,19 @@
                         String imagePath = service.get("imagePath");
                 %>
                     <div class="carousel-item <%= activeClass %>">
-                        <div class="carousel-content text-center" style="padding: 30px;">
-                            <h3 style="font-size: 1.6rem; margin-bottom: 15px;"><%= service.get("name") %></h3>
-                            <p style="font-size: 1.1rem; margin-bottom: 20px;">Number of Bookings: <%= service.get("count") %></p>
-                            <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Service Image" 
-                                 style="max-width: 90%; height: 350px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                        <div class="row justify-content-center align-items-center" style="padding: 30px;">
+                            <!-- Service Image -->
+                            <div class="col-md-6 text-center">
+                                <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Service Image"
+                                     style="width: 90%; height: 350px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            </div>
+                            <!-- Service Details -->
+                            <div class="col-md-6">
+                                <h3 style="font-size: 1.8rem; margin-bottom: 15px;"><%= service.get("name") %></h3>
+                                <p style="font-size: 1.1rem; margin-bottom: 10px;"><strong>Price:</strong> $<%= service.get("price") %></p>
+                                <p style="font-size: 1rem; margin-bottom: 20px;"><%= service.get("description") %></p>
+                                <p style="font-size: 1.1rem; margin-bottom: 20px;"><strong>Number of Bookings:</strong> <%= service.get("count") %></p>
+                            </div>
                         </div>
                     </div>
                 <% 
@@ -264,11 +277,19 @@
                         String imagePath = service.get("imagePath");
                 %>
                     <div class="carousel-item <%= activeClass %>">
-                        <div class="carousel-content text-center" style="padding: 30px;">
-                            <h3 style="font-size: 1.6rem; margin-bottom: 15px;"><%= service.get("name") %></h3>
-                            <p style="font-size: 1.1rem; margin-bottom: 20px;">Number of Bookings: <%= service.get("count") %></p>
-                            <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Service Image" 
-                                 style="max-width: 90%; height: 350px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                        <div class="row justify-content-center align-items-center" style="padding: 30px;">
+                            <!-- Service Image -->
+                            <div class="col-md-6 text-center">
+                                <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Service Image"
+                                     style="width: 90%; height: 350px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            </div>
+                            <!-- Service Details -->
+                            <div class="col-md-6">
+                                <h3 style="font-size: 1.8rem; margin-bottom: 15px;"><%= service.get("name") %></h3>
+                                <p style="font-size: 1.1rem; margin-bottom: 10px;"><strong>Price:</strong> $<%= service.get("price") %></p>
+                                <p style="font-size: 1rem; margin-bottom: 20px;"><%= service.get("description") %></p>
+                                <p style="font-size: 1.1rem; margin-bottom: 20px;"><strong>Number of Bookings:</strong> <%= service.get("count") %></p>
+                            </div>
                         </div>
                     </div>
                 <% 
@@ -289,6 +310,7 @@
         </div>
     </div>
 </section>
+ 
  
  
     
