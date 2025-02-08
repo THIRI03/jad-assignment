@@ -1,5 +1,5 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Moe Myat Thwe
     Admin No.: P2340362
@@ -73,7 +73,7 @@
                     }
                 %>
                     <!-- Common link for all logged-in users -->
-                     <li><a href="<%= request.getContextPath() %>/logout.jsp">Logout</a></li>
+                     <li><a href="<%= request.getContextPath() %>/jsp/logout.jsp">Logout</a></li>
                 <% 
                 } else { // Links for unauthenticated users
                 %>
