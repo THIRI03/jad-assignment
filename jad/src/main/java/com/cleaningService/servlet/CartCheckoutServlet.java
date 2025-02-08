@@ -1,6 +1,8 @@
 package com.cleaningService.servlet;
 
 import com.cleaningService.util.AuthUtil;
+import com.cleaningService.util.DBConnection;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,6 +11,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +57,47 @@ public class CartCheckoutServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
+        
+     // Fetch and apply discounts
+        try (Connection conn = DBConnection.getConnection()) {
+            for (Map<String, Object> item : selectedCartItems) {
+                int serviceId = Integer.parseInt(item.get("serviceId").toString());
+                int categoryId = Integer.parseInt(item.get("categoryId").toString());
+
+                String discountQuery = """
+                    SELECT name, description, discount_rate
+                    FROM Discount
+                    WHERE status = 'Active'
+                    AND (service_id = ? OR category_id = ? OR (service_id IS NULL AND category_id IS NULL))
+                    AND CURRENT_DATE BETWEEN start_date AND end_date
+                    ORDER BY 
+                        (service_id = ?) DESC,
+                        (category_id = ?) DESC
+                    LIMIT 1
+                """;
+
+                try (PreparedStatement pstmt = conn.prepareStatement(discountQuery)) {
+                    pstmt.setInt(1, serviceId);
+                    pstmt.setInt(2, categoryId);
+                    pstmt.setInt(3, serviceId);
+                    pstmt.setInt(4, categoryId);
+
+                    try (ResultSet rs = pstmt.executeQuery()) {
+                        if (rs.next()) {
+                            double discountRate = rs.getDouble("discount_rate");
+                            item.put("discountRate", discountRate);
+                            item.put("discountName", rs.getString("name"));
+                            item.put("discountDescription", rs.getString("description"));
+                        } else {
+                            item.put("discountRate", 0.0);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
         session.setAttribute("selectedCartItems", selectedCartItems);
      // Step 5: Forward to the cartCheckout page

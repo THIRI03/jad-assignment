@@ -81,7 +81,7 @@ public class BookingDAO {
         public boolean createBooking(Booking booking) {
             String sql = "INSERT INTO bookings (userid, categoryid, serviceid, booking_date, booking_time, duration, "
                        + "service_address, special_request, status, total_price, created) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, CURRENT_TIMESTAMP)";
+                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Not Completed', ?, CURRENT_TIMESTAMP)";
 
             try (Connection connection = DBConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(sql)) {

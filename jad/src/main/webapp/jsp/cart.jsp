@@ -60,6 +60,12 @@
                         String time = item.getOrDefault("time", "N/A").toString();
                         String address = item.getOrDefault("serviceAddress", "N/A").toString();
                         String specialRequest = item.getOrDefault("specialRequest", "N/A").toString();
+                        
+                     // Discount details
+                        String discountName = (String) item.getOrDefault("discountName", null);
+                        String discountDescription = (String) item.getOrDefault("discountDescription", null);
+                        String discountEndDate = (String) item.getOrDefault("discountEndDate", null);
+                        Double discountRate = (Double) item.getOrDefault("discountRate", 0.0);
             %>
             <div class="cart-item">
                 <div class="cart-item-left">
@@ -77,6 +83,15 @@
                     <p>Time: <%= time %></p>
                     <p>Address: <%= address %></p>
                     <p>Special Request: <%= specialRequest %></p>
+                    
+                    <% if (discountName != null) { %>
+                    <div class="discount-info">
+                        <p class="discount-message">
+                            Enjoy "<strong><%= discountDescription %></strong>" with <%= discountName %>!
+                            Discount ends on <%= discountEndDate %>.
+                        </p>
+                    </div>
+                    <% } %>
                 </div>
                 <div class="cart-item-right">
                     <button type="button" onclick="removeFromCart(<%= i %>)" class="remove-btn">Remove from Cart</button>

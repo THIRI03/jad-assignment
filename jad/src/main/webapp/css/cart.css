@@ -208,3 +208,14 @@ body {
 .confirm-btn:hover {
     background-color: #286090;
 }
+
+.discount-info {
+    background-color: #e0ffe0;
+    border: 1px solid #70b570;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    color: #2d6b2d;
+    font-weight: bold;
+    text-align: center;
+}

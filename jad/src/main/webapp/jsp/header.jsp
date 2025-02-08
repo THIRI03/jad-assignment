@@ -67,7 +67,7 @@
                 %>
                         <li><a href="<%= request.getContextPath() %>/jsp/profile.jsp">Profile</a></li>
                         <li><a href="<%= request.getContextPath() %>/CartServlet?fetch=true">Cart</a></li>
-                        <li><a href="<%= request.getContextPath() %>/jsp/serviceHistory.jsp">Service History</a></li>
+                        <li><a href="<%= request.getContextPath() %>/jsp/serviceHistory.jsp">Booking History</a></li>
                          <li><a href="<%= request.getContextPath() %>/jsp/yourFeedback.jsp">Feedback</a></li>
                 <% 
                     }

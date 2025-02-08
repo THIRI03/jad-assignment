@@ -1,3 +1,9 @@
+/*-- 
+    JAD-CA2
+    Class-DIT/FT/2A/23
+    Student Name: Moe Myat Thwe
+    Admin No.: P2340362
+--*/
 package com.cleaningService.servlet;
 
 import jakarta.servlet.ServletException;
@@ -8,6 +14,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +25,7 @@ import com.cleaningService.dao.BookingDAO;
 import com.cleaningService.model.Booking;
 import com.cleaningService.util.EmailUtil;
 import com.cleaningService.util.AuthUtil;
+import com.cleaningService.util.DBConnection;
 
 @WebServlet("/ConfirmCheckoutServlet")
 public class ConfirmCheckoutServlet extends HttpServlet {
@@ -54,6 +65,7 @@ public class ConfirmCheckoutServlet extends HttpServlet {
             booking.setTime((String) item.get("time"));
             booking.setServiceAddress((String) item.get("serviceAddress"));
             booking.setSpecialRequest((String) item.get("specialRequest"));
+            booking.setStatus("Not Completed"); 
 
             Object userIdObj = session.getAttribute("userId");
             if (userIdObj instanceof Integer) {
@@ -69,20 +81,79 @@ public class ConfirmCheckoutServlet extends HttpServlet {
             }
         }
 
-        // Step 3: Clear cart after successful checkout
+        // Step 3: Apply discounts and calculate total amounts
+        double subtotal = 0.0;
+        double totalDiscountAmount = 0.0;
+        String discountMessage = "";
+
+        try (Connection conn = DBConnection.getConnection()) {
+            for (Map<String, Object> item : selectedCartItems) {
+                int serviceId = Integer.parseInt(item.get("serviceId").toString());
+                int categoryId = Integer.parseInt(item.get("categoryId").toString());
+                double itemPrice = Double.parseDouble(item.get("price").toString().replace("$", ""));
+
+                // Query to get the best applicable discount
+                String discountQuery = """
+                    SELECT name, discount_rate 
+                    FROM Discount
+                    WHERE status = 'Active'
+                    AND (service_id = ? OR category_id = ? OR (service_id IS NULL AND category_id IS NULL))
+                    AND CURRENT_DATE BETWEEN start_date AND end_date
+                    ORDER BY 
+                        (service_id = ?) DESC,
+                        (category_id = ?) DESC
+                    LIMIT 1
+                """;
+
+                try (PreparedStatement pstmt = conn.prepareStatement(discountQuery)) {
+                    pstmt.setInt(1, serviceId);
+                    pstmt.setInt(2, categoryId);
+                    pstmt.setInt(3, serviceId);
+                    pstmt.setInt(4, categoryId);
+
+                    try (ResultSet rs = pstmt.executeQuery()) {
+                        double discountRate = 0.0;
+                        String discountName = "";
+
+                        if (rs.next()) {
+                            discountRate = rs.getDouble("discount_rate");
+                            discountName = rs.getString("name");
+
+                            // Set discount message
+                            if (discountRate > 0 && discountMessage.isEmpty()) {
+                                discountMessage = "Enjoy our " + discountRate + "% discount on " + discountName + "!";
+                            }
+                        }
+
+                        // Apply discount and calculate subtotal
+                        double discountAmount = itemPrice * discountRate / 100;
+                        double discountedPrice = itemPrice - discountAmount;
+
+                        subtotal += discountedPrice;
+                        totalDiscountAmount += discountAmount;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.getWriter().write("Error applying discounts: " + e.getMessage());
+            return;
+        }
+
+
+        // Step 4: Calculate GST and final total
+        double gst = subtotal * 0.09;
+        double finalAmount = subtotal + gst;
+
+        // Step 5: Clear cart after successful checkout
         session.removeAttribute("cart");
 
-        // Step 4: Send confirmation email
+        // Step 6: Send confirmation email
         String userEmail = (String) session.getAttribute("userEmail");
 
         try {
-            // Prepare email content
-            double subtotal = 90.0;  // Replace with actual subtotal from cart
-            double gst = subtotal * 0.07;
-            double discount = subtotal * 0.10;
-            double finalAmount = subtotal + gst - discount;
-
-            String emailContent = generateInvoiceEmail(selectedCartItems, subtotal, gst, discount, finalAmount);
+            // Generate email content with the dynamic amounts
+            String emailContent = generateInvoiceEmail(selectedCartItems, subtotal, gst, 0, finalAmount);
 
             // Send the email
             EmailUtil.sendEmail(userEmail, "Payment Confirmation", emailContent);
@@ -94,7 +165,9 @@ public class ConfirmCheckoutServlet extends HttpServlet {
             return;
         }
 
-        // Step 5: Display success message
+
+
+        // Step 7: Display success message
         response.setContentType("text/html");
 
         response.getWriter().write("<html>");
