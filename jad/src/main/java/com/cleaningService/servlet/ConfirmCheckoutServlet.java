@@ -45,51 +45,26 @@ public class ConfirmCheckoutServlet extends HttpServlet {
             return;
         }
 
-        // Step 2: Save bookings to the database
+     // Step 2: Save bookings to the database
         BookingDAO bookingDAO = new BookingDAO();
-        for (Map<String, Object> item : selectedCartItems) {
-            Booking booking = new Booking();
 
-            if (item.containsKey("serviceId") && item.containsKey("categoryId")) {
-                booking.setServiceId(Integer.parseInt(item.get("serviceId").toString()));
-                booking.setCategoryId(Integer.parseInt(item.get("categoryId").toString()));
-            } else {
-                response.getWriter().write("Service or Category ID is missing for booking: " + item.get("serviceName"));
-                return;
-            }
-
-            booking.setServiceName((String) item.get("serviceName"));
-            booking.setDuration(Integer.parseInt(item.get("duration").toString()));
-            booking.setTotalPrice(Double.parseDouble(item.get("price").toString().replace("$", "")));
-            booking.setDate((String) item.get("date"));
-            booking.setTime((String) item.get("time"));
-            booking.setServiceAddress((String) item.get("serviceAddress"));
-            booking.setSpecialRequest((String) item.get("specialRequest"));
-            booking.setStatus("Not Completed"); 
-
-            Object userIdObj = session.getAttribute("userId");
-            if (userIdObj instanceof Integer) {
-                booking.setUserId((Integer) userIdObj);
-            } else {
-                response.getWriter().write("Invalid user session.");
-                return;
-            }
-
-            if (!bookingDAO.createBooking(booking)) {
-                response.getWriter().write("Failed to save booking for service: " + booking.getServiceName());
-                return;
-            }
-        }
-
-        // Step 3: Apply discounts and calculate total amounts
         double subtotal = 0.0;
         double totalDiscountAmount = 0.0;
-        String discountMessage = "";
 
         try (Connection conn = DBConnection.getConnection()) {
             for (Map<String, Object> item : selectedCartItems) {
-                int serviceId = Integer.parseInt(item.get("serviceId").toString());
-                int categoryId = Integer.parseInt(item.get("categoryId").toString());
+                Booking booking = new Booking();
+
+                if (item.containsKey("serviceId") && item.containsKey("categoryId")) {
+                    booking.setServiceId(Integer.parseInt(item.get("serviceId").toString()));
+                    booking.setCategoryId(Integer.parseInt(item.get("categoryId").toString()));
+                } else {
+                    response.getWriter().write("Service or Category ID is missing for booking: " + item.get("serviceName"));
+                    return;
+                }
+
+                booking.setServiceName((String) item.get("serviceName"));
+                booking.setDuration(Integer.parseInt(item.get("duration").toString()));
                 double itemPrice = Double.parseDouble(item.get("price").toString().replace("$", ""));
 
                 // Query to get the best applicable discount
@@ -105,33 +80,44 @@ public class ConfirmCheckoutServlet extends HttpServlet {
                     LIMIT 1
                 """;
 
+                double discountRate = 0.0;
                 try (PreparedStatement pstmt = conn.prepareStatement(discountQuery)) {
-                    pstmt.setInt(1, serviceId);
-                    pstmt.setInt(2, categoryId);
-                    pstmt.setInt(3, serviceId);
-                    pstmt.setInt(4, categoryId);
+                    pstmt.setInt(1, booking.getServiceId());
+                    pstmt.setInt(2, booking.getCategoryId());
+                    pstmt.setInt(3, booking.getServiceId());
+                    pstmt.setInt(4, booking.getCategoryId());
 
                     try (ResultSet rs = pstmt.executeQuery()) {
-                        double discountRate = 0.0;
-                        String discountName = "";
-
                         if (rs.next()) {
                             discountRate = rs.getDouble("discount_rate");
-                            discountName = rs.getString("name");
-
-                            // Set discount message
-                            if (discountRate > 0 && discountMessage.isEmpty()) {
-                                discountMessage = "Enjoy our " + discountRate + "% discount on " + discountName + "!";
-                            }
                         }
-
-                        // Apply discount and calculate subtotal
-                        double discountAmount = itemPrice * discountRate / 100;
-                        double discountedPrice = itemPrice - discountAmount;
-
-                        subtotal += discountedPrice;
-                        totalDiscountAmount += discountAmount;
                     }
+                }
+             // Apply discount and calculate prices
+                double discountAmount = itemPrice * discountRate / 100;
+                double discountedPrice = itemPrice - discountAmount;
+
+                subtotal += discountedPrice;
+                totalDiscountAmount += discountAmount;
+
+                booking.setTotalPrice(discountedPrice);
+                booking.setDate((String) item.get("date"));
+                booking.setTime((String) item.get("time"));
+                booking.setServiceAddress((String) item.get("serviceAddress"));
+                booking.setSpecialRequest((String) item.get("specialRequest"));
+                booking.setStatus("Not Completed");
+
+                Object userIdObj = session.getAttribute("userId");
+                if (userIdObj instanceof Integer) {
+                    booking.setUserId((Integer) userIdObj);
+                } else {
+                    response.getWriter().write("Invalid user session.");
+                    return;
+                }
+
+                if (!bookingDAO.createBooking(booking)) {
+                    response.getWriter().write("Failed to save booking for service: " + booking.getServiceName());
+                    return;
                 }
             }
         } catch (SQLException e) {
@@ -153,7 +139,7 @@ public class ConfirmCheckoutServlet extends HttpServlet {
 
         try {
             // Generate email content with the dynamic amounts
-            String emailContent = generateInvoiceEmail(selectedCartItems, subtotal, gst, 0, finalAmount);
+        	String emailContent = generateInvoiceEmail(selectedCartItems, subtotal, gst, totalDiscountAmount, finalAmount);
 
             // Send the email
             EmailUtil.sendEmail(userEmail, "Payment Confirmation", emailContent);
@@ -189,10 +175,10 @@ public class ConfirmCheckoutServlet extends HttpServlet {
     private String generateInvoiceEmail(List<Map<String, Object>> cart, double subtotal, double gst, double discount, double finalAmount) {
         StringBuilder invoice = new StringBuilder();
         invoice.append("<html><body>");
-        invoice.append("<h1>Payment Confirmation</h1>");
+        invoice.append("<h1 style='color:purple;'>Payment Confirmation</h1>");
         invoice.append("<p>Thank you for using Shiny Cleaning Services! Here are your booking details:</p>");
-        invoice.append("<table border='1' cellpadding='8' cellspacing='0'>");
-        invoice.append("<tr><th>Service</th><th>Price</th><th>Date</th><th>Time</th></tr>");
+        invoice.append("<table border='1' cellpadding='8' cellspacing='0' style='border-collapse:collapse; width:100%;'>");
+        invoice.append("<tr style='background-color:#f2f2f2;'><th>Service</th><th>Price</th><th>Discount Applied</th><th>Date</th><th>Time</th></tr>");
 
         for (Map<String, Object> item : cart) {
             String serviceName = item.get("serviceName").toString();
@@ -200,22 +186,32 @@ public class ConfirmCheckoutServlet extends HttpServlet {
             String date = item.get("date").toString();
             String time = item.get("time").toString();
 
+            double itemPrice = Double.parseDouble(price.replace("$", ""));
+            double itemDiscountRate = item.containsKey("discountRate") ? (double) item.get("discountRate") : 0.0;
+            double itemDiscountAmount = itemPrice * itemDiscountRate / 100;
+
             invoice.append("<tr>");
             invoice.append("<td>").append(serviceName).append("</td>");
-            invoice.append("<td>").append(price).append("</td>");
+            invoice.append("<td>$").append(String.format("%.2f", itemPrice)).append("</td>");
+            invoice.append("<td style='color:green;'>")
+                   .append(itemDiscountRate > 0 ? String.format("%.1f%% ($%.2f)", itemDiscountRate, itemDiscountAmount) : "No Discount")
+                   .append("</td>");
             invoice.append("<td>").append(date).append("</td>");
             invoice.append("<td>").append(time).append("</td>");
             invoice.append("</tr>");
         }
 
         invoice.append("</table>");
+        invoice.append("<br>");
+        invoice.append("<div style='margin-top:20px; font-size:16px;'>");
         invoice.append("<p>Subtotal: $").append(String.format("%.2f", subtotal)).append("</p>");
-        invoice.append("<p>GST (7%): $").append(String.format("%.2f", gst)).append("</p>");
-        invoice.append("<p>Discount: $").append(String.format("%.2f", discount)).append("</p>");
+        invoice.append("<p>GST (9%): $").append(String.format("%.2f", gst)).append("</p>");
         invoice.append("<p><strong>Total Amount: $").append(String.format("%.2f", finalAmount)).append("</strong></p>");
+        invoice.append("</div>");
         invoice.append("<p>We look forward to serving you again!</p>");
         invoice.append("</body></html>");
 
         return invoice.toString();
     }
+
 }

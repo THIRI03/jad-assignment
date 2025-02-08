@@ -1,7 +1,7 @@
 <%@ include file="header.jsp" %>
 <%@ include file="authCheck.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.*, java.sql.*, com.cleaningService.util.DBConnection" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -80,6 +80,16 @@
     .confirm-btn:hover {
         background-color: #286090;
     }
+    
+    .discount-info {
+        background-color: #f9fbe7; /* Light green background */
+        padding: 10px;
+        border: 1px solid #d4e157; /* Green border */
+        border-radius: 8px;
+        color: #33691e;
+        font-weight: bold;
+        margin-top: 10px;
+    }
 </style>
     
 </head>
@@ -92,38 +102,77 @@
             double subtotal = 0.0;
 
             if (selectedCartItems != null && !selectedCartItems.isEmpty()) {
-                for (Map<String, Object> item : selectedCartItems) {
-                	String serviceId = item.get("serviceId").toString();  
-                    String categoryId = item.get("categoryId").toString();
-                    
-                    String serviceName = (String) item.get("serviceName");
-                    String imagePath = (String) item.getOrDefault("imagePath", "images/default-placeholder.png");
-                    String date = (String) item.get("date");
-                    String time = (String) item.get("time");
-                    String duration = item.get("duration").toString();
-                    String address = (String) item.get("serviceAddress");
-                    String specialRequest = (String) item.get("specialRequest");
-                    double price = Double.parseDouble(item.get("price").toString().replace("$", ""));
-                    subtotal += price;
+                try (Connection conn = com.cleaningService.util.DBConnection.getConnection()) {
+                    for (Map<String, Object> item : selectedCartItems) {
+                        String serviceId = item.get("serviceId").toString();
+                        String categoryId = item.get("categoryId").toString();
+
+                        String serviceName = (String) item.get("serviceName");
+                        String imagePath = (String) item.getOrDefault("imagePath", "images/default-placeholder.png");
+                        String date = (String) item.get("date");
+                        String time = (String) item.get("time");
+                        String duration = item.get("duration").toString();
+                        String address = (String) item.get("serviceAddress");
+                        String specialRequest = (String) item.get("specialRequest");
+                        double price = Double.parseDouble(item.get("price").toString().replace("$", ""));
+
+                        subtotal += price;
+
+                        // Fetch discount details for this service
+                        double discountRate = 0.0;
+                        String discountQuery = "SELECT discount_rate "
+                                + "FROM Discount "
+                                + "WHERE status = 'Active' "
+                                + "AND (service_id = ? OR category_id = ? OR (service_id IS NULL AND category_id IS NULL)) "
+                                + "AND CURRENT_DATE BETWEEN start_date AND end_date "
+                                + "ORDER BY (service_id = ?) DESC, (category_id = ?) DESC "
+                                + "LIMIT 1";
+
+                        try (PreparedStatement pstmt = conn.prepareStatement(discountQuery)) {
+                            pstmt.setInt(1, Integer.parseInt(serviceId));
+                            pstmt.setInt(2, Integer.parseInt(categoryId));
+                            pstmt.setInt(3, Integer.parseInt(serviceId));
+                            pstmt.setInt(4, Integer.parseInt(categoryId));
+
+                            try (ResultSet rs = pstmt.executeQuery()) {
+                                if (rs.next()) {
+                                    discountRate = rs.getDouble("discount_rate");
+                                }
+                            }
+                        }
+
+                        double discountAmount = price * discountRate / 100;
         %>
         <input type="hidden" name="serviceId" value="<%= serviceId %>">
         <input type="hidden" name="categoryId" value="<%= categoryId %>">
+
         <!-- Item details section -->
         <div class="checkout-item">
             <div class="checkout-item-left">
                 <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="<%= serviceName %>">
             </div>
             <div class="checkout-item-details">
-                <h2>Service Name :<%= serviceName %></h2>
-                <p>Price: $<%= String.format("%.2f", price) %></p>
-                <p>Date: <%= date %></p>
-                <p>Time: <%= time %></p>
-                <p>Duration: <%= duration %> hours</p>
-                <p>Address: <%= address %></p>
-                <p>Special Request: <%= specialRequest %></p>
-            </div>
+    <h2>Service Name :<%= serviceName %></h2>
+    <p>Price: $<%= String.format("%.2f", price) %></p>
+    <p>Date: <%= date %></p>
+    <p>Time: <%= time %></p>
+    <p>Duration: <%= duration %> hours</p>
+    <p>Address: <%= address %></p>
+    <p>Special Request: <%= specialRequest %></p>
+
+    <% if (item.get("discountRate") != null) { %>
+    <div class="discount-info">
+        <p>Discount Applied: <%= String.format("%.1f", item.get("discountRate")) %>%</p>
+        <p>Discount Amount: $<%= String.format("%.2f", (price * ((Double) item.get("discountRate") / 100))) %></p>
+    </div>
+    <% } %>
+</div>
+            
         </div>
         <% 
+                    }
+                } catch (SQLException e) {
+                    out.println("<p class='error-message'>Error fetching discount details: " + e.getMessage() + "</p>");
                 }
             } else {
         %>
@@ -134,9 +183,8 @@
         <div class="checkout-summary">
             <h3>Invoice Summary</h3>
             <p>Subtotal: $<%= String.format("%.2f", subtotal) %></p>
-            <p>GST (7%): $<%= String.format("%.2f", subtotal * 0.07) %></p>
-            <p>Discount (10%): $<%= String.format("%.2f", subtotal * 0.10) %></p>
-            <p>Total Amount: $<%= String.format("%.2f", subtotal + (subtotal * 0.07) - (subtotal * 0.10)) %></p>
+            <p>GST (9%): $<%= String.format("%.2f", subtotal * 0.09) %></p>
+            <p>Total Amount: $<%= String.format("%.2f", subtotal + (subtotal * 0.09)) %></p>
         </div>
         <form action="<%= request.getContextPath() %>/ConfirmCheckoutServlet" method="POST">
             <button type="submit" class="confirm-btn">Make Payment</button>
