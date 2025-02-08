@@ -11,18 +11,19 @@
 <%@ include file="header.jsp" %>
 <%@ page import="java.sql.*" %>
 <%
-    // Determine the redirect URL based on user's login status
     String redirectURL;
     if (session != null && session.getAttribute("username") != null) {
-        // If user is logged in, redirect to the services page
         redirectURL = "categories.jsp";
     } else {
-        // If user is not logged in, redirect to the register page
         redirectURL = "register.jsp";
     }
+
     List<Map<String, String>> reviews = new ArrayList<>();
+    List<Map<String, String>> topServices = new ArrayList<>();
+    List<Map<String, String>> lowServices = new ArrayList<>();
     double averageRating = 0.0;
     int totalUsers = 0;
+
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -30,7 +31,7 @@
     try {
         conn = DBConnection.getConnection();
 
-     // Fetch average rating and total feedback count
+        // Fetch average rating and total feedback count
         String avgSql = "SELECT AVG(rating) AS average_rating, COUNT(*) AS total_users FROM feedback";
         pstmt = conn.prepareStatement(avgSql);
         rs = pstmt.executeQuery();
@@ -45,12 +46,45 @@
         String feedbackSql = "SELECT comment, rating FROM feedback WHERE rating >= 4 AND comment IS NOT NULL ORDER BY id DESC LIMIT 3";
         pstmt = conn.prepareStatement(feedbackSql);
         rs = pstmt.executeQuery();
-
         while (rs.next()) {
             Map<String, String> review = new HashMap<>();
             review.put("comment", rs.getString("comment"));
             review.put("rating", String.valueOf(rs.getInt("rating")));
             reviews.add(review);
+        }
+        rs.close();
+        pstmt.close();
+
+        // Query for top services
+        String topServicesSql = "SELECT s.name AS service_name, s.image AS image_path, COUNT(b.id) AS booking_count " +
+                                "FROM service s LEFT JOIN bookings b ON s.id = b.serviceid " +
+                                "GROUP BY s.id, s.name, s.image " +
+                                "ORDER BY booking_count DESC LIMIT 3";
+        pstmt = conn.prepareStatement(topServicesSql);
+        rs = pstmt.executeQuery();
+        while (rs.next()) {
+            Map<String, String> service = new HashMap<>();
+            service.put("name", rs.getString("service_name"));
+            service.put("count", String.valueOf(rs.getInt("booking_count")));
+            service.put("imagePath", rs.getString("image_path"));
+            topServices.add(service);
+        }
+        rs.close();
+        pstmt.close();
+
+        // Fetch bottom 3 services by booking count
+        String lowServicesSql = "SELECT s.name AS service_name, s.image AS image_path, COUNT(b.id) AS booking_count " +
+                                "FROM service s LEFT JOIN bookings b ON s.id = b.serviceid " +
+                                "GROUP BY s.id, s.name, s.image " +
+                                "ORDER BY booking_count ASC LIMIT 3";
+        pstmt = conn.prepareStatement(lowServicesSql);
+        rs = pstmt.executeQuery();
+        while (rs.next()) {
+            Map<String, String> service = new HashMap<>();
+            service.put("name", rs.getString("service_name"));
+            service.put("count", String.valueOf(rs.getInt("booking_count")));
+            service.put("imagePath", rs.getString("image_path"));
+            lowServices.add(service);
         }
     } catch (Exception e) {
         out.println("An error occurred while fetching data: " + e.getMessage());
@@ -61,7 +95,6 @@
         if (conn != null) try { conn.close(); } catch (Exception e) {}
     }
 %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -182,6 +215,82 @@
         </div>
     </section>
    
+ <!-- Top and Bottom Services Section -->
+<section class="services-carousel-section">
+    <div class="container">
+        <!-- Top Services -->
+        <h2 class="section-title mt-5 text-center">Top 3 High-Demand Services</h2>
+        <div id="topServicesCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <% 
+                    int index = 0;
+                    for (Map<String, String> service : topServices) { 
+                        String activeClass = (index == 0) ? "active" : "";
+                        String imagePath = service.get("imagePath");
+                %>
+                    <div class="carousel-item <%= activeClass %>">
+                        <div class="carousel-content text-center" style="padding: 30px;">
+                            <h3 style="font-size: 1.6rem; margin-bottom: 15px;"><%= service.get("name") %></h3>
+                            <p style="font-size: 1.1rem; margin-bottom: 20px;">Number of Bookings: <%= service.get("count") %></p>
+                            <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Service Image" 
+                                 style="max-width: 90%; height: 350px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                        </div>
+                    </div>
+                <% 
+                        index++;
+                    } 
+                %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#topServicesCarousel" data-bs-slide="prev"
+                    style="background-color: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 50px; height: 50px;">
+                <span class="carousel-control-prev-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#topServicesCarousel" data-bs-slide="next"
+                    style="background-color: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 50px; height: 50px;">
+                <span class="carousel-control-next-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <!-- Low Services -->
+        <h2 class="section-title mt-5 text-center">Top 3 Low-Demand Services</h2>
+        <div id="lowServicesCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <% 
+                    index = 0;
+                    for (Map<String, String> service : lowServices) { 
+                        String activeClass = (index == 0) ? "active" : "";
+                        String imagePath = service.get("imagePath");
+                %>
+                    <div class="carousel-item <%= activeClass %>">
+                        <div class="carousel-content text-center" style="padding: 30px;">
+                            <h3 style="font-size: 1.6rem; margin-bottom: 15px;"><%= service.get("name") %></h3>
+                            <p style="font-size: 1.1rem; margin-bottom: 20px;">Number of Bookings: <%= service.get("count") %></p>
+                            <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Service Image" 
+                                 style="max-width: 90%; height: 350px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                        </div>
+                    </div>
+                <% 
+                        index++;
+                    } 
+                %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#lowServicesCarousel" data-bs-slide="prev"
+                    style="background-color: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 50px; height: 50px;">
+                <span class="carousel-control-prev-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#lowServicesCarousel" data-bs-slide="next"
+                    style="background-color: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 50px; height: 50px;">
+                <span class="carousel-control-next-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
+ 
+ 
     
 <!-- Section 4: Benefits for Your Organization -->
 <section class="benefits-section">
@@ -256,6 +365,6 @@ gallery/betterService.png" alt="Service Icon" class="benefit-icon">
 
     <!-- Footer -->
     <jsp:include page="../html/footer.html" />
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
