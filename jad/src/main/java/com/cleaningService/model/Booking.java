@@ -1,3 +1,6 @@
+/*Name: Thiri Lae Win
+	Class: DIT/FT/2A/23
+	ADM Num: 2340739*/
 package com.cleaningService.model;
 
 public class Booking {
@@ -113,13 +116,22 @@ public class Booking {
         return serviceAddress;
     }
 
+
     public void setServiceAddress(String serviceAddress) {
         this.serviceAddress = serviceAddress;
     }
 
-    public String getStatus() {
-        return status;
-    }
+
+
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+
+
 
     public void setStatus(String status) {
         this.status = status;
@@ -132,4 +144,108 @@ public class Booking {
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
+
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+
+
+	public void setCustomerName(String custerName) {
+		this.customerName = custerName;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getSpecialRequest() {
+		return specialRequest;
+	}
+
+	public void setSpecialRequest(String specialRequest) {
+		this.specialRequest = specialRequest;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String i) {
+		this.time = i;
+	}
+
+	public String getServiceAddress() {
+		return serviceAddress;
+	}
+
+	public void setServiceAddress(String serviceAddress) {
+		this.serviceAddress = serviceAddress;
+	}
+
+	public String getServiceImage() {
+		return serviceImage;
+	}
+
+
+
+	public void setServiceImage(String serviceImage) {
+		this.serviceImage = serviceImage;
+	}
+
+
+
+	public double getTotal_price() {
+		return total_price;
+	}
+
+
+
+	public void setTotal_price(double total_price) {
+		this.total_price = total_price;
+	}
 }
+

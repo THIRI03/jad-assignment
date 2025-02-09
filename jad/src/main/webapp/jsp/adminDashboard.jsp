@@ -1,9 +1,10 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Thiri Lae Win
     Admin No.: P2340739
 --%>
+
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import = "java.util.List" %>
@@ -12,7 +13,8 @@
 <%@page import = "com.cleaningService.dao.BookingDAO" %>
 <%@page import = "com.cleaningService.dao.FeedbackDAO" %>
 <%@page import = "com.cleaningService.model.Booking" %>
-<%@ include file="../html/adminNavbar.html" %>
+<%@ include file="/jsp/adminNavbar.jsp" %>
+
 
 <!DOCTYPE html>
 <html>
@@ -65,7 +67,8 @@ int numOfFeedbacks = feedbackDAO.retrieveFeedbackNum();
 
     <!-- Bookings Table -->
     <%
-    List<Booking> bookings = bookingDAO.retrieveAllBookings();
+    String sortColumn = "id";
+    List<Booking> bookings = bookingDAO.retrieveBookingForDashboard();
 	%>
 
     <h2>Recent Bookings</h2>

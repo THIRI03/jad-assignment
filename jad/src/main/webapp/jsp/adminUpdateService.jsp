@@ -1,9 +1,11 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Thiri Lae Win
     Admin No.: P2340739
 --%>
+
+
 
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -13,8 +15,8 @@
 <%@ page import = "com.cleaningService.dao.ServiceDAO" %> 
 <%@ page import = "com.cleaningService.dao.CategoryDAO" %> 
 <%@ page import = "java.util.List" %>
-<%@ include file="authCheck.jsp" %>
-<%@ include file="../html/adminNavbar.html" %>
+<%-- <%@ include file="authCheck.jsp" %>--%>
+<%@ include file="/jsp/adminNavbar.jsp" %>
 
 
 <!DOCTYPE html>
@@ -22,93 +24,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Update Service</title>
-<style>
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-.container {
-	margin-top: 60px;
-    width: 80%;
-    margin: 0 auto;
-    padding-top: 50px;
-}
-
-h2 {
-    text-align: center;
-    color: #333;
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-form {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
-    font-size: 16px;
-}
-
-input[type="text"], input[type="number"], textarea, select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-input[type="text"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: #007bff;
-}
-
-textarea {
-    resize: vertical;
-}
-
-input[type="submit"] {
-    width: 100%;
-    padding: 15px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-input[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-/* Styling for the back link */
-a {
-    display: block;
-    text-align: center;
-    margin-top: 20px;
-    color: #007bff;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-</style>
+    <link rel="stylesheet" href="<%=request.getContextPath() %>/css/adminUpdateService.css">
 </head>
 <body>
 <div class="container">
@@ -127,7 +43,7 @@ a:hover {
 <h2>Update Service</h2>
 
 <!-- The form to update service details -->
-<form method="post" action="<%=request.getContextPath() %>/UpdateServiceServlet">
+<form method="post" action="<%=request.getContextPath() %>/UpdateServiceServletForAdmin" enctype="multipart/form-data">
     <!-- Hidden input to pass the serviceId -->
     <input type="hidden" name="serviceId" value="<%= service.getId() %>">
 
@@ -153,12 +69,28 @@ a:hover {
             }
         %>
     </select><br>
+        <!-- Service Image -->
+        <label for="serviceImage">Service Image:</label>
+        
+        <!-- If the service has an image, display it -->
+        <% String imagePath = service.getImage(); %>
+        <% 
+        if (imagePath != null && !imagePath.isEmpty()) { %>
+            <div>
+                <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Current Image" width="100" />
+            </div>
+        <% } %>
+        
+        <!-- File input to allow the user to upload a new image -->
+        <input type="file" id="serviceImage" name="serviceImage"><br><br>
 
-    <input type="submit" value="Update Service">
+
+    <button type="submit" value="Update Service">Update Service</button>
+    <a href="adminRetrieveServices.jsp">Go back to the service list</a>
+    
 </form>
 
 </div>
 
-<a href="adminRetrieveServices.jsp">Go back to the service list</a>
 </body>
 </html>

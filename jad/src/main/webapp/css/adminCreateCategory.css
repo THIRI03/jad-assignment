@@ -1,0 +1,83 @@
+/* JAD-CA2
+Class-DIT/FT/2A/23
+Student Name: Thiri Lae Win
+Admin No.: P2340739  */
+
+@charset "UTF-8";
+
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-color: #f4f7fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.card {
+    background-color: #ffffff;
+    padding: 30px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    width: 450px;
+    text-align: left;
+}
+
+h2 {
+    color: #333;
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 8px;
+    display: block;
+}
+
+input[type="text"], 
+textarea, 
+input[type="file"] {
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+
+textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+input[type="file"] {
+    padding: 5px;
+    background-color: #f9f9f9;
+    font-size: 14px;
+}
+
+.card form {
+    display: flex;
+    flex-direction: column;
+}

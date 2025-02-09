@@ -1,44 +1,90 @@
-/*     JAD-CA1
+/* JAD-CA2
 Class-DIT/FT/2A/23
 Student Name: Thiri Lae Win
-Admin No.: P2340739 */
-
-
-@charset "UTF-8";
+Admin No.: P2340739  */
+/* Resetting default browser styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
 
 body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        form {
-            width: 50%;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-        label {
-            font-size: 1rem;
-            margin-bottom: 8px;
-        }
-        input[type="text"], input[type="number"], input[type="submit"], textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            font-size: 1rem;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding-top: 20px;
-        }
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 10px;
+  width: 600px;
+  max-width: 600px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+label {
+  display: block;
+  font-size: 16px;
+  color: #555;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input[type="file"] {
+  font-size: 14px;
+  padding: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+a {
+  display: block;
+  text-align: center;
+  color: #007BFF;
+  text-decoration: none;
+  margin-top: 15px;
+}
+
+a:hover {
+  text-decoration: none;
+}

@@ -1,0 +1,121 @@
+/* JAD-CA2
+Class-DIT/FT/2A/23
+Student Name: Thiri Lae Win
+Admin No.: P2340739  */
+@charset "UTF-8";
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #333333;  /* Dark gray text */
+}
+
+.menu-toggle {
+    display: none;
+}
+
+.main-content {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.left-container, .right-container {
+    width: 48%;
+    float: left;
+    margin-right: 4%;
+}
+
+.right-container {
+    margin-right: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.btn-create, .btn-update, .btn-delete {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-create {
+    background-color: #6b4423;  /* Green */
+}
+
+.btn-create:hover {
+        background-color: #be916a;
+}
+
+.btn-update {
+    background-color: #FFA500;  /* Orange */
+}
+
+.btn-update:hover {
+    background-color: #e68900;
+}
+
+.btn-delete {
+    background-color: #E74C3C;  /* Red */
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+}
+
+.reset-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #6b4423;  /* Blue */
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.reset-btn:hover {
+    background-color: #be916a;
+}
+
+form {
+    margin-bottom: 15px;
+}
+
+input[type="text"], select {
+    padding: 8px;
+    font-size: 14px;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+button[type="submit"]{
+    margin-top: 10px;
+}

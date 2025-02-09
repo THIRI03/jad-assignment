@@ -1,5 +1,5 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Thiri Lae Win
     Admin No.: P2340739
@@ -11,8 +11,6 @@
 <%@ page import = "java.util.List" %>
 <%@ page import = "com.cleaningService.model.Category" %> 
 <%@ page import = "com.cleaningService.dao.CategoryDAO" %>
-<%@ include file="authCheck.jsp" %>
-<%@ include file="../html/adminNavbar.html" %>
 
 
 <!DOCTYPE html>
@@ -20,113 +18,70 @@
 <head>
 <meta charset="UTF-8">
 <title>Update Category</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f9;
-    }
-    .container {
-        max-width: 800px;
-        margin: 50px auto;
-        padding: 20px;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .card {
-        padding: 20px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        background: #f9f9f9;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .card input[type="text"] {
-        width: 70%;
-        padding: 10px;
-        margin-right: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-    .card button {
-        padding: 10px 15px;
-        background-color: #007bff;
-        border: none;
-        color: #fff;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    .card button:hover {
-        background-color: #0056b3;
-    }
-</style>
-</head>
+  <link rel="stylesheet" href="<%=request.getContextPath() %>/css/adminUpdateCategory.css">
+
 <body>
-    <div class="container">
-        <h2>Update Categories</h2>
-        <%
-        String categoryIdStr = request.getParameter("categoryId");
+<h1>Update Category</h1>
 
-        if(categoryIdStr == null){
-        	%><script>
-        	alert('categoryId not found.')
-        	return;
-        	</script>
-        	<%
-        }else{
-        	int categoryId = Integer.parseInt(categoryIdStr);
+    <%
+    String message = request.getParameter("message");
+    if(message != null){
+    	%>
+    	<script>alert("<%=message%>");</script>
+    	<%
+    }
+    %>
+
+  
+
+<%
+    // Retrieve serviceId from the URL parameter
+    String categoryIdStr = request.getParameter("categoryId");
+	int categoryId = 0;
+    if(categoryIdStr != null){
+        categoryId = Integer.parseInt(categoryIdStr);
+    }else{
+    	categoryId = (int) request.getAttribute("categoryId");
+    }
+    // Fetch the service details from the database using serviceId
+    CategoryDAO categoryDAO = new CategoryDAO();
+    Category category = categoryDAO.retrieveCategoryById(categoryId);
+	System.out.print(category.getId());
+
+%>
+	<form action="<%=request.getContextPath() %>/UpdateCategoryServletForAdmin" method="post" enctype="multipart/form-data">
+	    <input type="hidden" name="categoryId" value="<%= category.getId() %>"> 
+	    <div class="form-group">
+	        <label for="name">Category Name:</label>
+	        <input type="text" id="name" name="name" value="<%= category.getCategoryName() %>" required>
+	    </div>
+	
+	    <div class="form-group">
+	        <label for="description">Description:</label>
+	        <textarea id="description" name="description" required><%= category.getDescription() %></textarea>
+	    </div>
+	
+	    <div class="form-group">
+	        <% String imagePath = category.getImage(); 
         
-            // Fetch all categories from the database
-            CategoryDAO categoryDAO = new CategoryDAO();
-            Category ctg = new Category();
-            ctg = categoryDAO.retrieveCategoryById(categoryId);
+	        if (imagePath != null && !imagePath.isEmpty()) { %>
+	            <div>
+	                <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Current Image" width="100" />
+	            </div>
+	        <% } %>
+        
+        <!-- File input to allow the user to upload a new image -->
+        <input type="file" id="image" name="image"><br><br>
 
-            if (ctg != null) {
-        %>
-        <div class="card">
-            <form method="post">
-                <input type="hidden" name="categoryId" value="<%= ctg.getId() %>">
-                <input type="text" name="categoryName" value="<%= ctg.getCategoryName()%>" required>
-                <button type="submit">Update</button>
-            </form>
-        </div>
-        <%               
-            } else {
-        %>
-        <p>No categories found.</p>
-        <%
-            }
-            
-            if("POST".equalsIgnoreCase(request.getMethod())){
-            	try{
-            		String categoryName = request.getParameter("categoryName");
-            		Category categoryToUpdate = new Category();
-            		categoryToUpdate.setId(categoryId);
-            		categoryToUpdate.setCategoryName(categoryName);
-            		boolean isUpdate = categoryDAO.updateCategory(categoryToUpdate);
-            		
-            		if(isUpdate){
-            			%>
-            			<script>alert('Category name updated successfully.')</script>
-            			<%
-            			response.sendRedirect("adminRetrieveAllCategory.jsp");
+	    </div>
+	
+	    <div class="form-group">
+	        <button type="submit">Update Category</button>
+	    </div>
+	    <button type="submit">
+		    <a href="/jad/jsp/adminRetrieveAllCategories.jsp" class="btn-back" style="text-decoration: none;">Back to Categories</a>
+		</button>
 
-            		}else{
-            			%>
-            			<script>alert('Failed to update category name.')</script>
-            			<%
-            		}
-            	}catch (Exception e) {
-                    e.printStackTrace();
-                    out.println("<p>Error occurred while creating the category.</p>");
-                }
-            }
-            }
-        %>
-    </div>
+	</form>
 </body>
 </html>
