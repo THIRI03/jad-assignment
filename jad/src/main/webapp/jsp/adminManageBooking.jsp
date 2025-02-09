@@ -25,6 +25,16 @@
 <header>
     <h1>Bookings</h1>
     
+    <%
+	String message = (String)request.getAttribute("message");
+    
+    if(message != null){
+    	%>
+    	<script>alert("<%=message%>")</script>
+    	<% 
+    }
+    %>
+    
     <form action="<%=request.getContextPath()%>/SortAndFilterBookingByDateAndIdServlet" method="GET">
 	    <select id="sortBooking" name="sortBooking" onchange="this.form.submit()">
 	    	<option value="id" <%= "id".equals(request.getParameter("sortBooking")) ? "selected" : "" %>>Booking ID</option>

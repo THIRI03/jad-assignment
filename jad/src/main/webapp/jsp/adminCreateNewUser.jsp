@@ -18,6 +18,15 @@
 </head>
 <body>
 <h1>Create New User</h1>
+<%if(request.getAttribute("message") != null){
+	%>
+	
+	    <script type="text/javascript">
+        alert("<%=request.getAttribute("message") %>");
+    </script>
+	<%
+	
+} %>
 
     <!-- User Registration Form -->
     <form action="<%=request.getContextPath()%>/CreateNewUserForAdminServlet" method="POST">

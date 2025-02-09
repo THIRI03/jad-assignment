@@ -84,7 +84,7 @@
 	            <p><strong>Description:</strong> <%= service.getDescription() %></p>
 	
 	            <!-- Update Button -->
-	            <form action="/jsp/adminUpdateService.jsp" method="get">
+	            <form action="adminUpdateService.jsp" method="get">
 				    <input type="hidden" name="serviceId" value="<%= service.getId() %>">
 				    <input type="hidden" name="action" value="update">
 				    <button class="btn-update" type="submit">Update</button>

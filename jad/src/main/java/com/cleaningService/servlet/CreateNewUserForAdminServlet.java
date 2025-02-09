@@ -67,7 +67,7 @@ public class CreateNewUserForAdminServlet extends HttpServlet {
         if (isCreated) {
             request.setAttribute("message", "User created successfully");
         } else {
-            request.setAttribute("error", "Failed to create service.");
+            request.setAttribute("message", "Failed to create service.");
         }
 
         request.getRequestDispatcher("/jsp/adminRetrieveMember.jsp").forward(request, response);
