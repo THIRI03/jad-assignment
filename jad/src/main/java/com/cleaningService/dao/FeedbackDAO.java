@@ -7,19 +7,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.cleaningService.model.Feedback;
 import com.cleaningService.util.DBConnection;
 
 public class FeedbackDAO {
-	
-	/* 
+
+	/*
 	 * JAD-CA1
 	 * Class-DIT/FT/2A/23
 	 * Student Name: Moe Myat Thwe
 	 * Admin No.: P2340362
 	 */
-	
+
     public boolean addFeedback(int userId, int bookingId, int subServiceId, String comments, int rating) {
         String sql = "INSERT INTO feedback (user_id, booking_id, service_id, comment, rating) VALUES (?, ?, ?, ?, ?)";
 
@@ -40,14 +39,14 @@ public class FeedbackDAO {
         return false;
     }
 
-	
-	/* 
-	 * JAD-CA1
+
+	/*
+	 * JAD-CA2
 	 * Class-DIT/FT/2A/23
 	 * Student Name: Thiri Lae Win
 	 * Admin No.: P2340739
 	 */
-    
+
     /////////////////////////////////////////////////////////////////////////////
     // ADMIN side
     /////////////////////////////////////////////////////////////////////////////
@@ -67,7 +66,7 @@ public class FeedbackDAO {
 	    }
 	    return count;
     }
-    
+
     public List<Feedback> retrieveAllFeedbacks() {
         List<Feedback> feedbackList = new ArrayList<>();
         String sql = "SELECT fb.id, fb.comment, fb.rating, u.name AS customer_name, s.name AS service_name, fb.bookingid "
@@ -81,14 +80,14 @@ public class FeedbackDAO {
 
             while (rs.next()) {
                 Feedback feedback = new Feedback(0,null,0,null,null,0);
-                
+
                 feedback.setId(rs.getInt("id"));
                 feedback.setUsername(rs.getString("customer_name"));  // Correctly map customer_name
                 feedback.setServiceName(rs.getString("service_name")); // Correctly map service_name
                 feedback.setRating(rs.getInt("rating"));
                 feedback.setComments(rs.getString("comment"));
-                feedback.setBooking_id(rs.getInt("bookingid"));                
-                
+                feedback.setBooking_id(rs.getInt("bookingid"));
+
                 feedbackList.add(feedback);
 
             }
@@ -96,8 +95,43 @@ public class FeedbackDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return feedbackList;  
+        return feedbackList;
     }
     
-    
+    public List<Feedback> retrieveAllFeedbacksByRating(int rating) {
+        List<Feedback> feedbackList = new ArrayList<>();
+        String sql = "SELECT fb.id, fb.comment, fb.rating, u.name AS customer_name, s.name AS service_name, fb.bookingid "
+                     + "FROM feedback fb "
+                     + "JOIN users u ON fb.userid = u.id "
+                     + "JOIN service s ON fb.serviceid = s.id "
+                     + "WHERE rating = ? ";
+        
+
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+               // Set the rating parameter
+               pstmt.setInt(1, rating);
+
+               try (ResultSet rs = pstmt.executeQuery()) {
+                   while (rs.next()) {
+                       Feedback feedback = new Feedback(0, null, 0, null, null, 0);
+                       feedback.setId(rs.getInt("id"));
+                       feedback.setUsername(rs.getString("customer_name"));  // Correctly map customer_name
+                       feedback.setServiceName(rs.getString("service_name")); // Correctly map service_name
+                       feedback.setRating(rs.getInt("rating"));
+                       feedback.setComments(rs.getString("comment"));
+                       feedback.setBooking_id(rs.getInt("bookingid"));
+
+                       feedbackList.add(feedback);
+                   }
+               }
+
+           } catch (SQLException e) {
+               e.printStackTrace();
+           }
+        return feedbackList;
+    }
+
+
 }

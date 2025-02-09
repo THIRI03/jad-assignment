@@ -1,4 +1,4 @@
-/* 
+/*
  * JAD-CA1
  * Class-DIT/FT/2A/23
  * Student Name: Moe Myat Thwe
@@ -6,24 +6,21 @@
  */
 package com.cleaningService.servlet;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.cleaningService.util.DBConnection;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/CartCheckoutServlet")
 public class CartCheckoutServlet extends HttpServlet {

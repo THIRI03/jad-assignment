@@ -12,6 +12,18 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+
+    <%
+    String message = (String)request.getAttribute("message");
+    if(message != null){
+    	%>
+    	<script>alert("<%=message%>");</script>
+    	<%
+    }
+    %>
+
+  
+
 	<%
 	UserDAO userDAO = new UserDAO();
 	User user = new User();

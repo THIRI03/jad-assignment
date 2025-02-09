@@ -1,21 +1,94 @@
+/* 
+    JAD-CA2
+    Class-DIT/FT/2A/23
+    Student Name: Thiri Lae Win
+    Admin No.: P2340739
+*/
+
+@charset "UTF-8";
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
 }
 
 .main-content {
-	padding-top: 80px;
-    margin-left: 250px;
+    padding-top: 80px;
+    margin-left: auto;
     padding: 100px;
 }
 
-.main-content h3 {	
+.main-content h1 {
+    margin-top: 0%;
     margin-bottom: 60px;
 }
 
+.search-reset-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.left-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.right-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.search-btn {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+.reset-form {
+    margin: 0;
+}
+
+.reset-btn {
+    margin-left: 20px;
+    padding: 10px 15px;
+    background-color: #ffc107;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.reset-btn:hover {
+    background-color: #e0a800;
+}
+
 .card-container {
-	margin-top: 10px;
-	padding-top: 40px;
+	margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
@@ -54,11 +127,11 @@ body {
     margin-top: 10px;
 }
 
-.create-btn{
-	background-color: #6b4423;
-}
-
-.btn-update, .btn-upload, .btn-delete {
+.btn-update, 
+.btn-upload, 
+.btn-delete {
+    display: flex;
+    justify-self: center;
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
@@ -72,9 +145,17 @@ body {
     color: white;
 }
 
+.btn-update:hover {
+    background-color: #0056b3;
+}
+
 .btn-upload {
     background-color: #28a745;
     color: white;
+}
+
+.btn-upload:hover {
+    background-color: #218838;
 }
 
 .btn-delete {
@@ -82,3 +163,23 @@ body {
     color: white;
 }
 
+.btn-delete:hover {
+    background-color: #c82333;
+}
+
+.filter-select {
+    margin-left: auto;
+}
+
+.btn-create {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-create:hover {
+    background-color: #138496;
+}

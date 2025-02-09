@@ -1,9 +1,10 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Thiri Lae Win
     Admin No.: P2340739
 --%>
+
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="com.cleaningService.dao.ServiceDAO" %>
@@ -21,74 +22,47 @@
 <head>
 <meta charset="UTF-8">
 <title>Add New Service</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/adminCreateService.css">
+<link rel="stylesheet" href="<%=request.getContextPath() %>/css/adminCreateService.css">
 </head>
 <body>
 
 <%
-    ServiceDAO serviceDAO = new ServiceDAO();
-    CategoryDAO categoryDAO = new CategoryDAO();
-
-    if("POST".equalsIgnoreCase(request.getMethod())){
-        try{
-            String name = request.getParameter("serviceName");
-            String description = request.getParameter("description");
-            String priceStr = request.getParameter("price");
-            String categoryStr = request.getParameter("category");
-            String image = "/gallery/default-image.jpg";
-            double price = Double.parseDouble(priceStr);
-            int category = Integer.parseInt(categoryStr);
-
-            Service service = new Service(name, description, price, category, image);
-            boolean created = serviceDAO.createService(service);
-
-            if(created){
+	boolean isCreated = false;
+	
 %>
-                <div class="message">Service created successfully!</div>
-                
-<%
-			response.sendRedirect("adminRetrieveAllCategories.jsp");
-            }else{
-%>
-                <div class="message error">Service not created! Please try again.</div>
-<%
-            }
-        } catch (Exception e) {
-%>
-            <div class="message error">Error processing form data: <%= e.getMessage() %></div>
-<%
-        }
-    }
-%>
-
-<div class="card">
-    <h1>Create New Service</h1>
-    <form method="POST">
-        <label for="serviceName">Service Name:</label>
-        <input type="text" id="serviceName" name="serviceName" required><br>
-
-        <label for="description">Description:</label>
-        <input id="description" name="description" rows="4" required><br>
-
-        <label for="price">Price (USD):</label>
-        <input type="number" id="price" name="price" step="0.01" required><br>
-
-        <label for="category">Category:</label>
-        <select id="category" name="category" required>
-            <option value="">-- Select a Category --</option>
-            <%
-                List<Category> categories = categoryDAO.getAllCategory();
-                for(Category category: categories){
-            %>
-                <option value="<%= category.getId() %>"><%= category.getCategoryName() %></option>
-            <%
-            }
-            %>
-        </select><br>
-
-        <button type="submit">Add Service</button>
-    </form>
-</div>
-
+<form action="<%=request.getContextPath()%>/CreateNewServiceForAdminServlet" method="post" enctype="multipart/form-data">
+	<div class="card">
+	    <h1>Create New Service</h1>
+	        <label for="serviceName">Service Name:</label>
+	        <input type="text" id="serviceName" name="serviceName" required><br>
+	
+	        <label for="description">Description:</label>
+	        <input type="text" id="description" name="description" rows="4" required><br>
+	
+	        <label for="price">Price (USD):</label>
+	        <input type="number" id="price" name="price" step="0.01" required><br>
+	
+	        <label for="category">Category:</label>
+	        <select id="category" name="category" required>
+	            <option value="">-- Select a Category --</option>
+	            <%
+	            	CategoryDAO categoryDAO = new CategoryDAO();
+	               
+	            List<Category> categories = categoryDAO.getAllCategory();
+	                for(Category category: categories){
+	            %>
+	                <option value="<%= category.getId() %>"><%= category.getCategoryName() %></option>
+	            <%
+	            }
+	            %>
+	        </select><br>
+	        <label for="serviceImage">Service Image:</label>
+	        <input type="file" id="serviceImage" name="serviceImage" required><br><br>
+	
+	        <button type="submit">Add Service</button>
+	        <a href="adminRetrieveServices.jsp" style="text-decoration: none;">Go back to the service list</a>
+	        
+		</div>
+</form>
 </body>
 </html>

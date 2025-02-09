@@ -1,3 +1,6 @@
+/*Name: Thiri Lae Win
+	Class: DIT/FT/2A/23
+	ADM Num: 2340739*/
 package com.cleaningService.model;
 
 public class User {
@@ -9,12 +12,15 @@ public class User {
     private String address;
     private int postalCode;
     private int roleId;
-    
+    private double totalSpent;
+
     public User() {
-    	
+
     }
-    
-    public User(String name, String email, String password, int phoneNum, String address, int postalCode, int roleId) {
+
+
+
+    public User(String name, String email, String password, int phoneNum, String address, int postalCode, int roleId, double totalSpent) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -22,8 +28,19 @@ public class User {
         this.address = address;
         this.postalCode = postalCode;
         this.roleId = roleId;
+        this.totalSpent = totalSpent;
     }
     
+    public User(String name, String email, String password, int phoneNum, String address, int postalCode, int roleId) {
+    	this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phoneNum = phoneNum;
+        this.address = address;
+        this.postalCode = postalCode;
+        this.roleId = roleId;
+    }
+
 	// Getters and Setters
 
     public int getId() {
@@ -73,7 +90,7 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     public int getRoleId() {
 		return roleId;
 	}
@@ -88,5 +105,13 @@ public class User {
 
 	public void setPostalCode(int postalCode) {
 		this.postalCode = postalCode;
+	}
+
+	public double getTotalSpent() {
+		return totalSpent;
+	}
+
+	public void setTotalSpent(double totalSpent) {
+		this.totalSpent = totalSpent;
 	}
 }

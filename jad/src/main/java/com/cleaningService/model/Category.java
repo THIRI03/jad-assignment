@@ -1,3 +1,6 @@
+/*Name: Thiri Lae Win
+	Class: DIT/FT/2A/23
+	ADM Num: 2340739*/
 package com.cleaningService.model;
 
 public class Category {
@@ -7,16 +10,16 @@ public class Category {
 	private String image;
 
 	public Category() {
-		
+
 	}
-	
+
 	public Category(int id, String categoryName, String description, String image) {
 		this.id = id;
 		this.categoryName = categoryName;
 		this.description = description;
 		this.image = image;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}

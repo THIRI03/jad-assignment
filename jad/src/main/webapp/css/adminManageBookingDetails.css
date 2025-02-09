@@ -1,55 +1,116 @@
+/* JAD-CA2
+Class-DIT/FT/2A/23
+Student Name: Thiri Lae Win
+Admin No.: P2340739  */
 @charset "UTF-8";
 
 body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            background: #ffffff;
-            padding: 20px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .details {
-            margin-top: 20px;
-        }
-        .details-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #ddd;
-        }
-        .details-item:last-child {
-            border-bottom: none;
-        }
-        .label {
-            font-weight: bold;
-            color: #555;
-        }
-        .value {
-            color: #777;
-        }
-        .back-btn {
-            display: block;
-            text-align: center;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
-            width: 120px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .back-btn:hover {
-            background-color: #0056b3;
-        }
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 100px auto;
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.details {
+    margin-top: 20px;
+}
+
+.details-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.details-item:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: bold;
+    color: #555;
+}
+
+input.value {
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+input[type="date"],
+input[type="time"] {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.update-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    width: 120px;
+    border: none;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.update-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn {
+    margin-top: 20px;
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    width: 120px;
+    border: none;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+.back-btn {
+    display: block;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    width: 120px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.back-btn:hover {
+    background-color: #0056b3;
+}

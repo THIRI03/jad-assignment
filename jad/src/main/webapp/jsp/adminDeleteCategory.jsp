@@ -1,16 +1,16 @@
-
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Thiri Lae Win
     Admin No.: P2340739
 --%>
 
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
            <%@ page import = "com.cleaningService.dao.CategoryDAO" %> 
            <%@ include file="authCheck.jsp" %>
-           <%@ include file="../html/adminNavbar.html" %>
+<%@ include file="/jsp/adminNavbar.jsp" %>
            
     
 <!DOCTYPE html>
@@ -22,7 +22,6 @@
 <body>
 <%
 String categoryIdStr = request.getParameter("categoryId");
-System.out.println(categoryIdStr);
 
 if(categoryIdStr == null || categoryIdStr.isEmpty()){
 	%>

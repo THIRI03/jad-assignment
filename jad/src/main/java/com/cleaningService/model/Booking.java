@@ -1,3 +1,6 @@
+/*Name: Thiri Lae Win
+	Class: DIT/FT/2A/23
+	ADM Num: 2340739*/
 package com.cleaningService.model;
 
 public class Booking {
@@ -7,23 +10,21 @@ public class Booking {
 	private String serviceAddress;
 	private String customerName;
 	private String serviceImage;
-	
-
-
+	private double total_price;
 	private int duration;
 	private String date;
 	private String time;
 	private String categoryName;
 	private String status;
-	
+
 	public Booking() {
-		
+
 	}
-	
+
 
 
 	public Booking(int id, String serviceName, String specialRequest, String serviceAddress, String customerName, int duration, String date,
-			String time, String categoryName, String status) {
+			String time, String categoryName, String status, double total_price) {
 		this.id = id;
 		this.serviceName = serviceName;
 		this.specialRequest = specialRequest;
@@ -34,6 +35,7 @@ public class Booking {
 		this.time = time;
 		this.categoryName = categoryName;
 		this.status = status;
+		this.total_price = total_price;
 	}
 
 
@@ -123,7 +125,7 @@ public class Booking {
 	public void setTime(String i) {
 		this.time = i;
 	}
-	
+
 	public String getServiceAddress() {
 		return serviceAddress;
 	}
@@ -141,4 +143,17 @@ public class Booking {
 	public void setServiceImage(String serviceImage) {
 		this.serviceImage = serviceImage;
 	}
+
+
+
+	public double getTotal_price() {
+		return total_price;
+	}
+
+
+
+	public void setTotal_price(double total_price) {
+		this.total_price = total_price;
+	}
 }
+

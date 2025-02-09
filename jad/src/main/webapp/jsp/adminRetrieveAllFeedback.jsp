@@ -1,9 +1,10 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Thiri Lae Win
     Admin No.: P2340739
 --%>
+
 
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -25,6 +26,20 @@
 <body>
     <div class="container">
         <h2>Feedback Management</h2>
+        
+        <form action="<%=request.getContextPath() %>/AdminSortFeedbackServlet" method="GET">
+            <label for="ratingFilter">Sort by Rating:</label>
+            <select id="ratingFilter" name="rating" >
+        		<option value="All Ratings" <%= (request.getParameter("rating") == null || request.getParameter("rating").isEmpty()) ? "selected" : "" %>>All Ratings</option>
+                <option value="1" <%= "1".equals(request.getParameter("rating")) ? "selected" : "" %>>1</option>
+                <option value="2" <%= "2".equals(request.getParameter("rating")) ? "selected" : "" %>>2</option>
+                <option value="3" <%= "3".equals(request.getParameter("rating")) ? "selected" : "" %>>3</option>
+                <option value="4" <%= "4".equals(request.getParameter("rating")) ? "selected" : "" %>>4</option>
+                <option value="5" <%= "5".equals(request.getParameter("rating")) ? "selected" : "" %>>5</option>
+            </select>
+            <button type="submit">Apply</button>
+        </form>
+        
         <table class="feedback-table">
             <thead>
                 <tr>

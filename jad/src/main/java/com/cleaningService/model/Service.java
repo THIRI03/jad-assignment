@@ -1,3 +1,6 @@
+/*Name: Thiri Lae Win
+	Class: DIT/FT/2A/23
+	ADM Num: 2340739*/
 package com.cleaningService.model;
 
 public class Service {
@@ -7,11 +10,11 @@ public class Service {
     private double price;
     private int category_id;
     private String image;
-    
+
     public Service() {
-    	
+
     }
-    
+
     public Service(int id, String name, String description, double price, int category_id,String uploadedImagePage) {
     	this.id = id;
 		this.name = name;
@@ -28,7 +31,7 @@ public class Service {
 		this.category_id = category_id;
 		this.image = uploadedImagePage;
 	}
-    
+
     public int getId() {
 		return id;
 	}

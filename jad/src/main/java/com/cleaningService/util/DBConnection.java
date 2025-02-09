@@ -1,10 +1,12 @@
 
-//    JAD-CA1
+//    JAD-CA2
 //    Class-DIT/FT/2A/23
 //    Student Name: Thiri Lae Win
 //    Admin No.: P2340739
 package com.cleaningService.util;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DBConnection {
 	private static final String URL = "jdbc:postgresql://ep-black-sea-a1x1cg6b.ap-southeast-1.aws.neon.tech/jad_assignment?user=neondb_owner&password=nYHFhP9l5UaJ&sslmode=require";
@@ -20,7 +22,7 @@ public class DBConnection {
         }
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
-    
+
     public static void testConnection() {
     	try {
     	    Connection connection = getConnection();
@@ -32,7 +34,7 @@ public class DBConnection {
     	}
 
     }
-    
+
     public static void main(String[] args) {
     	testConnection();
     }

@@ -1,5 +1,8 @@
 package com.cleaningService.servlet;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.cleaningService.dao.CategoryDAO;
 import com.cleaningService.model.Category;
 
@@ -10,9 +13,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-import java.util.List;
-
 /**
  * Servlet implementation class CategoryServlet
  */
@@ -21,11 +21,13 @@ public class CategoryServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private CategoryDAO categoryDAO;
 
-    public void init() {
+    @Override
+	public void init() {
         categoryDAO = new CategoryDAO();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String fetchParam = request.getParameter("fetch");
 
         // If fetch parameter is not set, display a default error or redirect
@@ -50,8 +52,9 @@ public class CategoryServlet extends HttpServlet {
         RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/categories.jsp");
         dispatcher.forward(request, response);
     }
-    
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
 }

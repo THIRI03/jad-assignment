@@ -1,3 +1,6 @@
+/*Name: Thiri Lae Win
+	Class: DIT/FT/2A/23
+	ADM Num: 2340739*/
 package com.cleaningService.model;
 
 public class Feedback {
@@ -7,11 +10,11 @@ public class Feedback {
 	private String username;
 	private String serviceName;
 	private int rating;
-	
+
 	public Feedback() {
-		
+
 	}
-	
+
 	public Feedback(int id, String comments, int booking_id, String username, String serviceName, int rating) {
 		this.id = id;
 		this.comments = comments;
@@ -70,8 +73,8 @@ public class Feedback {
 	public void setRating(int rating) {
 		this.rating = rating;
 	}
-	
-	
-	
-	
+
+
+
+
 }

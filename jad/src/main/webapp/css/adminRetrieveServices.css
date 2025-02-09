@@ -1,5 +1,5 @@
 /* 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Thiri Lae Win
     Admin No.: P2340739
@@ -25,9 +25,22 @@ body {
 
 .search-reset-container {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+}
+
+.left-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.right-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
 }
 
 .search-form {
@@ -61,6 +74,7 @@ body {
 }
 
 .reset-btn {
+    margin-left: 20px;
     padding: 10px 15px;
     background-color: #ffc107;
     color: black;
@@ -115,6 +129,8 @@ body {
 .btn-update, 
 .btn-upload, 
 .btn-delete {
+    display: flex;
+    justify-self: center;
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
@@ -148,4 +164,21 @@ body {
 
 .btn-delete:hover {
     background-color: #c82333;
+}
+
+.filter-select {
+    margin-left: auto;
+}
+
+.btn-create {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-create:hover {
+    background-color: #138496;
 }

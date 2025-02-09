@@ -1,7 +1,10 @@
-<!--      JAD-CA1
-Class-DIT/FT/2A/23
-Student Name: Thiri Lae Win
-Admin No.: P2340739  -->
+<%-- 
+    JAD-CA2
+    Class-DIT/FT/2A/23
+    Student Name: Thiri Lae Win
+    Admin No.: P2340739
+--%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -9,7 +12,6 @@ Admin No.: P2340739  -->
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="<%=request.getContextPath() %>/css/adminNavbar.css">
-<title>Insert title here</title>
 </head>
 <body>
 
@@ -25,7 +27,7 @@ Admin No.: P2340739  -->
             <li><a href="/jad/jsp/adminRetrieveServices.jsp">Services</a></li>
             <li><a href="/jad/jsp/adminRetrieveAllCategories.jsp">Categories</a></li>
             <li><a href="<%=request.getContextPath()%>/GetAllFeedbacksForAdminServlet">Customer Feedback</a></li>
-            <li><a href="logout.jsp">Logout</a></li>
+            <li><a href="/jad/jsp/logout.jsp">Logout</a></li>
         </ul>
     </div>
 </body>
