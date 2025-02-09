@@ -6,6 +6,8 @@
 --%>
 <%@ include file="check.jsp" %>
 <%@ page import="java.sql.*, com.cleaningService.util.DBConnection" %>
+<%@ include file="authCheck.jsp" %>
+
 <%
     // Retrieve the current userId from session
     Integer userId = (Integer) session.getAttribute("userId");

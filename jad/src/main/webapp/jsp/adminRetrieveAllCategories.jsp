@@ -10,8 +10,8 @@
 <%@ page import="java.util.List"%>
 <%@ page import="com.cleaningService.model.Category" %> 
 <%@ page import="com.cleaningService.dao.CategoryDAO" %>
-<%-- <%@ include file="authCheck.jsp" %>--%>
 <%@ include file="/jsp/adminNavbar.jsp" %>
+<%@ include file="authCheck.jsp" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,9 +24,7 @@
 <div class="main-content">
 	<h1>All Categories</h1>
   <!-- Create New Category button -->
-  <%
-  boolean isSubmitted = (boolean) request.getAttribute("isCreated");
-  %>
+
   <button class="create-btn" onclick="location.href='adminCreateCategory.jsp'">Create New Category</button>
 
 	    <div class="card-container">

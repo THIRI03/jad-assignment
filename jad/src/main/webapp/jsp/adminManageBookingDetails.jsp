@@ -10,6 +10,7 @@
 <%@page import = "com.cleaningService.model.Booking" %>
 <%@ page import = "java.util.List" %>
 <%@ include file="/jsp/adminNavbar.jsp" %>
+<%@ include file="authCheck.jsp" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -70,7 +71,7 @@ booking = (Booking) request.getAttribute("booking");
 	            </div>
 	            <div class="details-item">
 	                <span class="label">Price:</span>
-	                <span class="value"><%=booking.getTotal_price() %></span>
+	                <span class="value"><%=booking.getTotalPrice() %></span>
 	            </div>
 	        </div>
 		        <input type="hidden" name="bookingId" value="<%= booking.getId() %>">

@@ -15,7 +15,7 @@
 <%@ page import = "com.cleaningService.dao.ServiceDAO" %> 
 <%@ page import = "com.cleaningService.dao.CategoryDAO" %> 
 <%@ page import = "java.util.List" %>
-<%-- <%@ include file="authCheck.jsp" %>--%>
+<%@ include file="authCheck.jsp" %>
 <%@ include file="/jsp/adminNavbar.jsp" %>
 
 

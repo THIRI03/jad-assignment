@@ -8,7 +8,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import = "java.util.List" %>
-<%-- <%@ include file="authCheck.jsp" %> --%>
+<%@ include file="authCheck.jsp" %> 
 <%@page import = "com.cleaningService.dao.ServiceDAO" %>
 <%@page import = "com.cleaningService.dao.BookingDAO" %>
 <%@page import = "com.cleaningService.dao.FeedbackDAO" %>
@@ -26,11 +26,11 @@
 </head>
 <body>
 <%
-/* Integer loggedInUserRoleId = (Integer) session.getAttribute("userRole");
+Integer loggedInUserRoleId = (Integer) session.getAttribute("userRole");
 if(loggedInUserRoleId == null || loggedInUserRoleId == 2){
     response.sendRedirect("login.jsp");
     return;    
-} */
+} 
 
 ServiceDAO serviceDAO = new ServiceDAO();
 BookingDAO bookingDAO = new BookingDAO();

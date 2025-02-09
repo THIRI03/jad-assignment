@@ -12,7 +12,7 @@
 <%@ page import = "com.cleaningService.model.Service" %> 
 <%@ page import = "com.cleaningService.dao.ServiceDAO" %> 
 <%@ page import = "jakarta.servlet.http.HttpSession" %>
-<%-- <%@ include file="authCheck.jsp" %>--%>
+<%@ include file="authCheck.jsp" %>
 <%@ include file="/jsp/adminNavbar.jsp" %>
 
 

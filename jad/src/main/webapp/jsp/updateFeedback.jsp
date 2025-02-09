@@ -8,6 +8,7 @@
 <%@ include file="authCheck.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ page import="java.sql.*, com.cleaningService.util.DBConnection" %>
+
 <!DOCTYPE html>
 <html>
 <head>

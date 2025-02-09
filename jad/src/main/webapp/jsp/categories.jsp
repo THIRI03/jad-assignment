@@ -3,6 +3,7 @@
 <%@ include file="header.jsp" %>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/services.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/home.css">
+<%@ include file="authCheck.jsp" %>
 
 
 <%

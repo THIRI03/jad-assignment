@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/services.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/home.css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/jsp/header.jsp">
+<%@ include file="authCheck.jsp" %>
 
 
 <%
@@ -60,11 +61,7 @@ String categoryId = request.getParameter("category_id");
             </div>
         <% } %>
     </div>
-    <div class="back-to-services">
-         <a href="<%= request.getContextPath() %>/categories.jsp">
-            <span class="back-arrow">&larr;</span> Back to Services
-        </a>
-    </div>
+
 </section>
 
     <jsp:include page="../html/footer.html" />

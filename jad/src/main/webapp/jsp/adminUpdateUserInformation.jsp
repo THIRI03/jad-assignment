@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 	<%@ page import="com.cleaningService.dao.UserDAO" %>
 	<%@ page import="com.cleaningService.model.User" %>
+<%@ include file="authCheck.jsp" %>
 
 <!DOCTYPE html>
 <html lang="en">

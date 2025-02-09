@@ -12,8 +12,8 @@
     <%@ page import="com.cleaningService.dao.FeedbackDAO" %>
 <%@ page import="com.cleaningService.model.Feedback" %>
 <%@ page import="java.util.List" %>
-<%-- 	<%@ include file="authCheck.jsp" %>
- --%><%@ include file="/jsp/adminNavbar.jsp" %>
+<%@ include file="/jsp/adminNavbar.jsp" %>
+<%@ include file="authCheck.jsp" %>
 
 <!DOCTYPE html>
 <html>

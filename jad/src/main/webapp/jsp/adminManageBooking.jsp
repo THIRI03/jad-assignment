@@ -10,6 +10,7 @@
 <%@page import = "com.cleaningService.model.Booking" %>
 <%@ page import = "java.util.List" %>
 <%@ include file="/jsp/adminNavbar.jsp" %>
+<%@ include file="authCheck.jsp" %>
 
 <!DOCTYPE html>
 <html>

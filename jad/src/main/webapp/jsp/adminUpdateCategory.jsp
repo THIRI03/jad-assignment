@@ -11,7 +11,7 @@
 <%@ page import = "java.util.List" %>
 <%@ page import = "com.cleaningService.model.Category" %> 
 <%@ page import = "com.cleaningService.dao.CategoryDAO" %>
-
+<%@ include file="authCheck.jsp" %>
 
 <!DOCTYPE html>
 <html>

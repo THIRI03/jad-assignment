@@ -10,6 +10,7 @@
 <%@ page import="com.cleaningService.model.User" %>
 <%@ page import="com.cleaningService.dao.UserDAO" %>
 <%@ include file="/jsp/adminNavbar.jsp" %>
+<%@ include file="authCheck.jsp" %>
 
 <!DOCTYPE html>
 <html>

@@ -10,6 +10,8 @@
 <%@ page import="com.cleaningService.util.DBConnection" %>
 <%@ include file="header.jsp" %>
 <%@ page import="java.sql.*" %>
+<%@ include file="authCheck.jsp" %>
+
 <%
     String redirectURL;
     if (session != null && session.getAttribute("username") != null) {
