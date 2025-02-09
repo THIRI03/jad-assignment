@@ -1,3 +1,9 @@
+/*-- 
+    JAD-CA2
+    Class-DIT/FT/2A/23
+    Student Name: Moe Myat Thwe
+    Admin No.: P2340362
+--*/
 package com.cleaningService.dao;
 
 import java.sql.Connection;
@@ -17,18 +23,19 @@ public class CategoryDAO{
 	Class: DIT/FT/2A/23
 	ADM Num: 2340739*/
 	public List<Category> getAllCategory(){
-		List<Category>categories = new ArrayList();
+		List<Category>categories = new ArrayList<>();
 		String sql = "SELECT * FROM category";
 
 		try(Connection connection  = DBConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(sql);
+			PreparedStatement statement = connection.prepareStatement(sql);
 			ResultSet rs = statement.executeQuery()){
 				while(rs.next()) {
 					Category ctg = new Category();
 					ctg.setId(rs.getInt("id"));
 					ctg.setCategoryName(rs.getString("name"));
-					ctg.setImage(rs.getString("image"));
 					ctg.setDescription(rs.getString("description"));
+		            ctg.setImage(rs.getString("image"));
+
 					categories.add(ctg);
 				}
 			}catch(SQLException e){

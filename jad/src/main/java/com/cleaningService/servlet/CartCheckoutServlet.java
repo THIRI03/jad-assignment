@@ -1,18 +1,12 @@
-/*
- * JAD-CA1
- * Class-DIT/FT/2A/23
- * Student Name: Moe Myat Thwe
- * Admin No.: P2340362
- */
+/*-- 
+    JAD-CA2
+    Class-DIT/FT/2A/23
+    Student Name: Moe Myat Thwe
+    Admin No.: P2340362
+--*/
 package com.cleaningService.servlet;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
+import com.cleaningService.util.AuthUtil;
 import com.cleaningService.util.DBConnection;
 
 import jakarta.servlet.ServletException;
@@ -22,105 +16,97 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+
 @WebServlet("/CartCheckoutServlet")
 public class CartCheckoutServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	 // Step 1: Authentication check
+        if (!AuthUtil.checkAuthentication(request, response)) {
+            return;  // If not authenticated, redirect to login.jsp is already handled
+        }
+
+        // Step 2: Retrieve cart from session
         HttpSession session = request.getSession();
-        Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            response.sendRedirect("/jsp/login.jsp");
-            return;
-        }
-
-        // Retrieve the cart from the session
         List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
+
         if (cart == null || cart.isEmpty()) {
-            request.setAttribute("error", "Your cart is empty.");
-            request.getRequestDispatcher("cart.jsp").forward(request, response);
-            return;
-        }
-
-        // Handle item removal
-        if (request.getParameter("remove") != null) {
-            int removeIndex = Integer.parseInt(request.getParameter("remove"));
-            if (removeIndex >= 0 && removeIndex < cart.size()) {
-                cart.remove(removeIndex);
-                session.setAttribute("cart", cart); // Update the session
-            }
             response.sendRedirect(request.getContextPath() + "/jsp/cart.jsp");
-
             return;
         }
 
-        // Handle checkout
-        if (request.getParameter("checkout") != null) {
-            String[] selectedItems = request.getParameterValues("selectedItems");
-
-            if (selectedItems == null || selectedItems.length == 0) {
-                request.setAttribute("error", "No items selected for checkout.");
-                request.getRequestDispatcher("cart.jsp").forward(request, response);
-                return;
-            }
-
-            try (Connection conn = DBConnection.getConnection()) {
-                boolean allSuccess = true;
-
-                for (String index : selectedItems) {
-                    int itemIndex = Integer.parseInt(index);
-                    Map<String, Object> item = cart.get(itemIndex);
-
-                    int categoryId = Integer.parseInt(item.get("categoryId").toString());
-                    int serviceId = Integer.parseInt(item.get("serviceId").toString());
-                    String dateString = item.get("date").toString();
-                    String timeString = item.get("time").toString();
-                    int duration = Integer.parseInt(item.get("duration").toString());
-                    String address = item.get("serviceAddress").toString();
-                    String specialRequest = item.get("specialRequest").toString();
-
-                    // Convert date string to java.sql.Date
-                    java.sql.Date sqlDate = java.sql.Date.valueOf(dateString); // Use Date.valueOf for yyyy-MM-dd format
-                    java.sql.Time sqlTime;
-                    if (timeString != null && !timeString.trim().isEmpty()) {
-                        if (timeString.length() == 5) { // Format is HH:mm
-                            timeString += ":00"; // Append seconds
-                        }
-                        sqlTime = java.sql.Time.valueOf(timeString);
-                    } else {
-                        throw new IllegalArgumentException("Invalid time value: " + timeString);
-                    }
-                    try (PreparedStatement stmt = conn.prepareStatement(
-                            "INSERT INTO booking (user_id,category_id, service_id, date, time, duration, service_address, special_request, created_at) " +
-                                    "VALUES (?,?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)")) {
-                        stmt.setInt(1, userId);
-                        stmt.setInt(2, categoryId);
-                        stmt.setInt(3, serviceId);
-                        stmt.setDate(4, sqlDate); // Use java.sql.Date
-                        stmt.setTime(5, sqlTime);
-                        stmt.setInt(6, duration);
-                        stmt.setString(7, address);
-                        stmt.setString(8, specialRequest);
-                        stmt.executeUpdate();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        allSuccess = false;
-                        break;
-                    }
-                }
-
-                if (allSuccess) {
-                    session.removeAttribute("cart");
-                    response.sendRedirect(request.getContextPath() + "/jsp/serviceHistory.jsp");
-                } else {
-                    request.setAttribute("error", "Failed to process booking.");
-                    request.getRequestDispatcher("cart.jsp").forward(request, response);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                request.setAttribute("error", "Database connection failed.");
-                request.getRequestDispatcher("cart.jsp").forward(request, response);
-            }
-
+        // Step 3: Handle selected items for checkout
+        String[] selectedItems = request.getParameterValues("selectedItems");
+        if (selectedItems == null || selectedItems.length == 0) {
+            request.setAttribute("error", "No items selected for checkout.");
+            request.getRequestDispatcher("/jsp/cart.jsp").forward(request, response);
+            return;
         }
+     // Step 4: Filter selected items and set them in the session
+        List<Map<String, Object>> selectedCartItems = new ArrayList<>();
+        for (String indexStr : selectedItems) {
+            try {
+                int index = Integer.parseInt(indexStr);
+                if (index >= 0 && index < cart.size()) {
+                    selectedCartItems.add(cart.get(index));
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        
+     // Fetch and apply discounts
+        try (Connection conn = DBConnection.getConnection()) {
+            for (Map<String, Object> item : selectedCartItems) {
+                int serviceId = Integer.parseInt(item.get("serviceId").toString());
+                int categoryId = Integer.parseInt(item.get("categoryId").toString());
+
+                String discountQuery = """
+                    SELECT name, description, discount_rate
+                    FROM Discount
+                    WHERE status = 'Active'
+                    AND (service_id = ? OR category_id = ? OR (service_id IS NULL AND category_id IS NULL))
+                    AND CURRENT_DATE BETWEEN start_date AND end_date
+                    ORDER BY 
+                        (service_id = ?) DESC,
+                        (category_id = ?) DESC
+                    LIMIT 1
+                """;
+
+                try (PreparedStatement pstmt = conn.prepareStatement(discountQuery)) {
+                    pstmt.setInt(1, serviceId);
+                    pstmt.setInt(2, categoryId);
+                    pstmt.setInt(3, serviceId);
+                    pstmt.setInt(4, categoryId);
+
+                    try (ResultSet rs = pstmt.executeQuery()) {
+                        if (rs.next()) {
+                            double discountRate = rs.getDouble("discount_rate");
+                            item.put("discountRate", discountRate);
+                            item.put("discountName", rs.getString("name"));
+                            item.put("discountDescription", rs.getString("description"));
+                        } else {
+                            item.put("discountRate", 0.0);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        session.setAttribute("selectedCartItems", selectedCartItems);
+     // Step 5: Forward to the cartCheckout page
+        request.getRequestDispatcher("/jsp/cartCheckout.jsp").forward(request, response);
     }
 }

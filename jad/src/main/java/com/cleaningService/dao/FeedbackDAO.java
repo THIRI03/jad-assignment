@@ -1,3 +1,9 @@
+/*-- 
+    JAD-CA2
+    Class-DIT/FT/2A/23
+    Student Name: Moe Myat Thwe
+    Admin No.: P2340362
+--*/
 package com.cleaningService.dao;
 
 import java.sql.Connection;
@@ -11,23 +17,25 @@ import com.cleaningService.model.Feedback;
 import com.cleaningService.util.DBConnection;
 
 public class FeedbackDAO {
-
-	/*
-	 * JAD-CA1
+	
+	/* 
+	 * JAD-CA2
 	 * Class-DIT/FT/2A/23
 	 * Student Name: Moe Myat Thwe
 	 * Admin No.: P2340362
 	 */
-
-    public boolean addFeedback(int userId, int bookingId, int subServiceId, String comments, int rating) {
-        String sql = "INSERT INTO feedback (user_id, booking_id, service_id, comment, rating) VALUES (?, ?, ?, ?, ?)";
+	
+	public boolean addFeedback(int userId, int bookingId, int serviceId, String comments, int rating) {
+        // Update to match the correct column names
+        String sql = "INSERT INTO feedback (userid, bookingid, serviceid, comment, rating) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
+            // Set values in the query
             statement.setInt(1, userId);
             statement.setInt(2, bookingId);
-            statement.setInt(3, subServiceId);
+            statement.setInt(3, serviceId);
             statement.setString(4, comments);
             statement.setInt(5, rating);
 

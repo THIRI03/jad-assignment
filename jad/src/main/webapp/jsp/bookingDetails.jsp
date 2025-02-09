@@ -1,11 +1,11 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Moe Myat Thwe
     Admin No.: P2340362
 --%>
 <%@ include file="header.jsp" %>
-<%@ include file="check.jsp" %>
+<%@ include file="authCheck.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ page import="java.util.*, java.sql.*" %>
 <%@ page import="java.util.ArrayList, java.util.HashMap, java.util.Map, java.util.List" %>
@@ -114,12 +114,14 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
     String serviceAddress = request.getParameter("serviceAddress");
     String specialRequest = request.getParameter("specialRequest");
 
-    // Create a booking map
+    // Create a booking map with all necessary data
     Map<String, Object> booking = new HashMap<>();
-    booking.put("categoryId", serviceId);
+    booking.put("categoryId", categoryId);
     booking.put("serviceId", serviceId);
-/*     booking.put("subServiceName", serviceName);
- */    booking.put("date", date);
+    booking.put("serviceName", serviceName);
+    booking.put("price", price);              // Store the price
+    booking.put("imagePath", image);
+    booking.put("date", date);
     booking.put("time", time);
     booking.put("duration", duration);
     booking.put("serviceAddress", serviceAddress);
@@ -133,7 +135,9 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
     cart.add(booking);
     session.setAttribute("cart", cart);
     out.println("<script>showAlert('Service successfully added to the cart!');</script>");
-    out.println("<p>Added to cart. <a href='cart.jsp?category_id=" + categoryId + "&service_id=" + serviceId + "' class='btn view-cart-btn'>View Cart</a></p>");
+    out.println("<p>Added to cart.  <a href='" + request.getContextPath() + "/CartServlet' class='btn view-cart-btn'>View Cart</a></p>");
+
+    /*out.println("<p>Added to cart. <a href='cart.jsp?category_id=" + categoryId + "&service_id=" + serviceId + "' class='btn view-cart-btn'>View Cart</a></p>");*/
 }
 %>
 	

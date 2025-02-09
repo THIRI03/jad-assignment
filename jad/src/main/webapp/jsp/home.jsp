@@ -11,28 +11,27 @@
 <%@ include file="header.jsp" %>
 <%@ page import="java.sql.*" %>
 <%
-    // Determine the redirect URL based on user's login status
     String redirectURL;
     if (session != null && session.getAttribute("username") != null) {
-        // If user is logged in, redirect to the services page
         redirectURL = "categories.jsp";
     } else {
-        // If user is not logged in, redirect to the register page
         redirectURL = "register.jsp";
     }
+
+    List<Map<String, String>> reviews = new ArrayList<>();
+    List<Map<String, String>> topServices = new ArrayList<>();
+    List<Map<String, String>> lowServices = new ArrayList<>();
     double averageRating = 0.0;
     int totalUsers = 0;
-    
-    List<Map<String, String>> reviews = new ArrayList<>();
+
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
 
     try {
-        // Get a database connection
         conn = DBConnection.getConnection();
 
-     // Fetch average rating and total feedback count
+        // Fetch average rating and total feedback count
         String avgSql = "SELECT AVG(rating) AS average_rating, COUNT(*) AS total_users FROM feedback";
         pstmt = conn.prepareStatement(avgSql);
         rs = pstmt.executeQuery();
@@ -43,16 +42,53 @@
         rs.close();
         pstmt.close();
 
-        // Fetch the latest 3 feedbacks
-        String feedbackSql = "SELECT comment, rating FROM feedback ORDER BY id DESC LIMIT 3";
+        // Fetch the latest 3 feedbacks with 4 or 5-star ratings
+        String feedbackSql = "SELECT comment, rating FROM feedback WHERE rating >= 4 AND comment IS NOT NULL ORDER BY id DESC LIMIT 3";
         pstmt = conn.prepareStatement(feedbackSql);
         rs = pstmt.executeQuery();
-
         while (rs.next()) {
             Map<String, String> review = new HashMap<>();
             review.put("comment", rs.getString("comment"));
             review.put("rating", String.valueOf(rs.getInt("rating")));
             reviews.add(review);
+        }
+        rs.close();
+        pstmt.close();
+
+        // Query for top services
+        String topServicesSql = "SELECT s.name AS service_name, s.image AS image_path, s.description AS description, s.price AS price, COUNT(b.id) AS booking_count " +
+                                "FROM service s LEFT JOIN bookings b ON s.id = b.serviceid " +
+                                "GROUP BY s.id, s.name, s.image, s.description, s.price " +
+                                "ORDER BY booking_count DESC LIMIT 3";
+        pstmt = conn.prepareStatement(topServicesSql);
+        rs = pstmt.executeQuery();
+        while (rs.next()) {
+            Map<String, String> service = new HashMap<>();
+            service.put("name", rs.getString("service_name"));
+            service.put("count", String.valueOf(rs.getInt("booking_count")));
+            service.put("imagePath", rs.getString("image_path"));
+            service.put("description", rs.getString("description"));
+            service.put("price", rs.getString("price"));
+            topServices.add(service);
+        }
+        rs.close();
+        pstmt.close();
+
+        // Fetch bottom 3 services by booking count
+        String lowServicesSql = "SELECT s.name AS service_name, s.image AS image_path, s.description AS description, s.price AS price, COUNT(b.id) AS booking_count " +
+                                "FROM service s LEFT JOIN bookings b ON s.id = b.serviceid " +
+                                "GROUP BY s.id, s.name, s.image, s.description, s.price " +
+                                "ORDER BY booking_count ASC LIMIT 3";
+        pstmt = conn.prepareStatement(lowServicesSql);
+        rs = pstmt.executeQuery();
+        while (rs.next()) {
+            Map<String, String> service = new HashMap<>();
+            service.put("name", rs.getString("service_name"));
+            service.put("count", String.valueOf(rs.getInt("booking_count")));
+            service.put("imagePath", rs.getString("image_path"));
+            service.put("description", rs.getString("description"));
+            service.put("price", rs.getString("price"));
+            lowServices.add(service);
         }
     } catch (Exception e) {
         out.println("An error occurred while fetching data: " + e.getMessage());
@@ -94,7 +130,7 @@
 	    <div class="hero-overlay">
 	        <h1>Professional Cleaning Services at Your Doorstep</h1>
 	        <p>Your trusted partner for a cleaner, healthier environment.</p>
-	        <button onclick="location.href='<%= redirectURL %>'" class="custom-btn">Book a Service</button>
+	        <button onclick="location.href='<%= request.getContextPath() %>/CategoryServlet?fetch=true'" class="custom-btn">Book a Service</button>
 	        
 	    </div>
 	</section>
@@ -134,72 +170,149 @@
     </div>
 </section>
 	
-   <section class="testimonials-section">
+   <!-- Section: Testimonials -->
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">Hear What Our Customers Have to Say</h2>
+            <p class="section-subtitle">
+                Trusted by both local & expert communities, we are rated 
+                <%= String.format("%.1f", averageRating) %>/5 stars on Google by over <%= totalUsers %>+ users!
+            </p>
+            <div class="row">
+                <%
+                    int reviewCount = reviews.size();
+                    // Add the dynamic reviews first
+                    for (int i = 0; i < reviewCount; i++) {
+                        Map<String, String> review = reviews.get(i);
+                %>
+                        <div class="col-md-4 col-sm-6 col-12 mb-4">
+                            <div class="testimonial-card">
+                                <img src="<%= request.getContextPath() %>/gallery/verify.png" alt="Review Icon" class="review-icon">
+                                <p class="testimonial-text"><%= review.get("comment") %></p>
+                                <div class="rating">
+                                    <% 
+                                        int rating = Integer.parseInt(review.get("rating"));
+                                        for (int j = 0; j < rating; j++) { 
+                                    %>
+                                        ★
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                <% 
+                    }
+                    
+                    // If there are fewer than 3 dynamic reviews, fill the rest with default reviews
+                    for (int i = reviewCount; i < 3; i++) {
+                %>
+                        <div class="col-md-4 col-sm-6 col-12 mb-4">
+                            <div class="testimonial-card">
+                                <img src="<%= request.getContextPath() %>/gallery/verify.png" alt="Review Icon" class="review-icon">
+                                <p class="testimonial-text">
+                                    “This cleaning service has exceeded my expectations! Highly professional and reliable.”
+                                </p>
+                
+                                <div class="rating">★★★★★</div>
+                            </div>
+                        </div>
+                <% } %>
+            </div>
+        </div>
+    </section>
+   
+ <!-- Top and Bottom Services Section -->
+<section class="services-carousel-section">
     <div class="container">
-        <h2 class="section-title">Hear What Our Customers Have to Say</h2>
-        <p class="section-subtitle">
-            Trusted by both local & expert communities, we are rated 
-            <%= String.format("%.1f", averageRating) %>/5 stars on Google by over <%= totalUsers %>+ users!
-        </p>
-        <div class="row">
-            <% if (reviews.isEmpty()) { %>
-                <!-- Default Testimonials -->
-                <div class="col-md-4 col-sm-6 col-12 mb-4">
-                    <div class="testimonial-card">
-                        <img src="/jad/gallery/verify.png" alt="Review Icon" class="review-icon">
-                        <p class="testimonial-text">
-                            “All pretty mummies need time for their hair and nails, right? I’m so happy that I found a part-time cleaner. She frees up so much of my weekends!”
-                        </p>
-                        <span class="customer-name">@midiforreal</span>
-                        <div class="rating">★★★★★</div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-12 mb-4">
-                    <div class="testimonial-card">
-                        <img src="/jad/gallery/verify.png" alt="Review Icon" class="review-icon">
-                        <p class="testimonial-text">
-                            “I’ve worked with many helpers before. They go through training, so the quality is consistent. Highly recommend them!”
-                        </p>
-                        <span class="customer-name">@keweitay</span>
-                        <div class="rating">★★★★★</div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-12 mb-4">
-                    <div class="testimonial-card">
-                        <img src="/jad/gallery/verify.png" alt="Review Icon" class="review-icon">
-                        <p class="testimonial-text">
-                            “No housework means more time for work! My house is squeaky clean every week. So happy with the service!”
-                        </p>
-                        <span class="customer-name">@miss_luxe</span>
-                        <div class="rating">★★★★★</div>
-                    </div>
-                </div>
-            <% } else { 
-                for (Map<String, String> review : reviews) { 
-            %>
-                <!-- Dynamic Testimonials -->
-                <div class="col-md-4 col-sm-6 col-12 mb-4">
-                    <div class="testimonial-card">
-                        <img src="/jad/JAD-CA1/gallery/verify.png" alt="Review Icon" class="review-icon">
-                        <p class="testimonial-text"><%= review.get("comments") %></p>
-                        <div class="rating">
-                            <% 
-                                int rating = Integer.parseInt(review.get("rating"));
-                                for (int i = 0; i < rating; i++) { 
-                            %>
-                                ★
-                            <% } %>
+        <!-- Top Services -->
+        <h2 class="section-title mt-5 text-center">Top 3 High-Demand Services</h2>
+        <div id="topServicesCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <% 
+                    int index = 0;
+                    for (Map<String, String> service : topServices) { 
+                        String activeClass = (index == 0) ? "active" : "";
+                        String imagePath = service.get("imagePath");
+                %>
+                    <div class="carousel-item <%= activeClass %>">
+                        <div class="row justify-content-center align-items-center" style="padding: 30px;">
+                            <!-- Service Image -->
+                            <div class="col-md-6 text-center">
+                                <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Service Image"
+                                     style="width: 90%; height: 350px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            </div>
+                            <!-- Service Details -->
+                            <div class="col-md-6">
+                                <h3 style="font-size: 1.8rem; margin-bottom: 15px;"><%= service.get("name") %></h3>
+                                <p style="font-size: 1.1rem; margin-bottom: 10px;"><strong>Price:</strong> $<%= service.get("price") %></p>
+                                <p style="font-size: 1rem; margin-bottom: 20px;"><%= service.get("description") %></p>
+                                <p style="font-size: 1.1rem; margin-bottom: 20px;"><strong>Number of Bookings:</strong> <%= service.get("count") %></p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <% 
-                } 
-            } 
-            %>
+                <% 
+                        index++;
+                    } 
+                %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#topServicesCarousel" data-bs-slide="prev"
+                    style="background-color: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 50px; height: 50px;">
+                <span class="carousel-control-prev-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#topServicesCarousel" data-bs-slide="next"
+                    style="background-color: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 50px; height: 50px;">
+                <span class="carousel-control-next-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <!-- Low Services -->
+        <h2 class="section-title mt-5 text-center">Top 3 Low-Demand Services</h2>
+        <div id="lowServicesCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <% 
+                    index = 0;
+                    for (Map<String, String> service : lowServices) { 
+                        String activeClass = (index == 0) ? "active" : "";
+                        String imagePath = service.get("imagePath");
+                %>
+                    <div class="carousel-item <%= activeClass %>">
+                        <div class="row justify-content-center align-items-center" style="padding: 30px;">
+                            <!-- Service Image -->
+                            <div class="col-md-6 text-center">
+                                <img src="<%= request.getContextPath() %>/<%= imagePath %>" alt="Service Image"
+                                     style="width: 90%; height: 350px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            </div>
+                            <!-- Service Details -->
+                            <div class="col-md-6">
+                                <h3 style="font-size: 1.8rem; margin-bottom: 15px;"><%= service.get("name") %></h3>
+                                <p style="font-size: 1.1rem; margin-bottom: 10px;"><strong>Price:</strong> $<%= service.get("price") %></p>
+                                <p style="font-size: 1rem; margin-bottom: 20px;"><%= service.get("description") %></p>
+                                <p style="font-size: 1.1rem; margin-bottom: 20px;"><strong>Number of Bookings:</strong> <%= service.get("count") %></p>
+                            </div>
+                        </div>
+                    </div>
+                <% 
+                        index++;
+                    } 
+                %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#lowServicesCarousel" data-bs-slide="prev"
+                    style="background-color: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 50px; height: 50px;">
+                <span class="carousel-control-prev-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#lowServicesCarousel" data-bs-slide="next"
+                    style="background-color: rgba(0, 0, 0, 0.5); border-radius: 50%; width: 50px; height: 50px;">
+                <span class="carousel-control-next-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </div>
 </section>
-   
+ 
+ 
+ 
     
 <!-- Section 4: Benefits for Your Organization -->
 <section class="benefits-section">
@@ -274,6 +387,6 @@ gallery/betterService.png" alt="Service Icon" class="benefit-icon">
 
     <!-- Footer -->
     <jsp:include page="../html/footer.html" />
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

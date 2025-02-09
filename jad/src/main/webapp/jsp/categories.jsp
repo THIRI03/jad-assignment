@@ -31,7 +31,7 @@
                     <img src="<%= request.getContextPath() + category.getImage() %>" alt="<%= category.getCategoryName() %>">
                     <h2><%= category.getCategoryName() %></h2>
                     <p><%= category.getDescription() %></p>
-                    <a href="<%= request.getContextPath() %>/ServiceServlet?category_id=<%= category.getId() %>" class="btn btn-primary">More Info</a>
+                    <a href="<%= request.getContextPath() %>/GetServiceServlet?category_id=<%= category.getId() %>" class="btn btn-primary">More Info</a>
                 </div>
         <%  } 
         } else { %>

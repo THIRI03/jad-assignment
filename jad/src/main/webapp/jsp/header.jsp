@@ -1,5 +1,5 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Moe Myat Thwe
     Admin No.: P2340362
@@ -36,8 +36,8 @@
         <div class="navbar-container">
             <!-- Logo and Brand Name -->
             <div class="logo">
-                <a href="home.jsp">
-                    <img src="../gallery/ShinyLogo.jpg" alt="Shiny Logo">
+                <a href="<%= request.getContextPath() %>/jsp/home.jsp">
+                   <img src="<%= request.getContextPath() %>/gallery/ShinyLogo.jpg" alt="Shiny Logo">
                     Shiny
                 </a>
             </div>
@@ -52,32 +52,33 @@
             <!-- Navbar Links -->
             <ul class="navbar">
                 <!-- Links for All Users -->
-                <li><a href="home.jsp">Home</a></li>
+               <li><a href="<%= request.getContextPath() %>/jsp/home.jsp">Home</a></li>
 				<li><a href="<%= request.getContextPath() %>/CategoryServlet?fetch=true">Categories</a></li>
                 <% 
                 if (username != null) { // User is logged in
                     if ("admin".equalsIgnoreCase(role)) { // Admin-specific links
                 %>
-                        <li><a href="dashboard.jsp">Dashboard</a></li>
-                        <li><a href="appointments.jsp">Manage Appointments</a></li>
-                        <li><a href="feedback.jsp">Manage Feedback</a></li>
+                        <li><a href="<%= request.getContextPath() %>/jsp/dashboard.jsp">Dashboard</a></li>
+                        <li><a href="<%= request.getContextPath() %>/jsp/appointments.jsp">Manage Appointments</a></li>
+                         <li><a href="<%= request.getContextPath() %>/jsp/feedback.jsp">Manage Feedback</a></li>
+                       
                 <% 
                     } else { // Customer-specific links
                 %>
-                        <li><a href="profile.jsp">Profile</a></li>
-                        <li><a href="cart.jsp">Cart</a></li>
-                        <li><a href="serviceHistory.jsp">Service History</a></li>
-                        <li><a href="yourFeedback.jsp">Feedback</a></li>
+                        <li><a href="<%= request.getContextPath() %>/jsp/profile.jsp">Profile</a></li>
+                        <li><a href="<%= request.getContextPath() %>/CartServlet?fetch=true">Cart</a></li>
+                        <li><a href="<%= request.getContextPath() %>/jsp/serviceHistory.jsp">Booking History</a></li>
+                         <li><a href="<%= request.getContextPath() %>/jsp/yourFeedback.jsp">Feedback</a></li>
                 <% 
                     }
                 %>
                     <!-- Common link for all logged-in users -->
-                    <li><a href="logout.jsp">Logout</a></li>
+                     <li><a href="<%= request.getContextPath() %>/jsp/logout.jsp">Logout</a></li>
                 <% 
                 } else { // Links for unauthenticated users
                 %>
-                    <li><a href="register.jsp">Register</a></li>
-                    <li><a href="login.jsp">Login</a></li>
+                    <li><a href="<%= request.getContextPath() %>/jsp/register.jsp">Register</a></li>
+                    <li><a href="<%= request.getContextPath() %>/jsp/login.jsp">Login</a></li>
                 <% } %>
             </ul>
         </div>

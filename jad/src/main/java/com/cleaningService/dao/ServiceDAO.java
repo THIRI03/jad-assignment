@@ -1,3 +1,9 @@
+/*-- 
+    JAD-CA2
+    Class-DIT/FT/2A/23
+    Student Name: Moe Myat Thwe
+    Admin No.: P2340362
+--*/
 package com.cleaningService.dao;
 
 import java.sql.Connection;
@@ -11,6 +17,40 @@ import com.cleaningService.model.Service;
 import com.cleaningService.util.DBConnection;
 
 public class ServiceDAO {
+	
+	// Method for retrieving services by category ID
+	public List<Service> retrieveServicesByCategoryId(int categoryId) {
+	    List<Service> services = new ArrayList<>();
+	    String sql = "SELECT * FROM service WHERE category_id = ?";
+	    double price = 0.0;
+
+	    try (Connection connection = DBConnection.getConnection();
+	         PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+	        stmt.setInt(1, categoryId);
+	        ResultSet rs = stmt.executeQuery();
+
+	        while (rs.next()) {
+	            Service service = new Service();
+	            service.setId(rs.getInt("id"));
+	            service.setName(rs.getString("name"));
+	            service.setDescription(rs.getString("description"));
+	            service.setPrice(rs.getDouble("price"));
+	            service.setCategory_id(rs.getInt("category_id"));
+	            service.setImage(rs.getString("image")); 
+
+	            services.add(service);
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return services;
+	}
+
+	
+=======
 
 	/*Name: Thiri Lae Win
 	Class: DIT/FT/2A/23

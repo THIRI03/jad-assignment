@@ -1,3 +1,9 @@
+/*-- 
+    JAD-CA2
+    Class-DIT/FT/2A/23
+    Student Name: Moe Myat Thwe
+    Admin No.: P2340362
+--*/
 package com.cleaningService.servlet;
 
 import java.io.IOException;
@@ -26,9 +32,10 @@ public class CategoryServlet extends HttpServlet {
         categoryDAO = new CategoryDAO();
     }
 
-    @Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String fetchParam = request.getParameter("fetch");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
+        // Step 2: Handle fetch parameter
+    	String fetchParam = request.getParameter("fetch");
 
         // If fetch parameter is not set, display a default error or redirect
         if (fetchParam == null || !fetchParam.equals("true")) {
@@ -36,7 +43,7 @@ public class CategoryServlet extends HttpServlet {
             return;
         }
 
-        // Proceed to retrieve categories
+     // Step 3: Retrieve categories
         List<Category> categories = categoryDAO.getAllCategory();
 
         if (categories == null || categories.isEmpty()) {
@@ -48,7 +55,7 @@ public class CategoryServlet extends HttpServlet {
         // Store categories in request scope
         request.setAttribute("categories", categories);
 
-        // Forward request to categories.jsp
+     // Step 4: Store categories in request scope and forward to categories.jsp
         RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/categories.jsp");
         dispatcher.forward(request, response);
     }

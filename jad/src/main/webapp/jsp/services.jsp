@@ -1,21 +1,21 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Moe Myat Thwe
     Admin No.: P2340362
 --%>
 <%@ page import="java.sql.*, java.util.*" %>
 <%@ include file="header.jsp" %>
-<link rel="stylesheet" href="../css/services.css">
-<link rel="stylesheet" href="../css/home.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/services.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/home.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/jsp/header.jsp">
+
 
 <%
+//Retrieve the category ID from the request
 String categoryId = request.getParameter("category_id");
 
-	/* String sql = "SELECT s.id, s.name, s.description, s.price, s.image, c.name AS category_name " +
-        "FROM service s " +
-        "JOIN category c ON s.category_id = c.id " +
-        "WHERE c.id = ?"; */
+//SQL query to fetch services based on the category ID
     String sql = "SELECT s.id, s.name, s.description, s.price, s.image " +
                  "FROM service s " +
     			 "JOIN category c ON s.category_id = c.id "+
@@ -49,19 +49,19 @@ String categoryId = request.getParameter("category_id");
     <div class="sub-services-container">
         <% for (Map<String, String> service : services) { %>
             <div class="sub-service-card">
-                <img src="../<%= service.get("image") %>" alt="<%= service.get("name") %>">
+               <img src="<%= request.getContextPath() + "/" + service.get("image").replace('\\', '/') %>" alt="<%= service.get("name") %>">
                 <h2><%= service.get("name") %></h2>
                 <p><%= service.get("description") %></p>
                 <p>Price: $<%= service.get("price") %></p>
                 <!-- Use the service_id here -->
-              <a href="bookingDetails.jsp?category_id=<%=categoryId %>&service_id=<%= service.get("id") %>" class="btn-book-now">Book Now</a>
-              
+             <a href="<%= request.getContextPath() %>/jsp/bookingDetails.jsp?category_id=<%= categoryId %>&service_id=<%= service.get("id") %>" 
+   class="btn-book-now">Book Now</a>         
                
             </div>
         <% } %>
     </div>
     <div class="back-to-services">
-        <a href="categories.jsp">
+         <a href="<%= request.getContextPath() %>/categories.jsp">
             <span class="back-arrow">&larr;</span> Back to Services
         </a>
     </div>

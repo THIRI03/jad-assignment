@@ -19,13 +19,13 @@
 
     // Retrieve parameters from the form
     String feedbackId = request.getParameter("feedbackId");
-    String comments = request.getParameter("comments");
+    String comment = request.getParameter("comment");  // Updated to 'comment'
     int rating = Integer.parseInt(request.getParameter("rating"));
 
     try (Connection conn = DBConnection.getConnection();
          PreparedStatement stmt = conn.prepareStatement(
-                 "UPDATE feedback SET comments = ?, rating = ? WHERE feedback_id = ? AND user_id = ?")) {
-        stmt.setString(1, comments);
+                 "UPDATE feedback SET comment = ?, rating = ? WHERE id = ? AND userid = ?")) {
+        stmt.setString(1, comment);
         stmt.setInt(2, rating);
         stmt.setInt(3, Integer.parseInt(feedbackId));
         stmt.setInt(4, userId);

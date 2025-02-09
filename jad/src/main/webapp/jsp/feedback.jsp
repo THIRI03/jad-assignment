@@ -1,11 +1,11 @@
-<%-- 
-    JAD-CA1
+<%--  
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Moe Myat Thwe
     Admin No.: P2340362
 --%>
 <%@ include file="header.jsp" %> 
-<%@ include file="check.jsp" %>
+<%@ include file="authCheck.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ page import="java.sql.*, com.cleaningService.util.DBConnection, com.cleaningService.dao.FeedbackDAO" %>
 <!DOCTYPE html>
@@ -20,36 +20,37 @@
         <div class="feedback-container">
             <h1>Give Feedback</h1>
             <%
-            // Ensure user is logged in
             if (userId == null) {
                 out.println("<p style='color:red;'>Please log in to give feedback.</p>");
                 return;
             }
 
-            // Get bookingId and subServiceId from the request
             String bookingId = request.getParameter("bookingId");
-            String subServiceId = request.getParameter("subServiceId");
 
-            if (bookingId == null || subServiceId == null) {
+            if (bookingId == null) {
                 out.println("<p style='color:red;'>Invalid request. Missing parameters.</p>");
                 return;
             }
 
             String serviceName = "";
-            String subServiceName = "";
+            int serviceId = 0; // Define serviceId outside the try block
 
-            // Fetch service and sub-service names
             try (Connection conn = DBConnection.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "SELECT s.service_name, ss.sub_service_name " +
-                         "FROM sub_service ss " +
-                         "INNER JOIN service s ON ss.service_id = s.service_id " +
-                         "WHERE ss.sub_service_id = ?")) {
-                stmt.setInt(1, Integer.parseInt(subServiceId));
+                         "SELECT s.name AS service_name, s.id AS service_id " +
+                         "FROM bookings b " +
+                         "INNER JOIN service s ON b.serviceid = s.id " +
+                         "WHERE b.id = ? AND b.userid = ?")) {
+                stmt.setInt(1, Integer.parseInt(bookingId));
+                stmt.setInt(2, userId);
+
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
                         serviceName = rs.getString("service_name");
-                        subServiceName = rs.getString("sub_service_name");
+                        serviceId = rs.getInt("service_id"); // Assign serviceId
+                    } else {
+                        out.println("<p style='color:red;'>Invalid booking ID or unauthorized access.</p>");
+                        return;
                     }
                 }
             } catch (SQLException e) {
@@ -57,7 +58,6 @@
                 return;
             }
 
-            // Display success or error messages
             String message = (String) request.getAttribute("message");
             if (message != null) {
                 out.println("<p style='color:green;'>" + message + "</p>");
@@ -71,9 +71,8 @@
 
             <!-- Feedback Form -->
             <form method="post">
-                <p>Service: <%= serviceName %> - <%= subServiceName %></p>
+                <p>Service: <%= serviceName %></p>
                 <input type="hidden" name="bookingId" value="<%= bookingId %>">
-                <input type="hidden" name="subServiceId" value="<%= subServiceId %>">
 
                 <!-- Star Rating -->
                 <label for="rating">Rate the Service:</label>
@@ -94,14 +93,12 @@
             </form>
 
             <%
-            // Handle form submission
             if ("POST".equalsIgnoreCase(request.getMethod())) {
                 String feedback = request.getParameter("feedback");
                 int rating = Integer.parseInt(request.getParameter("rating"));
 
-                // Insert feedback into the database
                 FeedbackDAO feedbackDAO = new FeedbackDAO();
-                boolean isSuccess = feedbackDAO.addFeedback(userId, Integer.parseInt(bookingId), Integer.parseInt(subServiceId), feedback, rating);
+                boolean isSuccess = feedbackDAO.addFeedback(userId.intValue(), Integer.parseInt(bookingId), serviceId, feedback, rating);
 
                 if (isSuccess) {
                     out.println("<p style='color:green;'>Thank you for your feedback!</p>");

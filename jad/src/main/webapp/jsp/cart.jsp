@@ -1,43 +1,30 @@
-<%-- 
-    JAD-CA1
-    Class-DIT/FT/2A/23
-    Student Name: Moe Myat Thwe
-    Admin No.: P2340362
---%>
 <%@ include file="header.jsp" %>
-<%@ include file="check.jsp" %>
+<%@ include file="authCheck.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
-<%@ page import="java.util.*, java.sql.*, com.cleaningService.util.DBConnection" %>
+<%@ page import="java.util.*" %>
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Cart</title>
-    <link rel="stylesheet" href="../css/home.css">
-    <link rel="stylesheet" href="../css/cart.css">
+    <title>My Cart</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/cart.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/home.css">
     <script>
+ // Function to remove an item from the cart using AJAX
+    function removeFromCart(index) {
+    fetch('<%= request.getContextPath() %>/CartServlet?remove=' + index, {
+        method: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => response.text())
+    .then(data => {
+        // Update the cart content without refreshing the page
+        document.querySelector('.cart-container').innerHTML = data;
+    })
+    .catch(error => console.error('Error:', error));
+}
+
  
-        function updateSummary() {
-            const checkboxes = document.querySelectorAll('.cart-checkbox');
-            const prices = document.querySelectorAll('.cart-price');
-            const serviceCount = document.getElementById('serviceCount');
-            const subtotalElement = document.getElementById('subtotal');
-
-            let subtotal = 0;
-            let selectedCount = 0;
-
-            checkboxes.forEach((checkbox, index) => {
-                if (checkbox.checked) {
-                	const priceText = prices[index]?.innerText || "$0.00";
-                    subtotal += parseFloat(prices[index].innerText.replace('$', ''));
-                    selectedCount++;
-                }
-            });
-
-            serviceCount.innerText = selectedCount;
-            subtotalElement.innerText = `$${subtotal.toFixed(2)}`;
-        }
-  
-
         function validateCheckout(event) {
             const checkboxes = document.querySelectorAll('.cart-checkbox');
             const isAnySelected = Array.from(checkboxes).some(checkbox => checkbox.checked);
@@ -52,13 +39,9 @@
 <body>
     <div class="cart-container">
         <h1 class="cart-header">My Cart</h1>
-        <p class="service-info">You have selected <span id="serviceCount">0</span> service(s) for checkout.</p>
-        <form action="<%=request.getContextPath()%>/CartCheckoutServlet" method="post">
+        <form action="<%= request.getContextPath() %>/CartCheckoutServlet" method="POST" onsubmit="validateCheckout(event)">
             <%
-            String categoryIdParam = request.getParameter("category_id");
-            String serviceIdParam = request.getParameter("service_id");
-                List<Map<String, Object>> cart = (List<Map<String, Object>>) session.getAttribute("cart");
-
+                List<Map<String, Object>> cart = (List<Map<String, Object>>) request.getAttribute("cart");
                 if (cart == null || cart.isEmpty()) {
             %>
                 <p class="empty-cart">Your cart is empty.</p>
@@ -66,66 +49,61 @@
                 } else {
                     for (int i = 0; i < cart.size(); i++) {
                         Map<String, Object> item = cart.get(i);
-
-                        int serviceId = Integer.parseInt(item.get("service_id").toString());
-                        String serviceName = "";
-                        String image = "";
-                        double price = 0.0;
-
-                        try (Connection conn = DBConnection.getConnection();
-                             PreparedStatement stmt = conn.prepareStatement(
-                                 "SELECT name, image, price FROM service WHERE id = ?")) {
-                            stmt.setInt(1, serviceId);
-                            try (ResultSet rs = stmt.executeQuery()) {
-                                if (rs.next()) {
-                                    serviceName = rs.getString("name");
-                                    image = rs.getString("image");
-                                    price = rs.getDouble("price");
-                                }
-                            }
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-
-                        String date = (String) item.getOrDefault("date", "Not specified");
-                        String time = (String) item.getOrDefault("time", "Not specified");
-                        String address = (String) item.getOrDefault("serviceAddress", "Not specified");
-                        String specialRequest = (String) item.getOrDefault("specialRequest", "NA");
-                        int duration = Integer.parseInt(item.getOrDefault("duration", "1").toString());
+                     // Ensure serviceId and categoryId are present in each item
+                        String serviceId = item.get("serviceId").toString();  
+                        String categoryId = item.get("categoryId").toString();
+                        
+                        String serviceName = (String) item.getOrDefault("serviceName", "Unavailable");
+                        String imagePath = (String) item.getOrDefault("imagePath", "images/default-placeholder.png");
+                        String price = item.getOrDefault("price", "0.00").toString();
+                        String date = item.getOrDefault("date", "N/A").toString();
+                        String time = item.getOrDefault("time", "N/A").toString();
+                        String address = item.getOrDefault("serviceAddress", "N/A").toString();
+                        String specialRequest = item.getOrDefault("specialRequest", "N/A").toString();
+                        
+                     // Discount details
+                        String discountName = (String) item.getOrDefault("discountName", null);
+                        String discountDescription = (String) item.getOrDefault("discountDescription", null);
+                        String discountEndDate = (String) item.getOrDefault("discountEndDate", null);
+                        Double discountRate = (Double) item.getOrDefault("discountRate", 0.0);
             %>
             <div class="cart-item">
                 <div class="cart-item-left">
-                    <input type="checkbox" name="selectedItems" value="<%= i %>" class="cart-checkbox" onchange="updateSummary()">
+                    <input type="checkbox" name="selectedItems" value="<%= i %>" class="cart-checkbox">
+                    <input type="hidden" name="serviceId" value="<%= item.get("serviceId") %>">
+                    <input type="hidden" name="categoryId" value="<%= categoryId %>">
                     <div class="cart-item-image">
-                        <img src="../<%= image %>" alt="<%= serviceName %>">
+                        <img src="<%= request.getContextPath() + "/" + imagePath %>" alt="<%= serviceName %>">
                     </div>
                 </div>
                 <div class="cart-item-details">
                     <h2><%= serviceName %></h2>
-                    <p class="cart-price">$<%= String.format("%.2f", price) %></p>
+                    <p class="cart-price">$<%= price %></p>
                     <p>Date: <%= date %></p>
                     <p>Time: <%= time %></p>
-                    <p>Duration: <%= duration %> hours</p>
                     <p>Address: <%= address %></p>
                     <p>Special Request: <%= specialRequest %></p>
+                    
+                    <% if (discountName != null) { %>
+                    <div class="discount-info">
+                        <p class="discount-message">
+                            Enjoy "<strong><%= discountDescription %></strong>" with <%= discountName %>!
+                            Discount ends on <%= discountEndDate %>.
+                        </p>
+                    </div>
+                    <% } %>
                 </div>
                 <div class="cart-item-right">
-                    <button type="submit" name="remove" value="<%= i %>" class="remove-btn">Remove from Cart</button>
+                    <button type="button" onclick="removeFromCart(<%= i %>)" class="remove-btn">Remove from Cart</button>
                 </div>
             </div>
             <%
                     }
                 }
             %>
-            <div class="cart-summary">
-               
-                <button type="submit" name="checkout" class="checkout-btn" value="true" onclick="validateCheckout(event)">Checkout</button>
-            </div>
+            <button type="submit" class="checkout-btn">Checkout</button>
         </form>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', updateSummary);
-    </script>
     <jsp:include page="../html/footer.html" />
 </body>
 </html>

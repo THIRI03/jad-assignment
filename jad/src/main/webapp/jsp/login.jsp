@@ -55,6 +55,7 @@
         	session.setAttribute("userRole", roleId);
             session.setAttribute("userId", user.getId());
             session.setAttribute("username", user.getName());
+            session.setAttribute("userEmail", user.getEmail());
             Integer userId = (Integer)session.getAttribute("userId");
             
             Calendar calendar = Calendar.getInstance();
