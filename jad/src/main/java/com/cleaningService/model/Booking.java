@@ -22,162 +22,6 @@ public class Booking {
     public Booking() {
     }
 
-    // Getters and Setters
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public int getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(int serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public String getSpecialRequest() {
-        return specialRequest;
-    }
-
-    public void setSpecialRequest(String specialRequest) {
-        this.specialRequest = specialRequest;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public String getServiceAddress() {
-        return serviceAddress;
-    }
-
-
-    public void setServiceAddress(String serviceAddress) {
-        this.serviceAddress = serviceAddress;
-    }
-
-
-
-
-
-	public String getStatus() {
-		return status;
-	}
-
-
-
-
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-	public String getCategoryName() {
-		return categoryName;
-	}
-
-
-
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
-
-
-
-	public String getServiceName() {
-		return serviceName;
-	}
-
-
-
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
-
-
-
-	public String getCustomerName() {
-		return customerName;
-	}
-
-
-
-	public void setCustomerName(String custerName) {
-		this.customerName = custerName;
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -186,12 +30,52 @@ public class Booking {
 		this.id = id;
 	}
 
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public int getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(int categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public int getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(int serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
 	public String getSpecialRequest() {
 		return specialRequest;
 	}
 
 	public void setSpecialRequest(String specialRequest) {
 		this.specialRequest = specialRequest;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
 	}
 
 	public int getDuration() {
@@ -214,8 +98,16 @@ public class Booking {
 		return time;
 	}
 
-	public void setTime(String i) {
-		this.time = i;
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 	public String getServiceAddress() {
@@ -226,26 +118,28 @@ public class Booking {
 		this.serviceAddress = serviceAddress;
 	}
 
-	public String getServiceImage() {
-		return serviceImage;
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public void setServiceImage(String string) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
 
-	public void setServiceImage(String serviceImage) {
-		this.serviceImage = serviceImage;
-	}
-
-
-
-	public double getTotal_price() {
-		return total_price;
-	}
-
-
-
-	public void setTotal_price(double total_price) {
-		this.total_price = total_price;
-	}
 }
 

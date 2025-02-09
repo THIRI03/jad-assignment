@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Date;
-=======
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,22 +107,6 @@ public class BookingDAO {
         }
 
 
-    public int retrieveBookingNum() {
-        int count = 0;
-        String sql = "SELECT COUNT(id) AS bookings FROM bookings";
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet resultSet = stmt.executeQuery()) {
-            if (resultSet.next()) {
-                count = resultSet.getInt("bookings");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
-    }
-
     public Booking getBookingDetailsById(int bookingId) {
         Booking booking = null;
         String sql = "SELECT b.id, u.name AS customer_name, s.name AS service_name, "
@@ -160,11 +143,10 @@ public class BookingDAO {
 
         return booking;
     }
-=======
 	/*Name: Thiri Lae Win
 	Class: DIT/FT/2A/23
 	ADM Num: 2340739*/
-	public List<Booking> retrieveAllBookings(){
+	public List<Booking> retrieveAllBookingsForAdmin(){
 		List<Booking> bookings = new ArrayList<>();
 
 		String sql = "SELECT b.id, u.name AS customer_name, s.name AS service_name, b.booking_date, b.booking_time, c.name AS category_name, b.status "
@@ -271,7 +253,7 @@ public class BookingDAO {
 		                booking.setCategoryName(rs.getString("category_name"));
 		                booking.setStatus(rs.getString("status"));
 		                booking.setServiceImage(rs.getString("service_image"));
-		                booking.setTotal_price(rs.getDouble("total_price"));
+		                booking.setTotalPrice(rs.getDouble("total_price"));
 		            }
 		        }
 
