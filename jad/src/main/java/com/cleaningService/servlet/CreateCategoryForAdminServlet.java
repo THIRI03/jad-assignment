@@ -80,12 +80,14 @@ public class CreateCategoryForAdminServlet extends HttpServlet {
         boolean isCreated = categoryDAO.createCategory(name, imagePath, description);
 
         if (isCreated) {
+        	request.setAttribute("isCreated", true);
             request.setAttribute("message", "Category created successfully");
+            request.getRequestDispatcher("/jsp/adminRetrieveAllCategories.jsp").forward(request, response);
         } else {
             request.setAttribute("error", "Failed to create category.");
+            request.getRequestDispatcher("/jsp/adminRetrieveAllCategories.jsp").forward(request, response);
         }
 
-        request.getRequestDispatcher(request.getContextPath()+"/jsp/adminRetrieveAllCategories.jsp").forward(request, response);
     }
 
     // Method to sanitize the filename by replacing spaces and special characters

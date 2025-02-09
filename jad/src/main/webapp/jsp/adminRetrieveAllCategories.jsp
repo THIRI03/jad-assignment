@@ -18,12 +18,15 @@
 <head>
   <meta charset="UTF-8">
   <title>All Categories</title>
-  <link rel="stylesheet" href="../css/adminRetrieveAllCategories.css">
+  <link rel="stylesheet" href="<%=request.getContextPath()%>/css/adminRetrieveAllCategories.css">
 </head>
 <body>
 <div class="main-content">
 	<h1>All Categories</h1>
   <!-- Create New Category button -->
+  <%
+  boolean isSubmitted = (boolean) request.getAttribute("isCreated");
+  %>
   <button class="create-btn" onclick="location.href='adminCreateCategory.jsp'">Create New Category</button>
 
 	    <div class="card-container">
@@ -49,7 +52,7 @@
 
 	
 	            <!-- Delete Button -->
-	            <form action="adminDeleteCategory.jsp" method="post" onsubmit="return confirm('Are you sure you want to delete this category?');">
+	            <form action="<%=request.getContextPath() %>/jsp/adminDeleteCategory.jsp" method="post" onsubmit="return confirm('Are you sure you want to delete this category?');">
 	                <input type="hidden" name="action" value="delete">
 	                <input type="hidden" name="categoryId" value="<%= category.getId() %>">
 	                <button class="btn-delete" type="submit">Delete</button>
