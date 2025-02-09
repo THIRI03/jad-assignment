@@ -1,5 +1,5 @@
 <%-- 
-    JAD-CA1
+    JAD-CA2
     Class-DIT/FT/2A/23
     Student Name: Moe Myat Thwe
     Admin No.: P2340362
@@ -7,6 +7,7 @@
 <%@ include file="check.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.sql.*, com.cleaningService.util.DBConnection" %>
+
 <%
     // Retrieve userId from the session
     Integer userId = (Integer) session.getAttribute("userId");
@@ -28,7 +29,7 @@
     // Perform the deletion in the database
     try (Connection conn = DBConnection.getConnection();
          PreparedStatement stmt = conn.prepareStatement(
-                 "DELETE FROM feedback WHERE feedback_id = ? AND user_id = ?")) {
+                 "DELETE FROM feedback WHERE id = ? AND userid = ?")) {  // Corrected column names
         stmt.setInt(1, Integer.parseInt(feedbackId));
         stmt.setInt(2, userId);
 
