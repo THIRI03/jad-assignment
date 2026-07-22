@@ -1,7 +1,11 @@
-/*     JAD-CA1
+/* 
+JAD-CA1
 Class-DIT/FT/2A/23
-Student Name: Thiri Lae Win
-Admin No.: P2340739 */
+Student Name: Thiri Lae Win,Moe Myat Thwe
+Admin No.: P2340739.P2340362
+*/
+
+@charset "UTF-8";
 
 * {
     margin: 0;
@@ -9,117 +13,153 @@ Admin No.: P2340739 */
     box-sizing: border-box;
 }
 
-/* Body and general layout */
 body {
+    min-height: 100vh;
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
     color: #333;
-}
-
-.menu-toggle {
-    display: none;
-}
-
-/* Admin dashboard main content */
-.main-content {
-    padding: 20px;
-    margin-top: 20px;
-}
-
-header {
-	margin-top: 60px;
     background-color: #fff8e1;
-    color: rgb(0, 0, 0);
-    padding: 15px;
+}
+
+/* Main dashboard area */
+.dashboard-content {
+    width: 100%;
+    padding: 120px 30px 50px;
+}
+
+/* Dashboard title */
+.dashboard-heading {
+    margin-bottom: 35px;
     text-align: center;
 }
 
-h1 {
-    margin: 0;
+.dashboard-heading h1 {
+    margin-bottom: 10px;
+    color: #6b4226;
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-h2 {
-    color: #333;
-    margin-top: 20px;
-}
-
-p {
-    color: #666;
+.dashboard-heading p {
+    color: #6b625d;
+    font-size: 1rem;
 }
 
 /* Summary cards */
 .summary-cards {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
 }
 
-.card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.summary-card {
+    padding: 25px 20px;
     text-align: center;
-    width: 30%;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.card p {
-    font-size: 24px;
+.summary-card h3 {
+    margin-bottom: 12px;
+    color: #674636;
+    font-size: 1.1rem;
+}
+
+.summary-card p {
+    color: #674636;
+    font-size: 2rem;
     font-weight: bold;
 }
 
-/* Bookings table */
+/* Booking section */
+.booking-section {
+    padding: 25px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+.section-heading {
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    color: #674636;
+    font-size: 1.6rem;
+}
+
+/* Table */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
 }
 
-table th, table td {
-    padding: 10px;
+table th,
+table td {
+    padding: 14px 16px;
     text-align: left;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 
 table th {
-    background-color: #f4f4f4;
+    color: white;
+    background-color: #674636;
     font-weight: bold;
 }
 
 table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #fffaf0;
 }
 
 table tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f3e8d8;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+.empty-message {
+    padding: 25px;
+    text-align: center;
+    color: #777;
+}
+
+/* Responsive layout */
+@media (max-width: 900px) {
     .summary-cards {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: 1fr;
     }
 
-    .card {
-        width: 80%;
-        margin-bottom: 20px;
+    .dashboard-content {
+        padding: 110px 20px 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-heading h1 {
+        font-size: 2rem;
     }
 
-    .navbar ul {
-        flex-direction: column;
-        align-items: center;
+    .booking-section {
+        padding: 15px;
     }
 
-    .menu-toggle {
-        display: block;
-        cursor: pointer;
+    table th,
+    table td {
+        padding: 10px;
+        font-size: 0.9rem;
     }
 }

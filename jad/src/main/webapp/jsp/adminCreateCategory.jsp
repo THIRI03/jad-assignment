@@ -12,7 +12,7 @@
 <%@ page import="com.cleaningService.dao.CategoryDAO" %>
 <%@ page import="com.cleaningService.model.Category" %>
 <%-- <%@ include file="authCheck.jsp" %> --%>
-<%@ include file="../html/adminNavbar.html" %>
+<%@ include file="adminNavbar.jsp" %>
 
 <!DOCTYPE html>
 <html lang="en">

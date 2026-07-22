@@ -1,59 +1,115 @@
-/*     JAD-CA1
+/* 
+JAD-CA1
 Class-DIT/FT/2A/23
-Student Name: Thiri Lae Win
-Admin No.: P2340739 */
-
+Student Name: Thiri Lae Win,Moe Myat Thwe
+Admin No.: P2340739,P2340362
+*/
 
 @charset "UTF-8";
 
-body {
-    margin: 0;  
-    font-family: Arial, sans-serif;
-}
-
-.navbar {
+.admin-navbar-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #6b4423;
-    color: white;
-    padding: 10px 20px;
-    position: fixed; 
+    width: 100%;
+    padding: 20px 30px;
+    margin: 0;
+    background-color: #674636;
+    box-sizing: border-box;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;  
-    z-index: 1000;  
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.navbar h1 {
-    margin: 0;
-    font-size: 1.5em;
-}
-
-.navbar ul {
-    list-style: none;
+.admin-logo {
     display: flex;
-    margin: 0;
-    padding: 20px;
+    align-items: center;
+    flex-shrink: 0;
 }
 
-.navbar ul li {
-    margin: 0 10px;
-}
-
-.navbar ul li a {
-    text-decoration: none;
+.admin-logo a {
+    display: flex;
+    align-items: center;
     color: white;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: background 0.3s ease;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
-.navbar ul li a:hover {
-    background-color: #575757;
+.admin-logo img {
+    width: 50px;
+    height: 50px;
+    max-width: 50px;
+    max-height: 50px;
+    margin-right: 10px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
 }
 
-.menu-toggle {
+.admin-navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-navbar-links li {
+    margin: 0;
+}
+
+.admin-navbar-links a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.admin-navbar-links a:hover {
+    color: black;
+    background-color: #fff8e1;
+}
+
+.admin-menu-toggle {
     display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.admin-menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+}
+
+@media (max-width: 900px) {
+    .admin-menu-toggle {
+        display: flex;
+    }
+
+    .admin-navbar-links {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        background-color: #674636;
+        box-sizing: border-box;
+    }
+
+    .admin-navbar-links.show {
+        display: flex;
+    }
 }

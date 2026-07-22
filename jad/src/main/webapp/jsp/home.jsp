@@ -180,8 +180,8 @@
                 <!-- Dynamic Testimonials -->
                 <div class="col-md-4 col-sm-6 col-12 mb-4">
                     <div class="testimonial-card">
-                        <img src="/jad/JAD-CA1/gallery/verify.png" alt="Review Icon" class="review-icon">
-                        <p class="testimonial-text"><%= review.get("comments") %></p>
+                        <img src="/jad/gallery/verify.png" alt="Review Icon" class="review-icon">
+                        <p class="testimonial-text"><%= review.get("comment") %></p>
                         <div class="rating">
                             <% 
                                 int rating = Integer.parseInt(review.get("rating"));

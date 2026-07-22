@@ -12,7 +12,7 @@
 <%@ page import="com.cleaningService.model.Feedback" %>
 <%@ page import="java.util.List" %>
 	<%@ include file="authCheck.jsp" %>
-	<%@ include file="../html/adminNavbar.html" %>
+	<%@ include file="adminNavbar.jsp" %>
 
 <!DOCTYPE html>
 <html>

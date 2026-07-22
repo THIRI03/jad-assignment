@@ -14,7 +14,7 @@
 <%@ page import = "com.cleaningService.dao.CategoryDAO" %> 
 <%@ page import = "java.util.List" %>
 <%@ include file="authCheck.jsp" %>
-<%@ include file="../html/adminNavbar.html" %>
+<%@ include file="adminNavbar.jsp"%>
 
 
 <!DOCTYPE html>

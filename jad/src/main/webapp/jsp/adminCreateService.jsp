@@ -14,7 +14,7 @@
 <%@ page import="java.io.File" %>
 <%@ page import="jakarta.servlet.http.Part" %>
 <%-- <%@ include file="authCheck.jsp" %>--%>
-<%@ include file="../html/adminNavbar.html" %>
+<%@ include file="adminNavbar.jsp" %>
 
 <!DOCTYPE html>
 <html>

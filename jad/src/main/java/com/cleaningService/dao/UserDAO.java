@@ -34,7 +34,7 @@ public class UserDAO {
             statement.setString(1, user.getName());
             statement.setString(2, user.getEmail());
             statement.setString(3, hashedPassword);
-            statement.setInt(4, user.getPhoneNum());
+            statement.setString(4, user.getPhoneNum());
             statement.setString(5, user.getAddress());
             statement.setInt(6, user.getPostalCode());
             statement.setInt(7, 2);
@@ -70,7 +70,7 @@ public class UserDAO {
     			if(BCrypt.checkpw(password, storedPassword) && storedEmail.equals(email)) {
     				user.setId(resultSet.getInt("id"));
         			user.setName(resultSet.getString("name"));
-        			user.setPhoneNum(resultSet.getInt("phone_number"));
+        			user.setPhoneNum(resultSet.getString("phone_number"));
         			user.setAddress(resultSet.getString("address"));
         			        			
     				return user;
@@ -96,7 +96,7 @@ public class UserDAO {
     			User user = new User();
     			user.setId(resultSet.getInt("id"));
     			user.setName(resultSet.getString("name"));
-    			user.setPhoneNum(resultSet.getInt("phone_number"));
+    			user.setPhoneNum(resultSet.getString("phone_number"));
     			user.setAddress(resultSet.getString("address"));
     			
     			user.setEmail(resultSet.getString("email"));

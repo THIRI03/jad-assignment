@@ -1,128 +1,149 @@
-<%-- 
+<%--  
     JAD-CA1
     Class-DIT/FT/2A/23
-    Student Name: Thiri Lae Win
-    Admin No.: P2340739
+    Student Name: Thiri Lae Win, Moe Myat Thwe
+    Admin No.: P2340739, P2340362
 --%>
 
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-	<%@ page import="java.util.List" %>
-	<%@ page import="com.cleaningService.model.User" %>
-	<%@ page import="com.cleaningService.dao.UserDAO" %>
-<%-- 	<%@ include file="authCheck.jsp" %> --%>
-	<%@ include file="../html/adminNavbar.html" %>
+	pageEncoding="UTF-8"%>
+
+<%@ page import="java.util.List"%>
+<%@ page import="com.cleaningService.model.User"%>
+<%@ page import="com.cleaningService.dao.UserDAO"%>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-  <title>All Users</title>
+<title>All Users</title>
+
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/adminRetrieveMember.css?v=3">
+
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/adminTableTools.css?v=2">
+
+<!-- Font Awesome icons -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
+
 <body>
 
+	<%@ include file="adminNavbar.jsp"%>
 
+	<%
+	UserDAO userDAO = new UserDAO();
+	List<User> users = userDAO.retrieveAllUsers();
+	%>
 
-  <title>All Users</title>
-  <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-    }
+	<main class="main-content">
 
-    .main-content {
-        padding: 20px;
-        margin-top: 60px;
-    }
+		<div class="users-section">
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
+			<h2>View and manage registered users</h2>
 
-    table th, table td {
-        padding: 10px;
-        text-align: left;
-        border: 1px solid #ddd;
-    }
+			<!-- Search and pagination -->
+			<div class="table-tools">
 
-    table th {
-        background-color: #f4f4f4;
-        font-weight: bold;
-    }
+				<div class="search-container">
 
-    table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+					<span class="search-icon"> <i
+						class="fa-solid fa-magnifying-glass"></i>
+					</span> <input type="search" id="userSearch"
+						placeholder="Search by ID, name, email, phone, address or role"
+						autocomplete="off">
 
-    table tbody tr:hover {
-        background-color: #f1f1f1;
-    }
+				</div>
 
-    .btn-update {
-        background-color: #6b4423;
-    }
+				<div id="userPagination" class="pagination-container"></div>
 
+			</div>
 
-    .btn-update:hover {
-        background-color: #343a40;
-    }
+			<div class="table-container">
 
+				<table>
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Phone</th>
+							<th>Address</th>
+							<th>Role</th>
+							<th>Action</th>
+						</tr>
+					</thead>
 
-  </style>
-</head>
-<body>
+					<tbody id="userTableBody">
 
-<div class="main-content">
-  <h1>All Users</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Address</th>
-        <th>Role</th>
-        <th>Update</th>
-      </tr>
-    </thead>
-    <tbody>
-      <%
-        // Retrieve all users
-        UserDAO userDAO = new UserDAO();
-        List<User> users = userDAO.retrieveAllUsers();
-        
-        if (users != null && !users.isEmpty()) {
-          for (User user : users) {
-      %>
-      <tr>
-        <td><%= user.getId() %></td>
-        <td><%= user.getName() %></td>
-        <td><%= user.getEmail() %></td>
-        <td><%= user.getPhoneNum() %></td>
-        <td><%= user.getAddress() %></td>
-        <td><%= user.getRoleId() %></td>
-        <td>
-          <!-- Update Button -->
-          <button class="btn-update">Update</button>
-        </td>
-      </tr>
-      <% 
-          }
-        } else {
-      %>
-      <tr>
-        <td colspan="7">No users found.</td>
-      </tr>
-      <% 
-        }
-      %>
-    </tbody>
-  </table>
-</div>
+						<%
+						if (users != null && !users.isEmpty()) {
 
+							for (User user : users) {
+						%>
+
+						<tr
+							data-search="<%=user.getId() + " " + user.getName() + " " + user.getEmail() + " " + user.getPhoneNum() + " "
+		+ user.getAddress() + " " + user.getRoleId()%>">
+
+							<td><%=user.getId()%></td>
+							<td><%=user.getName()%></td>
+							<td><%=user.getEmail()%></td>
+							<td><%=user.getPhoneNum()%></td>
+							<td><%=user.getAddress()%></td>
+							<td><%=user.getRoleId()%></td>
+
+							<td>
+								<form action="adminUpdateMember.jsp" method="get">
+
+									<input type="hidden" name="userId" value="<%=user.getId()%>">
+
+									<button class="btn-update" type="submit">Update</button>
+
+								</form>
+							</td>
+
+						</tr>
+
+						<%
+						}
+						} else {
+						%>
+
+						<tr class="empty-row">
+							<td colspan="7" class="empty-message">No users found.</td>
+						</tr>
+
+						<%
+						}
+						%>
+
+					</tbody>
+				</table>
+
+			</div>
+
+		</div>
+
+	</main>
+
+	<script
+		src="<%=request.getContextPath()%>/javaScript/adminTableTools.js?v=2">
+		
+	</script>
+
+	<script>
+		setupTableTools({
+			tableBodySelector : "#userTableBody",
+			searchInputSelector : "#userSearch",
+			paginationSelector : "#userPagination",
+			rowsPerPage : 10,
+			columnCount : 7,
+			noResultsMessage : "No matching users found."
+		});
+	</script>
 
 </body>
 </html>
